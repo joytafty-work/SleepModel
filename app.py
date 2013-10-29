@@ -32,8 +32,8 @@ def data(ndata=100):
         A JSON string of ``ndata`` data points.
 
     """
-    x = 10 * np.random.rand(ndata) - 5
-    y = 0.5 * x + 0.5 * np.random.randn(ndata)
+    x = 20 * np.random.rand(ndata) - 5
+    y = 0.2 * x + 0.5 * np.random.randn(ndata)
     A = 10. ** np.random.rand(ndata)
     c = np.random.rand(ndata)
     return json.dumps([{"_id": i, "x": x[i], "y": y[i], "area": A[i],

@@ -5,7 +5,7 @@
 
     <title>Basic D3 Dashboard</title>
 
-    <script src="http://d3js.org/d3.v2.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
     <style>
 
 path.line {
@@ -20,6 +20,19 @@ path.line {
 
 circle {
     cursor: pointer;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+chart {
+    font: 10px sans-serif;
+    background-color: steelblue;
+    text-align: right;
+    padding: 3px;
+    margin: 1px;
+    color: white;
 }
 
 .axis {
@@ -60,6 +73,10 @@ circle {
     <div id="plot">
     </div>
 
+    <div id="plot2">
+    </div>
+
+
     <script>
 
         // Set up the plot window.
@@ -70,7 +87,7 @@ circle {
                         .attr("height", h + 2 * margin)
                     .append("svg:g")
                         .attr("transform", "translate(" + margin + ", " + margin + ")");
-
+                
         // The colorbar.
         var color = d3.scale.quantize()
                       .range(["#156b87", "#876315", "#543510", "#872815"])
@@ -90,12 +107,14 @@ circle {
 
         // Show the information about a particular point.
         var show_info = function (d) {
-            d3.select("#point-info").text("This is point " + d._id + ". "
-                + "It has the coordinates (" + d.x + ", " + d.y + ").");
+            d3.select("#point-info").text("data point :" + d._id + ". "
+                + "Coordinates : (" 
+                    + parseFloat(d.x).toFixed(2) + ", " 
+                    + parseFloat(d.y).toFixed(2) + ").");
         };
 
-        // Load the data.
-        var callback = function (data) {
+        // Draw Circle plots
+        var drawCirc = function (data) {
             // Rescale the axes.
             xscale.domain([d3.min(data, function (d) { return d.x; }) - 0.05,
                            d3.max(data, function (d) { return d.x; }) + 0.05]);
@@ -117,7 +136,31 @@ circle {
                     .on("mousedown", show_info);
         };
 
-        d3.json("/data", callback);
+
+        // Windor for Bar plots
+        var svg2= d3.select("#plot2").append("svg2")
+                        .attr("width", w + 2 * margin)
+                        .attr("height", h + 2 * margin)
+                    .append("svg2:g")
+                        .attr("transform", "translate(" + margin + ", " + margin + ")");
+
+        var drawBar = function(data) {
+            svg2.select(".x.axis").call(xaxis);
+            svg2.select(".y.axis").call(yaxis);
+            //
+            svg2.selectAll(".bar").data(data).enter()
+                .append("chart")
+                    .attr("class", ".bar")
+                    .attr("x", function (d) {return d.x; })
+                    // .attr("width", x.rangeBand())
+                    .attr("y", function (d) {return d.y*2;})
+                    .attr("height", function (d) { return d.y; })
+                    .text(function (d) { return parseFloat(d.y*10).toFixed(2); })
+                    .on("mousedown", show_info);
+        }
+
+        d3.json("/data", drawCirc);
+        d3.json("/data", drawBar);
 
     </script>
 
