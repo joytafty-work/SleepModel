@@ -3,7 +3,7 @@ This file is part of the flask+d3 Hello World project.
 """
 import json
 import flask
-from flask import Flask
+from flask import Flask, url_for, render_template
 import numpy as np
 
 
@@ -16,8 +16,24 @@ def index():
     When you request the root path, you'll get the index.html template.
 
     """
-    return flask.render_template("index.html")
+    return render_template("index.html")
 
+
+@app.route("/bar/")
+def bar():
+    return render_template("bar.html")
+
+@app.route("/number/")
+def number():
+    return render_template("number.html")
+
+@app.route("/dcchart/")
+def dcchart():
+    return render_template("dcchart.html")
+
+@app.route("/up/")
+def up():
+    return render_template("dcjsup.html")    
 
 @app.route("/data")
 @app.route("/data/<int:ndata>")

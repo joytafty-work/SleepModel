@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>DC Chart for Jawbone UP Data</title>
+    <meta charset="UTF-8">
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/dc.css') }}"/>
+</head>
+<body>
+
+<div class="row">
+  <div class="col-md-4">
+    <h4>Sleep Quality by resting Heart Rate</h4>
+    <div id="sleepchart"></div>
+  </div>
+  <div class="col-md-4">
+  <h4>Sleep Quality by resting Heart Rate</h4>
+  <div id="sleeppie"></div>
+  </div>
+</div>
+
+<script type="text/javascript" src="{{ url_for('static',filename='js/d3.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/crossfilter.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/dc.js')}}"></script>
+
+<script type="text/javascript">
+
+var sleepChart = dc.barChart("#sleepchart");
+var sleepPie = dc.pieChart("#sleeppie");
+
+d3.csv("../static/data/allBB.csv", function(error, data) {
+
+  var dateFormat = d3.time.format("%m/%d/%Y");
+  var numberFormat = d3.format(".2f");
+  
+  data.forEach(function (d) {
+    d.dd = dateFormat.parse(d.date); 
+    d.month = d3.time.month(d.dd);
+    // d.sleepQuality = +d.sleepQuality;
+    // d.restingHR = +d.restingHR;
+  })
+
+  var slp                 = crossfilter(data),
+      slDimension         = slp.dimension(function(d) {
+                                return +d.sleepIntervalIndex;}),
+      slSumGroup       = slDimension.group().reduceSum(function(d) {return d.sleepQuality/100;});
+
+  sleepChart
+    .width(400)
+    .height(280)
+    .margins({top: 10, right: 50, bottom: 30, left: 40})
+    .x(d3.scale.linear().domain([0, 5]))
+    .brushOn(false)
+    // .yAxisLabel("This is the Y Axis!")
+    .dimension(slDimension)
+    .group(slSumGroup)
+    .elasticY(true)
+    .centerBar(true)
+    .gap(1);
+
+
+  sleepChart.render();
+  console.log(sleepChart);
+});
+
+d3.csv("../static/data/allBBnoNaN.csv", function(error, data) {
+  var dateFormat = d3.time.format("%m/%d/%Y");
+  var numberFormat = d3.format(".2f");
+
+  data.forEach(function (d) {
+    d.dd = dateFormat.parse(d.date); 
+    d.month = d3.time.month(d.dd);
+    // d.sleepQuality = +d.sleepQuality;
+    // d.restingHR = +d.restingHR;
+  })
+
+  var slp           = crossfilter(data),
+      slDimension   = slp.dimension(function(d) {return +d.sleepIntervalIndex;}),
+      slSumGroup    = slDimension.group().reduceSum(function(d) {
+        return d.sleepQuality * d.restingHR / 1000;});
+
+  var dateDimension = slp.dimension(function (d) {
+    return d.dd;
+  });
+
+  var slMonths = slp.dimension(function (d) {
+    return d.month;
+  });
+
+  // dc.barChart("#sleep quality chart")
+  sleepPie
+    .width(280)
+    .height(280)
+    .renderLabel(true)
+    .innerRadius(40)
+    .transitionDuration(500)
+    // .margins({top: 10, right: 50, bottom: 30, left: 40})
+    // .x(d3.scale.linear().domain([0,20]))
+    // .brushOn(false)
+    // .yAxis("This is the Y Axis!")
+    .dimension(slDimension)
+    .group(slSumGroup);
+    // .elasticY(true)
+    // .centerBar(true)
+    // .gap(1);
+
+  sleepPie.render();
+});
+
+</script>
+
+</body>
+</html>

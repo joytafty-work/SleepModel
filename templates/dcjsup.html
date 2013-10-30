@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>DC Chart for Jawbone UP Data</title>
+    <meta charset="UTF-8">
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/dc.css') }}"/>
+</head>
+<body>
+
+<div class="row">
+  <div class="col-md-4">
+    <h4>Total Calories by mood</h4>
+    <div id="calchart"></div>
+  </div>
+  <div class="col-md-4">
+  <h4>Sleep Bubble</h4>
+  <div id="sleepbubble"></div>
+  </div>
+  <div class="col-md-4">
+  <h4>Sleep Quality by resting Heart Rate</h4>
+  <div id="sleeppie"></div>
+  </div>
+</div>
+
+<script type="text/javascript" src="{{ url_for('static',filename='js/d3.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/crossfilter.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/dc.js')}}"></script>
+
+<script type="text/javascript">
+
+var calChart = dc.barChart("#calchart");
+var sleepBubble = dc.bubbleChart("#sleepbubble");
+var sleepPie = dc.pieChart("#sleeppie");
+
+d3.csv("../static/data/AllUPs.csv", function(error, data) {
+
+  // var dateFormat = d3.time.format("%m/%d/%Y");
+  // var numberFormat = d3.format(".2f");
+  
+  // data.forEach(function (d) {
+  //   d.dd = dateFormat.parse(d.DATE); 
+  //   d.month = d3.time.month(d.dd);
+  //   // d.sleepQuality = +d.sleepQuality;
+  //   // d.restingHR = +d.restingHR;
+  // })
+
+  var ups = crossfilter(data),
+      upDimension = ups.dimension(function(d) {return +d.o_count; }),
+      upSumGroup = upDimension.group().reduceSum(function(d) {return +d.e_sugar;});
+
+  calChart
+    .width(400)
+    .height(280)
+    .margins({top: 10, right: 50, bottom: 30, left: 40})
+    .x(d3.scale.linear().domain([0, 8]))
+    .brushOn(false)
+    // .yAxisLabel("This is the Y Axis!")
+    .dimension(upDimension)
+    .group(upSumGroup)
+    .elasticY(true)
+    .centerBar(true)
+    .gap(1);
+
+
+  calChart.render();
+  console.log(calChart);
+});
+
+d3.csv("../static/data/allBBnoNaN.csv", function(error, data) {
+  var dateFormat = d3.time.format("%m/%d/%Y");
+  var numberFormat = d3.format(".2f");
+
+  data.forEach(function (d) {
+    d.dd = dateFormat.parse(d.date); 
+    d.month = d3.time.month(d.dd);
+    // d.sleepQuality = +d.sleepQuality;
+    // d.restingHR = +d.restingHR;
+  })
+
+  var slp           = crossfilter(data),
+      slDimension   = slp.dimension(function(d) {return +d.sleepIntervalIndex;}),
+      slSumGroup    = slDimension.group().reduceSum(function(d) {
+        return d.sleepQuality * d.restingHR / 1000;});
+
+  var dateDimension = slp.dimension(function (d) {
+    return d.dd;
+  });
+
+  var slMonths = slp.dimension(function (d) {
+    return d.month;
+  });
+
+  // dc.barChart("#sleep quality chart")
+  sleepPie
+    .width(280)
+    .height(280)
+    .renderLabel(true)
+    .innerRadius(30)
+    .transitionDuration(500)
+    .dimension(slDimension)
+    .group(slSumGroup)
+    // .label(function (d) {
+    //   if (sleepPie.hasFilter() && !sleepPie.hasFilter(d.key))
+    //     return d.key + "(0%)";
+    //   return d.key + "(" + Math.floor(d.sleepIntervalIndex) + "%)";
+    // })
+    .renderLabel(true);
+
+  sleepPie.render();
+});
+
+</script>
+
+</body>
+</html>
