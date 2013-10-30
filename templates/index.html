@@ -22,19 +22,6 @@ circle {
     cursor: pointer;
 }
 
-.bar {
-  fill: steelblue;
-}
-
-chart {
-    font: 10px sans-serif;
-    background-color: steelblue;
-    text-align: right;
-    padding: 3px;
-    margin: 1px;
-    color: white;
-}
-
 .axis {
     shape-rendering: crispEdges;
 }
@@ -64,13 +51,19 @@ chart {
 
     <h1>Flask UI for Basis Data</h1>
 
-    <div id="info">
+    <div id="info1">
         <div id="point-info">
-            Click on a point.
+            Click on a point on the scatter plot.
         </div>
     </div>
 
     <div id="plot">
+    </div>
+
+    <div id="info2">
+        <div id="bar-info">
+            Click on a bar.
+        </div>
     </div>
 
     <div id="plot2">
@@ -84,7 +77,7 @@ chart {
         var w = 700 - 2 * margin, 
         h = 500 - 2 * margin;
 
-        var svg = d3.select("#plot").append("svg")
+        var svg1 = d3.select("#plot").append("svg")
                         .attr("width", w + 2 * margin)
                         .attr("height", h + 2 * margin)
                     .append("svg:g")
@@ -97,15 +90,15 @@ chart {
 
         // Axes scaling functions.
         var xscale = d3.scale.linear().range([0, w]);
-        var yscale = d3.scale.linear().range([3.5*h, 2*h]);
+        var yscale = d3.scale.linear().range([h, 0]);
 
         // The axes objects themselves.
         var xaxis = d3.svg.axis().scale(xscale).ticks(8);
         var yaxis = d3.svg.axis().scale(yscale).ticks(8).orient("left");
 
-        svg.append("svg:g").attr("class", "x axis")
+        svg1.append("svg:g").attr("class", "x axis")
                            .attr("transform", "translate(0, " + h + ")");
-        svg.append("svg:g").attr("class", "y axis");
+        svg1.append("svg:g").attr("class", "y axis");
 
         // Show the information about a particular point.
         var show_info = function (d) {
@@ -124,11 +117,11 @@ chart {
                            d3.max(data, function (d) { return d.y; }) + 0.05]);
 
             // Display the axes.
-            svg.select(".x.axis").call(xaxis);
-            svg.select(".y.axis").call(yaxis);
+            svg1.select(".x.axis").call(xaxis);
+            svg1.select(".y.axis").call(yaxis);
 
             // Insert the data points.
-            svg.selectAll("circle").data(data).enter()
+            svg1.selectAll("circle").data(data).enter()
                 .append("circle")
                     .attr("id", function (d) { return d._id; })
                     .attr("cx", function (d) { return xscale(d.x); })
@@ -149,32 +142,52 @@ chart {
         var yaxis = d3.svg.axis().scale(yscale).ticks(8).orient("left");
 
 
-        var svg= d3.select("#plot2").append("svg")
+        var svg2 = d3.select("#plot2").append("svg")
                         .attr("width", w + 2 * margin)
                         .attr("height", h + 2 * margin)
                     .append("svg:g")
                         .attr("transform", "translate(" + margin + ", " + margin + ")");
 
+        var show_bar = function (d) {
+            d3.select("#bar-info").text("data point :" + d._id + ". "
+                + "Value : (" 
+                    + parseFloat(d.y).toFixed(2) + ").");
+        };
+
+
         var drawBar = function(data) {
             var barPadding = 1;
+            var yscale = 50;
 
-            svg.selectAll("rect").data(data).enter()
+            svg2.selectAll("rect").data(data).enter()
                 .append("rect")
                     .attr("x", function(d,i) {
                         return i*(w/data.length);
                     })
                     // .attr("width", x.rangeBand())
                     .attr("y", function (d) {
-                        return h-20*Math.abs(d.y);
+                        return h/2-Math.abs(d.y)*yscale;
                     })
                     .attr("width", function (d) { 
                         return w/data.length - barPadding; 
                     })
                     .attr("height", function (d) { 
-                        return Math.abs(d.y)*20; 
+                        return Math.abs(d.y)*yscale; 
                     })
-                    .text(function (d) { return parseFloat(d.y*20).toFixed(2); })
-                    .on("mousedown", show_info);
+                    .attr("fill", function (d) {
+                        return "rgb(0, 0, " + Math.abs(d.y)*yscale + ")";
+                    })
+                    .text(function (d) { return parseFloat(d.y*yscale).toFixed(2); })
+                    .on("mousedown", show_bar);
+
+            // svg2.selectAll("text")
+            // .data(data)
+            // .enter()
+            // .text( function (d) { return d.y; });
+            // .attr("x", function (d,i) {
+            //     return i*(w/data.length);
+            // })
+            // .attr("y", function (d) { return h/2-(d.y*yscale)};);
         }
 
         d3.json("/data", drawCirc);
