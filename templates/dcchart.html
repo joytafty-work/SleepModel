@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>DC Chart for Jawbone UP Data</title>
+    <title>DC Chart for Basis Band Sleep Data</title>
     <meta charset="UTF-8">
     <!-- bootstrap -->
     <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
@@ -12,11 +12,11 @@
 
 <div class="row">
   <div class="col-md-4">
-    <h4>Sleep Quality by resting Heart Rate</h4>
+    <h4>Sleep Quality grouped by resting Heart Rate</h4>
     <div id="sleepchart"></div>
   </div>
   <div class="col-md-4">
-  <h4>Sleep Quality by resting Heart Rate</h4>
+  <h4>Sleep Quality grouped by resting Heart Rate</h4>
   <div id="sleeppie"></div>
   </div>
 </div>
@@ -30,7 +30,7 @@
 var sleepChart = dc.barChart("#sleepchart");
 var sleepPie = dc.pieChart("#sleeppie");
 
-d3.csv("../static/data/allBB.csv", function(error, data) {
+d3.csv("../static/data/morley.csv", function(error, data) {
 
   var dateFormat = d3.time.format("%m/%d/%Y");
   var numberFormat = d3.format(".2f");

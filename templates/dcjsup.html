@@ -11,45 +11,81 @@
 <body>
 
 <div class="row">
-  <div class="col-md-4">
-    <h4>Total Calories by mood</h4>
+  <div class="col-md-6">
+    <h4>Total Calories by Month</h4>
     <div id="calchart"></div>
   </div>
-  <div class="col-md-4">
-  <h4>Sleep Bubble</h4>
-  <div id="sleepbubble"></div>
+  <div class="col-md-6">
+    <h4>Total Sleep by day of month</h4>
+    <div id="sleepbar"></div>
   </div>
-  <div class="col-md-4">
+  </div>
+
+  <div class="row">
+  <div class="col-md-6">
+  <h4>Nutrient Bubble</h4>
+  <div id="nutbubble"></div>
+  </div>
+  <div class="col-md-6">
   <h4>Sleep Quality by resting Heart Rate</h4>
   <div id="sleeppie"></div>
-  </div>
+  </div>  
 </div>
 
 <script type="text/javascript" src="{{ url_for('static',filename='js/d3.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/crossfilter.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/dc.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/colorbrewer.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/moment.js')}}"></script>
 
 <script type="text/javascript">
 
 var calChart = dc.barChart("#calchart");
-var sleepBubble = dc.bubbleChart("#sleepbubble");
+var nutBubble = dc.bubbleChart("#nutbubble");
+var sleepBar = dc.barChart("#sleepbar");
 var sleepPie = dc.pieChart("#sleeppie");
 
 d3.csv("../static/data/AllUPs.csv", function(error, data) {
 
-  // var dateFormat = d3.time.format("%m/%d/%Y");
-  // var numberFormat = d3.format(".2f");
+  var dateFormat = d3.time.format("%m/%d/%Y");
+  var numberFormat = d3.format(".2f");
   
-  // data.forEach(function (d) {
-  //   d.dd = dateFormat.parse(d.DATE); 
-  //   d.month = d3.time.month(d.dd);
-  //   // d.sleepQuality = +d.sleepQuality;
-  //   // d.restingHR = +d.restingHR;
-  // })
+  // Parse date
+  data.forEach(function (d) {
+    d.yr = parseInt((d.DATE).substring(0,4));
+    d.month = parseInt((d.DATE).substring(4,6));
+    d.date = parseInt((d.DATE).substring(6,8));
+    dstr = [d.yr + '/' + d.month + '/' + d.date];
+  })
 
-  var ups = crossfilter(data),
-      upDimension = ups.dimension(function(d) {return +d.o_count; }),
-      upSumGroup = upDimension.group().reduceSum(function(d) {return +d.e_sugar;});
+  var ups = crossfilter(data);
+  var monthlyDimension = ups.dimension(function(d) {return +d.month; });
+  // var weekdayDimension = ups.dimension(fuction (d) {return +d.weekday});
+
+  var  upCalMonth = monthlyDimension.group().reduceSum(function(d) {return +d.e_calories;});
+
+  var upSugarMonth = monthlyDimension.group().reduceSum(function(d) {return +d.e_sugars;});
+
+  var upSleepDay = monthlyDimension.group().reduceSum(function(d) {return d.s_asleep_time;});
+
+  var monthlyValueGroup = monthlyDimension.group().reduce(
+    function (p, v) {
+      ++p.count; 
+      p.carbs = v.e_carbs;
+      p.sumcarbs += p.carbs;
+      p.avgcarbs = p.sumcarbs / p.count; 
+
+      p.protein = v.e_protein;
+      p.sugar = v.e_sugars;
+      p.calories = v.e_calories;
+      p.calcium = v.e_calcium;
+      return p;
+    }, 
+    /* initialize p */
+    function () {
+    return {count: 0, carbs: 0, sumcarbs: 0, avgcarbs: 0, 
+      protein: 0, sugar: 0, calories: 0, calcium: 0};
+    });
 
   calChart
     .width(400)
@@ -58,15 +94,50 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
     .x(d3.scale.linear().domain([0, 8]))
     .brushOn(false)
     // .yAxisLabel("This is the Y Axis!")
-    .dimension(upDimension)
-    .group(upSumGroup)
+    .dimension(monthlyDimension, "Monthly Value Group")
+    .group(upCalMonth)
     .elasticY(true)
     .centerBar(true)
     .gap(1);
 
-
   calChart.render();
-  console.log(calChart);
+
+  sleepBar
+    .width(400)
+    .height(280)
+    .margins({top: 10, right: 50, bottom: 30, left: 40})
+    .x(d3.scale.linear().domain([0, 12]))
+    .brushOn(false)
+    // .yAxisLabel("This is the Y Axis!")
+    .dimension(monthlyDimension, "Monthly Value Group")
+    .group(upSleepDay)
+    .elasticY(true)
+    .centerBar(true)
+    .gap(1);
+
+sleepBar.render();  
+
+  nutBubble
+    .width(400)
+    .height(280)
+    .transitionDuration(1500)
+    .margins({top: 10, right: 10, bottom: 30, left: 50})
+    .dimension(monthlyDimension)
+    .group(upSugarMonth, "Monthly Value Group")
+    .colors(colorbrewer.RdYlGn[9]) // color function or array for bubbles
+    .colorDomain([0, 500])
+    // .colorAccessor(function (p) {return p.value.calcium;})
+    // .keyAccessor(function (p) {return p.value.carbs;})
+    // .valueAccessor(function (p) {return p.value.protein;})
+    // .radiusValueAccessor(function (p) {return p.value.calories;})
+    // .maxBubbleRelativeSize(0.3)
+    .x(d3.scale.linear().domain([0, 2500]))
+    .y(d3.scale.linear().domain([0, 1000]))
+    .r(d3.scale.linear().domain([0, 4000]))
+    // .elasticY(true)
+    .elasticX(true); 
+
+  nutBubble.render();
 });
 
 d3.csv("../static/data/allBBnoNaN.csv", function(error, data) {
@@ -76,8 +147,6 @@ d3.csv("../static/data/allBBnoNaN.csv", function(error, data) {
   data.forEach(function (d) {
     d.dd = dateFormat.parse(d.date); 
     d.month = d3.time.month(d.dd);
-    // d.sleepQuality = +d.sleepQuality;
-    // d.restingHR = +d.restingHR;
   })
 
   var slp           = crossfilter(data),
