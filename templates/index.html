@@ -81,7 +81,9 @@ chart {
 
         // Set up the plot window.
         var margin = 80;
-        var w = 700 - 2 * margin, h = 500 - 2 * margin;
+        var w = 700 - 2 * margin, 
+        h = 500 - 2 * margin;
+
         var svg = d3.select("#plot").append("svg")
                         .attr("width", w + 2 * margin)
                         .attr("height", h + 2 * margin)
@@ -95,7 +97,7 @@ chart {
 
         // Axes scaling functions.
         var xscale = d3.scale.linear().range([0, w]);
-        var yscale = d3.scale.linear().range([h, 0]);
+        var yscale = d3.scale.linear().range([3.5*h, 2*h]);
 
         // The axes objects themselves.
         var xaxis = d3.svg.axis().scale(xscale).ticks(8);
@@ -138,24 +140,40 @@ chart {
 
 
         // Windor for Bar plots
-        var svg2= d3.select("#plot2").append("svg2")
+        // Axes scaling functions.
+        var xscale = d3.scale.linear().range([0, w]);
+        var yscale = d3.scale.linear().range([h, 0]);
+
+        // The axes objects themselves.
+        var xaxis = d3.svg.axis().scale(xscale).ticks(8);
+        var yaxis = d3.svg.axis().scale(yscale).ticks(8).orient("left");
+
+
+        var svg= d3.select("#plot2").append("svg")
                         .attr("width", w + 2 * margin)
                         .attr("height", h + 2 * margin)
-                    .append("svg2:g")
+                    .append("svg:g")
                         .attr("transform", "translate(" + margin + ", " + margin + ")");
 
         var drawBar = function(data) {
-            svg2.select(".x.axis").call(xaxis);
-            svg2.select(".y.axis").call(yaxis);
-            //
-            svg2.selectAll(".bar").data(data).enter()
-                .append("chart")
-                    .attr("class", ".bar")
-                    .attr("x", function (d) {return d.x; })
+            var barPadding = 1;
+
+            svg.selectAll("rect").data(data).enter()
+                .append("rect")
+                    .attr("x", function(d,i) {
+                        return i*(w/data.length);
+                    })
                     // .attr("width", x.rangeBand())
-                    .attr("y", function (d) {return d.y*2;})
-                    .attr("height", function (d) { return d.y; })
-                    .text(function (d) { return parseFloat(d.y*10).toFixed(2); })
+                    .attr("y", function (d) {
+                        return h-20*Math.abs(d.y);
+                    })
+                    .attr("width", function (d) { 
+                        return w/data.length - barPadding; 
+                    })
+                    .attr("height", function (d) { 
+                        return Math.abs(d.y)*20; 
+                    })
+                    .text(function (d) { return parseFloat(d.y*20).toFixed(2); })
                     .on("mousedown", show_info);
         }
 
