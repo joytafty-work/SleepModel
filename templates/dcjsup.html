@@ -34,7 +34,7 @@
 
 <script type="text/javascript" src="{{ url_for('static',filename='js/d3.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/crossfilter.js')}}"></script>
-<script type="text/javascript" src="{{ url_for('static',filename='js/dc.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/dc-1.6.0.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/colorbrewer.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/moment.js')}}"></script>
 
@@ -62,13 +62,13 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
   var monthlyDimension = ups.dimension(function (d) {return +d.month; });
   var weekdayDimension = ups.dimension(function (d) {return +d.wkday+1; });
 
-  var  upCalMonth = monthlyDimension.group().reduceSum(function(d) {return +d.e_calories;});
+  var upCalMonth = monthlyDimension.group().reduceSum(function(d) {return +d.e_calories;});
 
   var upSugarMonth = monthlyDimension.group().reduceSum(function(d) {return +d.e_sugars;});
 
   var upSleepDay = weekdayDimension.group().reduceSum(function(d) {return d.s_asleep_time;});
 
-  var monthlyValueGroup = monthlyDimension.group().reduce(
+  var monthlyValueGroup = monthlyDimension.group().reduceCount(
     function (p, v) {
       ++p.count; 
       p.carbs = v.e_carbs;
@@ -91,9 +91,10 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
     .width(400)
     .height(280)
     .margins({top: 10, right: 50, bottom: 30, left: 40})
-    .x(d3.scale.linear().domain([0, 8]))
+    .x(d3.scale.linear().domain([0, 12]))
     .brushOn(false)
-    // .yAxisLabel("This is the Y Axis!")
+    .xAxisLabel("Month of")
+    .yAxisLabel("Total Calories Recorded")
     .dimension(monthlyDimension, "Monthly Value Group")
     .group(upCalMonth)
     .elasticY(true)
@@ -108,14 +109,15 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
     .margins({top: 10, right: 50, bottom: 30, left: 40})
     .x(d3.scale.linear().domain([0.5, 7.5]))
     .brushOn(false)
-    // .yAxisLabel("This is the Y Axis!")
+    .xAxisLabel("Day of Week")
+    .yAxisLabel("Total sleep minutes")
     .dimension(weekdayDimension, "Monthly Value Group")
     .group(upSleepDay)
     .elasticY(true)
     .centerBar(true)
     .gap(1);
 
-sleepBar.render();  
+  sleepBar.render();  
 
   nutBubble
     .width(400)
@@ -123,17 +125,19 @@ sleepBar.render();
     .transitionDuration(1500)
     .margins({top: 10, right: 10, bottom: 30, left: 50})
     .dimension(monthlyDimension)
-    .group(upSugarMonth, "Monthly Value Group")
+    .group(monthlyValueGroup)
     .colors(colorbrewer.RdYlGn[9]) // color function or array for bubbles
     .colorDomain([0, 500])
-    // .colorAccessor(function (p) {return p.value.calcium;})
-    // .keyAccessor(function (p) {return p.value.carbs;})
-    // .valueAccessor(function (p) {return p.value.protein;})
-    // .radiusValueAccessor(function (p) {return p.value.calories;})
-    // .maxBubbleRelativeSize(0.3)
-    .x(d3.scale.linear().domain([0, 2500]))
-    .y(d3.scale.linear().domain([0, 1000]))
-    .r(d3.scale.linear().domain([0, 4000]))
+    .colorAccessor(function (p) {
+      console.log(p);
+      return Math.random()*20*p.value;})
+    .keyAccessor(function (p) {return Math.random()*p.key;})
+    .valueAccessor(function (p) {return 10*Math.random()*p.value;})
+    .radiusValueAccessor(function (p) {return p.value;})
+    .maxBubbleRelativeSize(0.5)
+    .x(d3.scale.linear().domain([-500, 500]))
+    .y(d3.scale.linear().domain([0, 250]))
+    .r(d3.scale.linear().domain([0, 5000]))
     // .elasticY(true)
     .elasticX(true); 
 
