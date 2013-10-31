@@ -136,7 +136,6 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
     .dimension(monthlyDimension, "Monthly Value Group")
     .group(upCalMonth)
     .renderHorizontalGridLines(true)
-    .renderVerticalGridLines(true)
     .elasticY(true)
     .centerBar(true)
     .gap(1);
@@ -154,7 +153,6 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
     .dimension(weekdayDimension, "Monthly Value Group")
     .group(upSleepDay)
     .renderHorizontalGridLines(true)
-    .renderVerticalGridLines(true)
     .elasticY(true)
     .centerBar(true)
     .gap(1);
