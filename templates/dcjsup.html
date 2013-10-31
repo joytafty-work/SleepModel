@@ -132,13 +132,15 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
       console.log(p);
       return Math.random()*20*p.value;})
     .keyAccessor(function (p) {return Math.random()*p.key;})
-    .valueAccessor(function (p) {return 10*Math.random()*p.value;})
+    .valueAccessor(function (p) {return 5*Math.random()*p.value;})
     .radiusValueAccessor(function (p) {return p.value;})
     .maxBubbleRelativeSize(0.5)
     .x(d3.scale.linear().domain([-500, 500]))
     .y(d3.scale.linear().domain([0, 250]))
     .r(d3.scale.linear().domain([0, 5000]))
-    // .elasticY(true)
+    .xAxisLabel("Keys")
+    .yAxisLabel("Values")
+    .elasticY(true)
     .elasticX(true); 
 
   nutBubble.render();
