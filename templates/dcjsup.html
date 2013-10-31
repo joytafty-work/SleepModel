@@ -135,6 +135,8 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
     .yAxisLabel("Total Calories Recorded")
     .dimension(monthlyDimension, "Monthly Value Group")
     .group(upCalMonth)
+    .renderHorizontalGridLines(true)
+    .renderVerticalGridLines(true)
     .elasticY(true)
     .centerBar(true)
     .gap(1);
@@ -151,6 +153,8 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
     .yAxisLabel("Total sleep minutes")
     .dimension(weekdayDimension, "Monthly Value Group")
     .group(upSleepDay)
+    .renderHorizontalGridLines(true)
+    .renderVerticalGridLines(true)
     .elasticY(true)
     .centerBar(true)
     .gap(1);
@@ -176,6 +180,8 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
     .x(d3.scale.linear().domain([0, 10]))
     .y(d3.scale.linear().domain([0, 2000]))
     .r(d3.scale.linear().domain([0, 1000]))
+    .renderHorizontalGridLines(true)
+    .renderVerticalGridLines(true)
     .xAxisLabel("Month")
     .yAxisLabel("Sleep Interval")
     // .elasticY(true)
