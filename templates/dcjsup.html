@@ -16,7 +16,7 @@
     <div id="calchart"></div>
   </div>
   <div class="col-md-6">
-    <h4>Total Sleep by day of month</h4>
+    <h4>Total Sleep by day of week</h4>
     <div id="sleepbar"></div>
   </div>
   </div>
@@ -52,21 +52,21 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
   
   // Parse date
   data.forEach(function (d) {
-    d.yr = parseInt((d.DATE).substring(0,4));
     d.month = parseInt((d.DATE).substring(4,6));
-    d.date = parseInt((d.DATE).substring(6,8));
-    dstr = [d.yr + '/' + d.month + '/' + d.date];
+    d.wkday = moment(d.DATE, 'YYYYMMDD').weekday();
+    // d.wkday = moment(d.DATE, 'YYYYMMDD').format("ddd");
+    // console.log(d.wkday);
   })
 
   var ups = crossfilter(data);
-  var monthlyDimension = ups.dimension(function(d) {return +d.month; });
-  // var weekdayDimension = ups.dimension(fuction (d) {return +d.weekday});
+  var monthlyDimension = ups.dimension(function (d) {return +d.month; });
+  var weekdayDimension = ups.dimension(function (d) {return +d.wkday+1; });
 
   var  upCalMonth = monthlyDimension.group().reduceSum(function(d) {return +d.e_calories;});
 
   var upSugarMonth = monthlyDimension.group().reduceSum(function(d) {return +d.e_sugars;});
 
-  var upSleepDay = monthlyDimension.group().reduceSum(function(d) {return d.s_asleep_time;});
+  var upSleepDay = weekdayDimension.group().reduceSum(function(d) {return d.s_asleep_time;});
 
   var monthlyValueGroup = monthlyDimension.group().reduce(
     function (p, v) {
@@ -106,10 +106,10 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
     .width(400)
     .height(280)
     .margins({top: 10, right: 50, bottom: 30, left: 40})
-    .x(d3.scale.linear().domain([0, 12]))
+    .x(d3.scale.linear().domain([0.5, 7.5]))
     .brushOn(false)
     // .yAxisLabel("This is the Y Axis!")
-    .dimension(monthlyDimension, "Monthly Value Group")
+    .dimension(weekdayDimension, "Monthly Value Group")
     .group(upSleepDay)
     .elasticY(true)
     .centerBar(true)
