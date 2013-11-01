@@ -60,11 +60,11 @@ def data(ndata=100):
 if __name__ == "__main__":
     import os
 
-    port = 8000
-
+    # port = 8000
+    port = int(os.environ.get("PORT", 5000))
     # Open a web browser pointing at the app.
-    os.system("open http://localhost:{0}".format(port))
+    # os.system("open http://localhost:{0}".format(port))
 
     # Set up the development server on port 8000.
     app.debug = True
-    app.run(port=port)
+    app.run(host='0.0.0.0', port=port)
