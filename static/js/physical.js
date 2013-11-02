@@ -1,13 +1,9 @@
 var physbarChart = dc.barChart("#phys-bar-chart", "physbarchart");
 var physweekBar = dc.barChart("#phys-week-bar", "physbarchart");
+var physpieChart = dc.pieChart("#phys-month-pie", "physbarchart");
 // var phystodBar = dc.barChart("#phys-tod-bar", "physbarchart");
 
 var g;
-
-// var calChart = dc.barChart("#calchart");
-// var slBubble = dc.bubbleChart("#slbubble");
-// var sleepBar = dc.barChart("#sleepbar");
-// var sleepPie = dc.pieChart("#sleeppie");
 
 // set dc.js version in title
 d3.selectAll("#version").text(dc.version);
@@ -27,10 +23,19 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
 
   var ups = crossfilter(data);
   var monthlyDimension = ups.dimension(function (d) {return +d.month; });
-  var weekdayDimension = ups.dimension(function (d) {return +d.wkday+1; });
+  var weekdayDimension = ups.dimension(function (d) {
+  	var name=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  	return +d.wkday+1; 
+  });
 
   var upCalMonth = monthlyDimension.group().reduceSum(function(d) {return +d.e_calories;});
-  var upStepWeekday = weekdayDimension.group().reduceSum(function (d) {return +d.m_steps;});
+  var upStepWeekday = weekdayDimension.group().reduceSum(function (d) {
+  	return +d.m_steps;
+  });
+  var upWorkoutMonth = monthlyDimension.group().reduceSum(function (d) {
+  	var nmins_month = 30*24;
+  	return (+d.m_workout_time)/nmins_month;
+  })
 
   var upSugarMonth = monthlyDimension.group().reduceSum(function(d) {return +d.e_sugars;});
 
@@ -99,6 +104,13 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
 //     .offset([-10, 0])
 //     .html(function (d) { return "<span style='color: #f0027f'>" +  d.key + "</span> : "  + numberFormat(d.value); });
 
+// tooltips for pie chart
+var pieTip = d3.tip()
+	.attr('class', 'd3-tip')
+	.offset([-10, 0])
+	.html(function (d) { return "<span style='color: #f0027f'>" +  d.data.key + "</span> : "  + numberFormat(d.value); });
+
+
 var barTip = d3.tip()
 	.attr('class', 'd3-tip')
 	.offset([-10, 0])
@@ -107,7 +119,7 @@ var barTip = d3.tip()
 	});
 
 	// set colors to red <--> purple
-    var expenseColors = ["#fde0dd","#fa9fb5","#e7e1ef","#d4b9da","#c994c7","#fcc5c0","#df65b0","#e7298a","#ce1256", "#f768a1","#dd3497","#e78ac3","#f1b6da","#c51b7d"];
+    var physColors = ["#fde0dd","#fa9fb5","#e7e1ef","#d4b9da","#c994c7","#fcc5c0","#df65b0","#e7298a","#ce1256", "#f768a1","#dd3497","#e78ac3","#f1b6da","#c51b7d"];
 
 // 1 Chart : physbarChart
 physbarChart
@@ -121,32 +133,48 @@ physbarChart
     .dimension(monthlyDimension, "Monthly Value Group")
     .group(upCalMonth)
     .renderHorizontalGridLines(true)
+    .elasticX(true)
     .elasticY(true)
     .centerBar(true)
-    .gap(1);
+    .gap(5);
 
 // 2 Chart : physweekBar
 physweekBar
 	.width(400)
 	.height(280)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
-    .x(d3.scale.linear().domain([0, 12]))
+    .x(d3.scale.linear().domain([0.5, 7.5]))
     .brushOn(false)
-    .xAxisLabel("Months")
-    .yAxisLabel("Total Calories Recorded")
+    .xAxisLabel("Day of Week")
+    .yAxisLabel("Total Number of Steps")
     .dimension(weekdayDimension, "Monthly Value Group")
     .group(upStepWeekday)
     .renderHorizontalGridLines(true)
     .elasticY(true)
     .centerBar(true)
-    .gap(1);
+    .colors(physColors)
+    .gap(9);
+
+// 3. Chart : physpieChart
+physpieChart
+	.width(300)
+	.height(300)
+	.radius(100)
+    // .margins({top: 10, right: 50, bottom: 30, left: 50})
+    .dimension(monthlyDimension)
+    .group(upWorkoutMonth)
+    .innerRadius(45)
+    .transitionDuration(200)
+    .colors(physColors);
+
 
 dc.renderAll("physbarchart");
-// dc.renderAll();
-// d3.selectAll("g.row").call(tip);
-// d3.selectAll("g.row")
-// 	.on('mouseover', tip.show)
-// 	.on('mouseout', tip.hide);
+
+d3.selectAll(".pie-slice").call(pieTip);
+d3.selectAll(".pie-slice")
+	.on('mouseover', pieTip.show)
+	.on('mouseout', pieTip.hide);
+
 d3.selectAll(".bar").call(barTip);
 d3.selectAll(".bar")
 	.on('mouseover', barTip.show)

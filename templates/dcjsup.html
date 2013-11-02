@@ -6,6 +6,7 @@
     <!-- bootstrap -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap3.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap-modal.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/dc.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/dc2.css') }}"/>
 </head>
@@ -84,7 +85,7 @@
 
 <script type="text/javascript" src="{{ url_for('static',filename='js/d3.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/d3.tip2.js')}}"></script>
-<!-- <script type="text/javascript" src="{{ url_for('static',filename='js/d3.tip.min.js')}}"></script> -->
+<script type="text/javascript" src="{{ url_for('static',filename='js/bootstrap-modal.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/crossfilter.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/dc-1.6.0.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/colorbrewer.js')}}"></script>
@@ -100,9 +101,10 @@
         <button type="button" class="btn btn-default active" id="btnPhysical">Physical Activity</button>
         <button type="button" class="btn btn-default" id="btnSleep">Sleep</button>
         <button type="button" class="btn btn-default" id="btnNutrition">Nutrition</button>
+        <button type="button" class="btn btn-default" id="btnNutrition">Exploration</button>
       </span> 
       <span class="btn-group"> 
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">About <span class="caret"></span></button>
+        <button type="button" data-loading-text="Loading..." class="btn btn-default dropdown-toggle" data-toggle="dropdown">About <span class="caret"></span></button>
         <ul class="dropdown-menu" role="menu">
           <li><a target="_blank" href="https://github.com/joytafty" title="github">by Joy Rimchala</a></li>
           <li class="divider"></li>
@@ -170,14 +172,15 @@
     </div>
 
     <!-- Physical Activity by month (Pie) -->
-    <div id="phys-step-month" class="dc-chart">
+    <div id="phys-month-pie" class="dc-chart">
       <span class="chart-title">
-        &nbsp;&nbsp;Physical Activity by Month 
+        &nbsp;&nbsp;Average exercise time per Day (mins)
         <br>
         &nbsp;(DC Donut Chart) 
       </span>
+      <a class="reset" href="javascript:physpieChart.filterAll('physbarchart');dc.redrawAll('physbarchart');" style="display: none;">reset</a>
+      <div class="clearfix"></div>      
     </div>
-
   </div>
 </div>
 
