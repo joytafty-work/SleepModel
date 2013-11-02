@@ -108,9 +108,6 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
     }
   );
 
-var dayOfWeekGroup = dayOfWeekDimension.group();
-var MonthNameGroup = monthNameDimension.group();
-
 // Dimension for movement distance
 var moveDays = ups.dimension(function (d) {
   doy = moment(d.DATE, 'YYYYMMDD');
