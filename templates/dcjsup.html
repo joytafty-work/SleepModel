@@ -83,6 +83,8 @@
 
 </style>
 
+<!-- YUI seed file -->
+<script src="http://yui.yahooapis.com/3.13.0/build/yui/yui-min.js"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/d3.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/d3.tip2.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/bootstrap-modal.js')}}"></script>
@@ -101,7 +103,7 @@
         <button type="button" class="btn btn-default active" id="btnPhysical">Physical Activity</button>
         <button type="button" class="btn btn-default" id="btnSleep">Sleep</button>
         <button type="button" class="btn btn-default" id="btnNutrition">Nutrition</button>
-        <button type="button" class="btn btn-default" id="btnNutrition">Exploration</button>
+        <button type="button" class="btn btn-default" id="btnExplore">Exploration</button>
       </span> 
       <span class="btn-group"> 
         <button type="button" data-loading-text="Loading..." class="btn btn-default dropdown-toggle" data-toggle="dropdown">About <span class="caret"></span></button>
@@ -191,7 +193,27 @@
 </div>
 
 <!-- Sleep -->
-<div class="container" id="nutrient-container" style="display: none;">
+<div class="container" id="sleep-container" style="display: none;">
+  <!-- Row 1 -->
+  <div clas="row">
+  <p>Nothing about sleep yet!</p>
+  </div>
+</div>
+
+<!-- Nutrition -->
+<div class="container" id="nutrition-container" style="display: none;">
+  <!-- Row 1 -->
+  <div clas="row">
+  <p>Nothing about nutrition yet!</p>  
+  </div>
+</div>
+
+<!-- Nutrition -->
+<div class="container" id="explore-container" style="display: none;">
+  <!-- Row 1 -->
+  <div clas="row">
+  <p>Nothing to explore yet!</p>  
+  </div>
 </div>
 
 <div class="container" id="pre-container">
@@ -330,5 +352,6 @@ var moveDaysGroup = moveDays.group().reduce(
 });
 </script>
 <script type="text/javascript" src="../static/js/physical.js"></script>
+<script type="text/javascript" src="../static/js/ups_all.js"></script>
 </body>
 </html>
