@@ -27,43 +27,43 @@
 
 <script type="text/javascript">
 
-var sleepChart = dc.barChart("#sleepchart");
-var sleepPie = dc.pieChart("#sleeppie");
+// var sleepChart = dc.barChart("#sleepchart");
+// var sleepPie = dc.pieChart("#sleeppie");
 
-d3.csv("../static/data/morley.csv", function(error, data) {
+// d3.csv("../static/data/morley.csv", function(error, data) {
 
-  var dateFormat = d3.time.format("%m/%d/%Y");
-  var numberFormat = d3.format(".2f");
+//   var dateFormat = d3.time.format("%m/%d/%Y");
+//   var numberFormat = d3.format(".2f");
   
-  data.forEach(function (d) {
-    d.dd = dateFormat.parse(d.date); 
-    d.month = d3.time.month(d.dd);
-    // d.sleepQuality = +d.sleepQuality;
-    // d.restingHR = +d.restingHR;
-  })
+//   data.forEach(function (d) {
+//     d.dd = dateFormat.parse(d.date); 
+//     d.month = d3.time.month(d.dd);
+//     // d.sleepQuality = +d.sleepQuality;
+//     // d.restingHR = +d.restingHR;
+//   })
 
-  var slp                 = crossfilter(data),
-      slDimension         = slp.dimension(function(d) {
-                                return +d.sleepIntervalIndex;}),
-      slSumGroup       = slDimension.group().reduceSum(function(d) {return d.sleepQuality/100;});
+//   var slp                 = crossfilter(data),
+//       slDimension         = slp.dimension(function(d) {
+//                                 return +d.sleepIntervalIndex;}),
+//       slSumGroup       = slDimension.group().reduceSum(function(d) {return d.sleepQuality/100;});
 
-  sleepChart
-    .width(400)
-    .height(280)
-    .margins({top: 10, right: 50, bottom: 30, left: 40})
-    .x(d3.scale.linear().domain([0, 5]))
-    .brushOn(false)
-    // .yAxisLabel("This is the Y Axis!")
-    .dimension(slDimension)
-    .group(slSumGroup)
-    .elasticY(true)
-    .centerBar(true)
-    .gap(1);
+//   sleepChart
+//     .width(400)
+//     .height(280)
+//     .margins({top: 10, right: 50, bottom: 30, left: 40})
+//     .x(d3.scale.linear().domain([0, 5]))
+//     .brushOn(false)
+//     // .yAxisLabel("This is the Y Axis!")
+//     .dimension(slDimension)
+//     .group(slSumGroup)
+//     .elasticY(true)
+//     .centerBar(true)
+//     .gap(1);
 
 
-  sleepChart.render();
-  console.log(sleepChart);
-});
+//   sleepChart.render();
+//   console.log(sleepChart);
+// });
 
 d3.csv("../static/data/allBBnoNaN.csv", function(error, data) {
   var dateFormat = d3.time.format("%m/%d/%Y");

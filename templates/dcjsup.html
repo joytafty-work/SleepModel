@@ -4,39 +4,211 @@
     <title>DC Chart for Jawbone UP Data</title>
     <meta charset="UTF-8">
     <!-- bootstrap -->
-    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap3.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/dc.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/dc2.css') }}"/>
 </head>
 <body>
+<style>
+    #monthly-volume-chart g.y {
+        display: none;
+    }
 
-<div class="row">
-  <div class="col-md-6">
-    <h4>Total Calories by Month</h4>
-    <div id="calchart"></div>
-  </div>
-  <div class="col-md-6">
-    <h4>Total Sleep by day of week</h4>
-    <div id="sleepbar"></div>
-  </div>
-  </div>
+    /* testing out d3 tooltip */
+    .d3-tip {
+      line-height: 1;
+      font-weight: bold;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      border-radius: 8px;
+    }
 
-  <div class="row">
-  <div class="col-md-6">
-  <h4>Sleep Interval Bubble</h4>
-  <div id="slbubble"></div>
-  </div>
-  <div class="col-md-6">
-  <h4>Sleep Quality by resting Heart Rate</h4>
-  <div id="sleeppie"></div>
-  </div>  
-</div>
+    /* Creates a small triangle extender for the tooltip */
+    .d3-tip:after {
+      box-sizing: border-box;
+      display: inline;
+      font-size: 10px;
+      width: 100%;
+      line-height: 1;
+      color: rgba(0, 0, 0, 0.8);
+      content: "\25BC";
+      position: absolute;
+      text-align: center;
+    }
+
+    /* Style northward tooltips differently */
+    .d3-tip.n:after {
+      margin: -1px 0 0 0;
+      top: 100%;
+      left: 0;
+    }
+
+    .campusLabel {
+      font: 300 18px "Helvetica Neue";
+      color: #525252;
+    }
+
+    .chart-title {
+      font-family: 'Lato', futura, georgia;
+      letter-spacing: 1px;
+      line-height: 15px;
+      text-transform: Uppercase;
+      text-align: center;
+      color: #525252;
+    }
+
+
+    h3 {
+      font-family: 'Helvetica Neue';
+      font-size: 24px;
+      font-weight: 300;
+    }
+
+    body {
+      min-height: 2000px;
+      padding-top: 120px;
+    }
+
+    .myName {
+      font-family: 'Helvetica Neue';
+      font-size: 16px;
+      font-weight: 300;
+      text-align: right;
+      color: #525252;
+      padding-left: 160px;
+    }
+
+</style>
 
 <script type="text/javascript" src="{{ url_for('static',filename='js/d3.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/d3.tip2.js')}}"></script>
+<!-- <script type="text/javascript" src="{{ url_for('static',filename='js/d3.tip.min.js')}}"></script> -->
 <script type="text/javascript" src="{{ url_for('static',filename='js/crossfilter.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/dc-1.6.0.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/colorbrewer.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/moment.js')}}"></script>
+
+<!-- Fixed navbar -->
+<div class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header"><h3>Jawbone UP data visualization</h3>
+    </div>
+    <div class="nav navbar-nav">
+      <span class="btn-group" data-toggle="buttons-radio">
+        <button type="button" class="btn btn-default active" id="btnPhysical">Physical Activity</button>
+        <button type="button" class="btn btn-default" id="btnSleep">Sleep</button>
+        <button type="button" class="btn btn-default" id="btnNutrition">Nutrition</button>
+      </span> 
+      <span class="btn-group"> 
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">About <span class="caret"></span></button>
+        <ul class="dropdown-menu" role="menu">
+          <li><a target="_blank" href="https://github.com/joytafty" title="github">by Joy Rimchala</a></li>
+          <li class="divider"></li>
+          <li><a data-toggle="modal" href="#myModal">Source Data</a></li>
+        </ul>
+      </span>
+      <span class="myName"><a target="_blank" href="https://github.com/joytafty" title="@joytafty">@joytafty</a></span> 
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">About these graphs</h4>
+      </div>
+      <div class="modal-body">
+        <h4 class="modal-title">The data source</h4>
+        <p>The data source for these graphs is my jawbone UP data.</p>
+        <hr>
+        <h4 class="modal-title">The technology</h4>
+        <p>These interactive graphs were made using <a target="_blank" href="http://nickqizhu.github.io/dc.js/">dc.js</a>, which was built to work natively with <a target="_blank" href="http://square.github.com/crossfilter/">crossfilter</a> and leverages the super awesome <a target="_blank" href="http://d3js.org">d3.js</a></p>.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Physical Activity -->
+<div class="container" id="physical-container">
+  <div clas="row">
+    <!-- Physical Activity by Week -->
+    <div id="phys-bar-chart" class="dc-chart">
+      <span class="chart-title">
+        &nbsp;&nbsp;Calories consumption by Week 
+        <br>
+        &nbsp;(DC Bar Chart) 
+      </span>
+      <a class="reset" href="javascript:physbarChart.filterAll('physbarchart');dc.redrawAll('physbarchart');" style="display: none;">reset</a>
+      <div class="clearfix"></div>      
+    </div>
+
+    <!-- Physical Activity by Week -->
+    <div id="phys-week-bar" class="dc-chart">
+      <span class="chart-title">
+        &nbsp;&nbsp;Physical Activity by Week 
+        <br>
+        &nbsp;(DC Bar Chart) 
+      </span>
+      <a class="reset" href="javascript:physweekBar.filterAll('physbarchart');dc.redrawAll('physbarchart');" style="display: none;">reset</a>
+      <div class="clearfix"></div>      
+    </div>
+
+    <div id="phys-tod-bar" class="dc-chart">
+      <span class="chart-title">
+        &nbsp;&nbsp;Physical Activity by Time of Day 
+        <br>
+        &nbsp;(DC Bar Chart) 
+      </span>
+    </div>
+
+    <!-- Physical Activity by month (Pie) -->
+    <div id="phys-step-month" class="dc-chart">
+      <span class="chart-title">
+        &nbsp;&nbsp;Physical Activity by Month 
+        <br>
+        &nbsp;(DC Donut Chart) 
+      </span>
+    </div>
+
+  </div>
+</div>
+
+<!-- Sleep -->
+<div class="container" id="nutrient-container" style="display: none;">
+</div>
+
+
+<div class="container" id="pre-container">
+  <div class="row">
+    <div class="col-md-6">
+      <h4>Total Calories by Month</h4>
+      <div id="calchart"></div>
+    </div>
+    <div class="col-md-6">
+      <h4>Total Sleep by day of week</h4>
+      <div id="sleepbar"></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <h4>Sleep Interval Bubble</h4>
+      <div id="slbubble"></div>
+    </div>
+    <div class="col-md-6">
+      <h4>Sleep Quality by resting Heart Rate</h4>
+    <div id="sleeppie"></div>
+    </div>  
+  </div>
+</div>
 
 <script type="text/javascript">
 
@@ -228,8 +400,7 @@ d3.csv("../static/data/allBBnoNaN.csv", function(error, data) {
 
   sleepPie.render();
 });
-
 </script>
-
+<script type="text/javascript" src="../static/js/physical.js"></script>
 </body>
 </html>
