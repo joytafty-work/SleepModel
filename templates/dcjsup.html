@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>DC Chart for Jawbone UP Data</title>
+    <title> UP Dashboard</title>
     <meta charset="UTF-8">
     <!-- bootstrap -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.css') }}"/>
@@ -143,9 +143,9 @@
   <!-- Row 1 -->
   <div clas="row">
   <!-- Physical Activity by month (Pie) -->
-    <div id="phys-month-pie" class="dc-chart">
+    <div id="phys-month-pie" class="col-md-4">
       <span class="chart-title">
-        &nbsp;&nbsp;Average exercise time per Day (mins)
+        &nbsp;&nbsp;Exercise time per Day (mins)
         <br>
         &nbsp;(by Month of 2013) 
       </span>
@@ -154,13 +154,24 @@
     </div>
 
     <!-- Physical Activity by Week -->
-    <div id="phys-week-bar" class="dc-chart">
+    <div id="phys-week-bar" class="col-md-4">
       <span class="chart-title">
-        &nbsp;&nbsp;Average number of steps per day 
+        &nbsp;&nbsp;Average Steps per day 
         <br>
-        &nbsp;(by day of the weeks in 2013) 
+        &nbsp;(by day of the weeks) 
       </span>
       <a class="reset" href="javascript:physweekRow.filterAll('physchart');dc.redrawAll('physchart');" style="display: none;">refresh</a>
+      <div class="clearfix"></div>      
+    </div>
+      <!-- Row 3 -->
+    <!-- Physical Activity by Week -->
+    <div id="phys-bar-chart" class="col-md-4">
+      <span class="chart-title">
+        &nbsp;&nbsp;Calories burned per day 
+        <br>
+        &nbsp;(by Month of 2013) 
+      </span>
+      <a class="reset" href="javascript:physbarChart.filterAll('physchart');dc.redrawAll('physchart');" style="display: none;">refresh</a>
       <div class="clearfix"></div>      
     </div>
   </div> <!-- Close row 1 -->
@@ -168,40 +179,15 @@
   <!-- Row 2 -->
   <div clas="row">
     <!-- Physical Activity by Week -->
-    <div id="phys-bar-chart" class="dc-chart">
+    <div id="phys-move-chart" class="dc-chart">
       <span class="chart-title">
-        &nbsp;&nbsp;Some lines
-        <br>
-        &nbsp;(by time range)
+        &nbsp;&nbsp;Total distance Travel
       </span>
-      <a class="reset" href="javascript:physbarChart.filterAll('physchart');dc.redrawAll('physchart');" style="display: none;">refresh</a>
+      <a class="reset" href="javascript:physmoveChart.filterAll('physchart');dc.redrawAll('physchart');" style="display: none;">refresh</a>
       <div class="clearfix"></div>      
     </div>
   </div> 
   <!-- Close row 2 -->
-
-  <!-- Row 3 -->
-  <div clas="row">
-    <!-- Physical Activity by Week -->
-    <div id="phys-bar-chart" class="dc-chart">
-      <span class="chart-title">
-        &nbsp;&nbsp;Average calories burned per day 
-        <br>
-        &nbsp;(by Month of 2013) 
-      </span>
-      <a class="reset" href="javascript:physbarChart.filterAll('physchart');dc.redrawAll('physchart');" style="display: none;">refresh</a>
-      <div class="clearfix"></div>      
-    </div>
-  </div> <!-- Close row 3 -->
-
-<!--     <div id="phys-tod-bar" class="dc-chart">
-      <span class="chart-title">
-        &nbsp;&nbsp;Physical Activity by Time of Day 
-        <br>
-        &nbsp;(DC Bar Chart) 
-      </span>
-    </div>
- -->
 </div>
 
 <!-- Sleep -->
@@ -214,15 +200,18 @@
     <div class="col-md-6">
       <h4>Sleep Interval Bubble</h4>
       <div id="slbubble"></div>
+      <div class="col-md-6">
+        <h4>Physical Move Line Chart</h4>
+      <div id="phys-move-chart"></div>
     </div>
   </div>
 </div>
 
 <script type="text/javascript">
 var slBubble = dc.bubbleChart("#slbubble");
+var physmoveChart = dc.lineChart("#phys-move-chart");
 
 d3.csv("../static/data/AllUPs.csv", function(error, data) {
-
   var dateFormat = d3.time.format("%m/%d/%Y");
   var numberFormat = d3.format(".2f");
   
@@ -232,12 +221,11 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
     d.wkday = moment(d.DATE, 'YYYYMMDD').weekday();
   })
 
+  // Load data
   var ups = crossfilter(data);
-  var monthlyDimension = ups.dimension(function (d) {return +d.month; });
+  // Dimension for Bubble plot
   var weekdayDimension = ups.dimension(function (d) {return +d.wkday+1; });
-  var upCalMonth = monthlyDimension.group().reduceSum(function(d) {return +d.e_calories;});
-  var upSugarMonth = monthlyDimension.group().reduceSum(function(d) {return +d.e_sugars;});
-  var upSleepDay = weekdayDimension.group().reduceSum(function(d) {return d.s_asleep_time;});
+  // Group for Bubble plot
   var weekdayValueGroup = weekdayDimension.group().reduce(
     // add
     function (p, v) {
@@ -270,52 +258,29 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
     }
     )
 
-  var monthlyValueGroup = monthlyDimension.group().reduce(
-    // add
-    function (p, v) {
-      ++p.count; 
-      p.carbs += v.e_carbs;
-      p.carbs_avg = p.carbs / p.count;
-      p.protein += v.e_protein;
-      p.protein_avg = p.protein / p.count;
-      return p;
-    }, 
-    // remove
-    function (p, v) {
-      --p.count; 
-      p.carbs -= v.e_carbs;
-      p.carbs_avg = p.carbs / p.count;
-      p.protein -= v.e_protein;
-      p.protein_avg = p.protein / p.count;
-      return p;
-    },
-    /* initialize p */
-    function () {
-      return {count: 0, carbs: 0, carbs_avg: 0, protein: 0, protein_avg: 0};
-    }
-  );
-
+// Dimension for movement distance
 var moveDays = ups.dimension(function (d) {
-  days = moment(d.DATE, 'YYYYMMDD').dayOfYear();
-  return days;
+  doy = moment(d.DATE, 'YYYYMMDD');
+  return doy;
 });
 
+// Group for movement distance
 var moveDaysGroup = moveDays.group().reduce(
   function (p, v) {
-    ++p.count;
-    p.total += v.m_distance; 
-    p.mvavg = Math.round(p.total / p.count);
+    ++p.days;
+    p.total += v.m_distance/1000; 
+    p.mvavg = Math.round(p.total / p.days);
+    return p;
   },
   function (p, v) {
-    --p.count;
+    --p.days;
     p.total -= v.m_distance; 
-    p.mvavg = Math.round(p.total / p.count);
+    p.mvavg = Math.round(p.total / p.days);
+    return p;
   },
   function () {
-    return {count:0, total:0, mvavg:0};
+    return {days:0, total:0, mvavg:0};
   });
-
-console.log(moveDaysGroup);
 
   slBubble
     .width(400)
@@ -327,7 +292,6 @@ console.log(moveDaysGroup);
     .colors(colorbrewer.RdYlGn[9]) // color function or array for bubbles
     .colorDomain([0, 500])
     .colorAccessor(function (p) {
-      // console.log(p.value);
       return Math.random()*parseInt(p.value.awakeInt);})
     .keyAccessor(function (p) {return 0.01*Math.random()+parseInt(p.key);})
     .valueAccessor(function (p) {return parseInt(p.value.slint);})
@@ -344,6 +308,29 @@ console.log(moveDaysGroup);
     .elasticX(true); 
 
   slBubble.render();
+
+  physmoveChart
+    .renderArea(true)
+    .width(960)
+    .height(360)
+    .transitionDuration(800)
+    .margins({top: 50, right: 50, bottom: 30, left: 50})
+    .mouseZoomable(true)
+    // .x(d3.scale.linear().domain([0, 365]))
+    .x(d3.time.scale().domain([new Date(2012, 11, 31), new Date(2013, 11, 31)]))
+    .round(d3.time.month.round)
+    .xUnits(d3.time.months)
+    .dimension(moveDays)
+    .group(moveDaysGroup)
+    .yAxisLabel("Distance Moved (km)")
+    .valueAccessor(function (p) {
+      return p.value.total;
+    })  
+    .renderHorizontalGridLines(true)
+    .legend(dc.legend().x(800).y(10).itemHeight(13).gap(5))
+    .elasticY(true);
+
+  physmoveChart.render();
 });
 </script>
 <script type="text/javascript" src="../static/js/physical.js"></script>

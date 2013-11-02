@@ -38,10 +38,6 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
   	var month = d.month;
   	return month+":"+d.monthName; 
   });
-  
-  var moveDays = ups.dimension(function (d) {
-  	return moment(d.DATE, 'YYYYMMDD');
-  });
 
   // Define Groups
   var upCalMonth = monthlyDimension.group().reduceSum(function(d) {
@@ -115,20 +111,29 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
 var dayOfWeekGroup = dayOfWeekDimension.group();
 var MonthNameGroup = monthNameDimension.group();
 
+// Dimension for movement distance
+var moveDays = ups.dimension(function (d) {
+  doy = moment(d.DATE, 'YYYYMMDD');
+  return doy;
+});
+
+// Group for movement distance
 var moveDaysGroup = moveDays.group().reduce(
-	function (p, v) {
-		++p.count;
-		p.total += v.m_distance; 
-		p.mvavg = Math.round(p.total / p.count);
-	},
-	function (p, v) {
-		--p.count;
-		p.total -= v.m_distance; 
-		p.mvavg = Math.round(p.total / p.count);
-	},
-	function () {
-		return {count:0, total:0, mvavg:0};
-	});
+  function (p, v) {
+    ++p.days;
+    p.total += v.m_distance/1000; 
+    p.mvavg = Math.round(p.total / p.days);
+    return p;
+  },
+  function (p, v) {
+    --p.days;
+    p.total -= v.m_distance; 
+    p.mvavg = Math.round(p.total / p.days);
+    return p;
+  },
+  function () {
+    return {days:0, total:0, mvavg:0};
+  });
 
 // Define tooltips
 var tip = d3.tip()
@@ -155,20 +160,20 @@ var barTip = d3.tip()
 
 // 1. Chart : physpieChart
 physpieChart
-	.width(300)
-	.height(300)
-	.radius(100)
+	.width(280)
+	.height(280)
+	.radius(80)
 	.renderLabel(false)
     .dimension(monthNameDimension)
     .group(upWorkoutMonth)
-    .innerRadius(45)
-    .transitionDuration(200)
+    .innerRadius(30)
+    .transitionDuration(500)
     .colors(physColors);
 
 // 2. Chart : physweekBar
 physweekRow
-	.width(400)
-	.height(280)
+	.width(320)
+	.height(240)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
     .transitionDuration(500)
     .x(d3.scale.linear().domain([0.5, 7.5]))
@@ -183,8 +188,8 @@ physweekRow
 
 // 3. Chart : physbarChart
 physbarChart
-    .width(640)
-    .height(300)
+    .width(360)
+    .height(240)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
     .x(d3.scale.linear().domain([-.5, 12.5]))
  //    .xUnits(dc.units.ordinal)
@@ -204,20 +209,26 @@ physbarChart
     .gap(5);
 
 // // 4. Chart: physmovechart
-// physmoveChart
-// 	.renderArea(true)
-// 	.width(980)
-// 	.height(240)
-// 	.transitionDuration(800)
-// 	.margins({top: 30, right: 50, bottom: 30, left: 40})
-// 	.mouseZoomable(true)
-// 	.x(d3.time.scale().domain([new Date(2012, 11, 1), new Date(2013, 11, 31)]))
-// 	.round(d3.time.month.round)
-// 	.xUnits(d3.time.months)
-//     .dimension(moveDays, "Monthly Value Group")
-//     .group(moveDaysGroup)	
-//     .renderHorizontalGridLines(true)
-//     .elasticY(true);
+ physmoveChart
+    .renderArea(true)
+    .width(960)
+    .height(360)
+    .transitionDuration(800)
+    .margins({top: 50, right: 50, bottom: 30, left: 50})
+    .mouseZoomable(true)
+    // .x(d3.scale.linear().domain([0, 365]))
+    .x(d3.time.scale().domain([new Date(2012, 11, 31), new Date(2013, 11, 31)]))
+    .round(d3.time.month.round)
+    .xUnits(d3.time.months)
+    .dimension(moveDays)
+    .group(moveDaysGroup)
+    .yAxisLabel("Distance Moved (km)")
+    .valueAccessor(function (p) {
+      return p.value.total;
+    })  
+    .renderHorizontalGridLines(true)
+    .legend(dc.legend().x(800).y(10).itemHeight(13).gap(5))
+    .elasticY(true);
 
 // Render!!!
 dc.renderAll("physchart");
