@@ -169,7 +169,7 @@ physpieChart
 
 // 2. Chart : physweekBar
 physweekRow
-	.width(320)
+	.width(280)
 	.height(240)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
     .transitionDuration(500)
@@ -185,7 +185,7 @@ physweekRow
 
 // 3. Chart : physbarChart
 physbarChart
-    .width(360)
+    .width(320)
     .height(240)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
     .x(d3.scale.linear().domain([-.5, 12.5]))
