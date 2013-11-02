@@ -1,6 +1,8 @@
-var physbarChart = dc.barChart("#phys-bar-chart", "physbarchart");
-var physweekBar = dc.barChart("#phys-week-bar", "physbarchart");
-var physpieChart = dc.pieChart("#phys-month-pie", "physbarchart");
+var physpieChart = dc.pieChart("#phys-month-pie", "physchart");
+var physweekRow = dc.rowChart("#phys-week-bar", "physchart");
+var physbarChart = dc.barChart("#phys-bar-chart", "physchart");
+// var physmoveChart = dc.lineChart("#phys-move-chart", "physchart");
+
 // var phystodBar = dc.barChart("#phys-tod-bar", "physbarchart");
 
 var g;
@@ -17,29 +19,41 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
   data.forEach(function (d) {
     d.month = parseInt((d.DATE).substring(4,6));
     d.wkday = moment(d.DATE, 'YYYYMMDD').weekday();
-    // d.wkday = moment(d.DATE, 'YYYYMMDD').format("ddd");
-    // console.log(d.wkday);
+    d.monthName = moment(d.DATE, 'YYYYMMDD').month(d.DATE).format("MMM");
   })
 
+  // Load data
   var ups = crossfilter(data);
+  // Define dimension
   var monthlyDimension = ups.dimension(function (d) {return +d.month; });
   var weekdayDimension = ups.dimension(function (d) {
+   	return +d.wkday+1; 
+  });
+  var dayOfWeekDimension = ups.dimension(function (d) {
+  	var day = d.wkday;
   	var name=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  	return +d.wkday+1; 
+  	return day+":"+name[day];
+  });
+  var monthNameDimension = ups.dimension(function (d) {
+  	var month = d.month;
+  	return month+":"+d.monthName; 
+  });
+  
+  var moveDays = ups.dimension(function (d) {
+  	return moment(d.DATE, 'YYYYMMDD');
   });
 
-  var upCalMonth = monthlyDimension.group().reduceSum(function(d) {return +d.e_calories;});
-  var upStepWeekday = weekdayDimension.group().reduceSum(function (d) {
-  	return +d.m_steps;
+  // Define Groups
+  var upCalMonth = monthlyDimension.group().reduceSum(function(d) {
+  	return +d.e_calories/30;});
+  var upStepWeekday = dayOfWeekDimension.group().reduceSum(function (d) {
+  	return +d.m_steps/30;
   });
-  var upWorkoutMonth = monthlyDimension.group().reduceSum(function (d) {
+
+  var upWorkoutMonth = monthNameDimension.group().reduceSum(function (d) {
   	var nmins_month = 30*24;
   	return (+d.m_workout_time)/nmins_month;
   })
-
-  var upSugarMonth = monthlyDimension.group().reduceSum(function(d) {return +d.e_sugars;});
-
-  var upSleepDay = weekdayDimension.group().reduceSum(function(d) {return d.s_asleep_time;});
 
   var weekdayValueGroup = weekdayDimension.group().reduce(
     // add
@@ -98,11 +112,29 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
     }
   );
 
-// tooltips for bar chart
-// var tip = d3.tip()
-// 	.attr('class', 'd3-tip')
-//     .offset([-10, 0])
-//     .html(function (d) { return "<span style='color: #f0027f'>" +  d.key + "</span> : "  + numberFormat(d.value); });
+var dayOfWeekGroup = dayOfWeekDimension.group();
+var MonthNameGroup = monthNameDimension.group();
+
+var moveDaysGroup = moveDays.group().reduce(
+	function (p, v) {
+		++p.count;
+		p.total += v.m_distance; 
+		p.mvavg = Math.round(p.total / p.count);
+	},
+	function (p, v) {
+		--p.count;
+		p.total -= v.m_distance; 
+		p.mvavg = Math.round(p.total / p.count);
+	},
+	function () {
+		return {count:0, total:0, mvavg:0};
+	});
+
+// Define tooltips
+var tip = d3.tip()
+	.attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function (d) { return "<span style='color: #f0027f'>" +  d.key + "</span> : "  + numberFormat(d.value); });
 
 // tooltips for pie chart
 var pieTip = d3.tip()
@@ -121,54 +153,84 @@ var barTip = d3.tip()
 	// set colors to red <--> purple
     var physColors = ["#fde0dd","#fa9fb5","#e7e1ef","#d4b9da","#c994c7","#fcc5c0","#df65b0","#e7298a","#ce1256", "#f768a1","#dd3497","#e78ac3","#f1b6da","#c51b7d"];
 
-// 1 Chart : physbarChart
-physbarChart
-    .width(400)
-    .height(280)
-    .margins({top: 10, right: 50, bottom: 30, left: 50})
-    .x(d3.scale.linear().domain([0, 12]))
-    .brushOn(false)
-    .xAxisLabel("Months")
-    .yAxisLabel("Total Calories Recorded")
-    .dimension(monthlyDimension, "Monthly Value Group")
-    .group(upCalMonth)
-    .renderHorizontalGridLines(true)
-    .elasticX(true)
-    .elasticY(true)
-    .centerBar(true)
-    .gap(5);
-
-// 2 Chart : physweekBar
-physweekBar
-	.width(400)
-	.height(280)
-    .margins({top: 10, right: 50, bottom: 30, left: 50})
-    .x(d3.scale.linear().domain([0.5, 7.5]))
-    .brushOn(false)
-    .xAxisLabel("Day of Week")
-    .yAxisLabel("Total Number of Steps")
-    .dimension(weekdayDimension, "Monthly Value Group")
-    .group(upStepWeekday)
-    .renderHorizontalGridLines(true)
-    .elasticY(true)
-    .centerBar(true)
-    .colors(physColors)
-    .gap(9);
-
-// 3. Chart : physpieChart
+// 1. Chart : physpieChart
 physpieChart
 	.width(300)
 	.height(300)
 	.radius(100)
-    // .margins({top: 10, right: 50, bottom: 30, left: 50})
-    .dimension(monthlyDimension)
+	.renderLabel(false)
+    .dimension(monthNameDimension)
     .group(upWorkoutMonth)
     .innerRadius(45)
     .transitionDuration(200)
     .colors(physColors);
 
+// 2. Chart : physweekBar
+physweekRow
+	.width(400)
+	.height(280)
+    .margins({top: 10, right: 50, bottom: 30, left: 50})
+    .transitionDuration(500)
+    .x(d3.scale.linear().domain([0.5, 7.5]))
+    .dimension(dayOfWeekDimension, "Day of Week Value")
+    .group(upStepWeekday)
+    .title(function (d) {return +d.value;})
+    .elasticX(true)
+    .colors(physColors)
+    .renderLabel(true)
+    .gap(5)
+    .xAxis().ticks(5).tickFormat(d3.format("s"));
 
-dc.renderAll("physbarchart");
+// 3. Chart : physbarChart
+physbarChart
+    .width(640)
+    .height(300)
+    .margins({top: 10, right: 50, bottom: 30, left: 50})
+    .x(d3.scale.linear().domain([-.5, 12.5]))
+ //    .xUnits(dc.units.ordinal)
+	// .x(d3.scale.ordinal()
+	// 	.domain(["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+	// 			"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]))
+	.brushOn(false)
+    .xAxisLabel("Months")
+    .yAxisLabel("Total Calories Recorded")
+    .dimension(monthlyDimension, "Monthly Value Group")
+    .group(upCalMonth)	
+    .renderHorizontalGridLines(true)
+    .elasticX(true)
+    .elasticY(true)
+    .centerBar(true)
+	.colors(physColors)
+    .gap(5);
+
+// // 4. Chart: physmovechart
+// physmoveChart
+// 	.renderArea(true)
+// 	.width(980)
+// 	.height(240)
+// 	.transitionDuration(800)
+// 	.margins({top: 30, right: 50, bottom: 30, left: 40})
+// 	.mouseZoomable(true)
+// 	.x(d3.time.scale().domain([new Date(2012, 11, 1), new Date(2013, 11, 31)]))
+// 	.round(d3.time.month.round)
+// 	.xUnits(d3.time.months)
+//     .dimension(moveDays, "Monthly Value Group")
+//     .group(moveDaysGroup)	
+//     .renderHorizontalGridLines(true)
+//     .elasticY(true);
+
+// Render!!!
+dc.renderAll("physchart");
+d3.selectAll("g.x text")
+	.attr("class", "campusLabel")
+    .style("text-anchor", "end") 
+    .attr("transform", "translate(-10,0)rotate(315)");
+
+// Add tooltips
+d3.selectAll("g.row").call(tip);
+d3.selectAll("g.row")
+	.on('mouseover', tip.show)
+	.on('mouseout', tip.hide);
 
 d3.selectAll(".pie-slice").call(pieTip);
 d3.selectAll(".pie-slice")
@@ -179,51 +241,4 @@ d3.selectAll(".bar").call(barTip);
 d3.selectAll(".bar")
 	.on('mouseover', barTip.show)
 	.on('mouseout', barTip.hide); 
-
-
-
-  // sleepBar
-  //   .width(400)
-  //   .height(280)
-  //   .margins({top: 10, right: 50, bottom: 30, left: 50})
-  //   .x(d3.scale.linear().domain([0.5, 7.5]))
-  //   .brushOn(false)
-  //   .xAxisLabel("Day of Week")
-  //   .yAxisLabel("Total sleep minutes")
-  //   .dimension(weekdayDimension, "Monthly Value Group")
-  //   .group(upSleepDay)
-  //   .renderHorizontalGridLines(true)
-  //   .elasticY(true)
-  //   .centerBar(true)
-  //   .gap(1);
-
-  // sleepBar.render();  
-
-  // slBubble
-  //   .width(400)
-  //   .height(280)
-  //   .transitionDuration(1500)
-  //   .margins({top: 10, right: 10, bottom: 30, left: 50})
-  //   .dimension(weekdayDimension)
-  //   .group(weekdayValueGroup)
-  //   .colors(colorbrewer.RdYlGn[9]) // color function or array for bubbles
-  //   .colorDomain([0, 500])
-  //   .colorAccessor(function (p) {
-  //     // console.log(p.value);
-  //     return Math.random()*parseInt(p.value.awakeInt);})
-  //   .keyAccessor(function (p) {return 0.01*Math.random()+parseInt(p.key);})
-  //   .valueAccessor(function (p) {return parseInt(p.value.slint);})
-  //   .radiusValueAccessor(function (p) {return parseInt(p.value.awakeInt);})
-  //   .maxBubbleRelativeSize(0.1)
-  //   .x(d3.scale.linear().domain([0, 10]))
-  //   .y(d3.scale.linear().domain([0, 2000]))
-  //   .r(d3.scale.linear().domain([0, 1000]))
-  //   .renderHorizontalGridLines(true)
-  //   .renderVerticalGridLines(true)
-  //   .xAxisLabel("Month")
-  //   .yAxisLabel("Sleep Interval")
-  //   // .elasticY(true)
-  //   .elasticX(true); 
-
-  // slBubble.render();
 });

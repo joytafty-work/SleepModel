@@ -140,48 +140,68 @@
 
 <!-- Physical Activity -->
 <div class="container" id="physical-container">
+  <!-- Row 1 -->
   <div clas="row">
-    <!-- Physical Activity by Week -->
-    <div id="phys-bar-chart" class="dc-chart">
+  <!-- Physical Activity by month (Pie) -->
+    <div id="phys-month-pie" class="dc-chart">
       <span class="chart-title">
-        &nbsp;&nbsp;Calories consumption by Week 
+        &nbsp;&nbsp;Average exercise time per Day (mins)
         <br>
-        &nbsp;(DC Bar Chart) 
+        &nbsp;(by Month of 2013) 
       </span>
-      <a class="reset" href="javascript:physbarChart.filterAll('physbarchart');dc.redrawAll('physbarchart');" style="display: none;">reset</a>
+      <a class="reset" href="javascript:physpieChart.filterAll('physchart');dc.redrawAll('physchart');" style="display: none;">refresh</a>
       <div class="clearfix"></div>      
     </div>
 
     <!-- Physical Activity by Week -->
     <div id="phys-week-bar" class="dc-chart">
       <span class="chart-title">
-        &nbsp;&nbsp;Physical Activity by Week 
+        &nbsp;&nbsp;Average number of steps per day 
         <br>
-        &nbsp;(DC Bar Chart) 
+        &nbsp;(by day of the weeks in 2013) 
       </span>
-      <a class="reset" href="javascript:physweekBar.filterAll('physbarchart');dc.redrawAll('physbarchart');" style="display: none;">reset</a>
+      <a class="reset" href="javascript:physweekRow.filterAll('physchart');dc.redrawAll('physchart');" style="display: none;">refresh</a>
       <div class="clearfix"></div>      
     </div>
+  </div> <!-- Close row 1 -->
 
-    <div id="phys-tod-bar" class="dc-chart">
+  <!-- Row 2 -->
+  <div clas="row">
+    <!-- Physical Activity by Week -->
+    <div id="phys-bar-chart" class="dc-chart">
+      <span class="chart-title">
+        &nbsp;&nbsp;Some lines
+        <br>
+        &nbsp;(by time range)
+      </span>
+      <a class="reset" href="javascript:physbarChart.filterAll('physchart');dc.redrawAll('physchart');" style="display: none;">refresh</a>
+      <div class="clearfix"></div>      
+    </div>
+  </div> 
+  <!-- Close row 2 -->
+
+  <!-- Row 3 -->
+  <div clas="row">
+    <!-- Physical Activity by Week -->
+    <div id="phys-bar-chart" class="dc-chart">
+      <span class="chart-title">
+        &nbsp;&nbsp;Average calories burned per day 
+        <br>
+        &nbsp;(by Month of 2013) 
+      </span>
+      <a class="reset" href="javascript:physbarChart.filterAll('physchart');dc.redrawAll('physchart');" style="display: none;">refresh</a>
+      <div class="clearfix"></div>      
+    </div>
+  </div> <!-- Close row 3 -->
+
+<!--     <div id="phys-tod-bar" class="dc-chart">
       <span class="chart-title">
         &nbsp;&nbsp;Physical Activity by Time of Day 
         <br>
         &nbsp;(DC Bar Chart) 
       </span>
     </div>
-
-    <!-- Physical Activity by month (Pie) -->
-    <div id="phys-month-pie" class="dc-chart">
-      <span class="chart-title">
-        &nbsp;&nbsp;Average exercise time per Day (mins)
-        <br>
-        &nbsp;(DC Donut Chart) 
-      </span>
-      <a class="reset" href="javascript:physpieChart.filterAll('physbarchart');dc.redrawAll('physbarchart');" style="display: none;">reset</a>
-      <div class="clearfix"></div>      
-    </div>
-  </div>
+ -->
 </div>
 
 <!-- Sleep -->
@@ -192,33 +212,14 @@
 <div class="container" id="pre-container">
   <div class="row">
     <div class="col-md-6">
-      <h4>Total Calories by Month</h4>
-      <div id="calchart"></div>
-    </div>
-    <div class="col-md-6">
-      <h4>Total Sleep by day of week</h4>
-      <div id="sleepbar"></div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-6">
       <h4>Sleep Interval Bubble</h4>
       <div id="slbubble"></div>
     </div>
-    <div class="col-md-6">
-      <h4>Sleep Quality by resting Heart Rate</h4>
-    <div id="sleeppie"></div>
-    </div>  
   </div>
 </div>
 
 <script type="text/javascript">
-
-var calChart = dc.barChart("#calchart");
 var slBubble = dc.bubbleChart("#slbubble");
-var sleepBar = dc.barChart("#sleepbar");
-var sleepPie = dc.pieChart("#sleeppie");
 
 d3.csv("../static/data/AllUPs.csv", function(error, data) {
 
@@ -229,20 +230,14 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
   data.forEach(function (d) {
     d.month = parseInt((d.DATE).substring(4,6));
     d.wkday = moment(d.DATE, 'YYYYMMDD').weekday();
-    // d.wkday = moment(d.DATE, 'YYYYMMDD').format("ddd");
-    // console.log(d.wkday);
   })
 
   var ups = crossfilter(data);
   var monthlyDimension = ups.dimension(function (d) {return +d.month; });
   var weekdayDimension = ups.dimension(function (d) {return +d.wkday+1; });
-
   var upCalMonth = monthlyDimension.group().reduceSum(function(d) {return +d.e_calories;});
-
   var upSugarMonth = monthlyDimension.group().reduceSum(function(d) {return +d.e_sugars;});
-
   var upSleepDay = weekdayDimension.group().reduceSum(function(d) {return d.s_asleep_time;});
-
   var weekdayValueGroup = weekdayDimension.group().reduce(
     // add
     function (p, v) {
@@ -300,39 +295,27 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
     }
   );
 
-  calChart
-    .width(400)
-    .height(280)
-    .margins({top: 10, right: 50, bottom: 30, left: 50})
-    .x(d3.scale.linear().domain([0, 12]))
-    .brushOn(false)
-    .xAxisLabel("Months")
-    .yAxisLabel("Total Calories Recorded")
-    .dimension(monthlyDimension, "Monthly Value Group")
-    .group(upCalMonth)
-    .renderHorizontalGridLines(true)
-    .elasticY(true)
-    .centerBar(true)
-    .gap(1);
+var moveDays = ups.dimension(function (d) {
+  days = moment(d.DATE, 'YYYYMMDD').dayOfYear();
+  return days;
+});
 
-  calChart.render();
+var moveDaysGroup = moveDays.group().reduce(
+  function (p, v) {
+    ++p.count;
+    p.total += v.m_distance; 
+    p.mvavg = Math.round(p.total / p.count);
+  },
+  function (p, v) {
+    --p.count;
+    p.total -= v.m_distance; 
+    p.mvavg = Math.round(p.total / p.count);
+  },
+  function () {
+    return {count:0, total:0, mvavg:0};
+  });
 
-  sleepBar
-    .width(400)
-    .height(280)
-    .margins({top: 10, right: 50, bottom: 30, left: 50})
-    .x(d3.scale.linear().domain([0.5, 7.5]))
-    .brushOn(false)
-    .xAxisLabel("Day of Week")
-    .yAxisLabel("Total sleep minutes")
-    .dimension(weekdayDimension, "Monthly Value Group")
-    .group(upSleepDay)
-    .renderHorizontalGridLines(true)
-    .elasticY(true)
-    .centerBar(true)
-    .gap(1);
-
-  sleepBar.render();  
+console.log(moveDaysGroup);
 
   slBubble
     .width(400)
@@ -361,47 +344,6 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
     .elasticX(true); 
 
   slBubble.render();
-});
-
-d3.csv("../static/data/allBBnoNaN.csv", function(error, data) {
-  var dateFormat = d3.time.format("%m/%d/%Y");
-  var numberFormat = d3.format(".2f");
-
-  data.forEach(function (d) {
-    d.dd = dateFormat.parse(d.date); 
-    d.month = d3.time.month(d.dd);
-  })
-
-  var slp           = crossfilter(data),
-      slDimension   = slp.dimension(function(d) {return +d.sleepIntervalIndex;}),
-      slSumGroup    = slDimension.group().reduceSum(function(d) {
-        return d.sleepQuality * d.restingHR / 1000;});
-
-  var dateDimension = slp.dimension(function (d) {
-    return d.dd;
-  });
-
-  var slMonths = slp.dimension(function (d) {
-    return d.month;
-  });
-
-  // dc.barChart("#sleep quality chart")
-  sleepPie
-    .width(280)
-    .height(280)
-    .renderLabel(true)
-    .innerRadius(35)
-    .transitionDuration(500)
-    .dimension(slDimension)
-    .group(slSumGroup)
-    // .label(function (d) {
-    //   if (sleepPie.hasFilter() && !sleepPie.hasFilter(d.key))
-    //     return d.key + "(0%)";
-    //   return d.key + "(" + Math.floor(d.sleepIntervalIndex) + "%)";
-    // })
-    .renderLabel(true);
-
-  sleepPie.render();
 });
 </script>
 <script type="text/javascript" src="../static/js/physical.js"></script>
