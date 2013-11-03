@@ -1,0 +1,1307 @@
+@import 'normalize.css';
+/*---------------------------------------------------
+    LESS Elements 0.6
+  ---------------------------------------------------
+    A set of useful LESS mixins by Dmitry Fadeyev
+    Special thanks for mixin suggestions to:
+      Kris Van Herzeele,
+      Benoit Adam,
+      Portenart Emile-Victor,
+      Ryan Faerman
+
+    More info at: http://lesselements.com
+-----------------------------------------------------*/
+/* SHARED STYLES & MIXINS */
+* {
+  outline: none;
+}
+div.test {
+  border: 10px solid red;
+}
+.clearfix {
+  zoom: 1;
+}
+.clearfix:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+.fleft {
+  display: inline-block;
+  float: left;
+}
+.fright {
+  display: inline-block;
+  float: right;
+}
+/* VARIABLES */
+/* MAIN STYLES */
+html {
+  overflow-x: hidden;
+  height: 4000px;
+}
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  background: #000;
+  color: #fff4c7;
+  font-family: 'Trade Gothic W01 Bold', "Helvetica", sans-serif;
+  color: #fff4c7;
+  overflow: hidden;
+  position: relative;
+  padding-bottom: 400px;
+}
+a {
+  text-decoration: none;
+}
+.container {
+  margin: 0px auto;
+  width: 960px;
+  position: relative!important;
+}
+#edges {
+  pointer-events: none;
+  background: transparent url('../images/edges.png') repeat-y center center;
+  height: 100%;
+  width: 3000px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: -1500px;
+  z-index: 1000001;
+}
+
+#leftEdge {
+  background: transparent url('../images/left-edge.png') repeat-y right center;
+  top: 0px;
+  bottom: 0px;
+  left: 50%;
+  margin-left: -1300px;
+  width: 600px;
+  z-index: 10000001;
+  position: absolute;
+}
+
+#rightEdge {
+  background: transparent url('../images/right-edge.png') repeat-y left center;
+  top: 0px;
+  bottom: 0px;
+  right: 50%;
+  margin-right: -1300px;
+  width: 600px;
+  z-index: 10000001;
+  position: absolute;
+}
+
+/* TOPBAR */
+#topBar {
+  position: fixed;
+  top: -90px;
+  width: 1550px;
+  left: 50%;
+  margin-left: -775px;
+  height: 112px;
+  background: url('../images/black-shade.png');
+  z-index: 10000;
+  border-bottom: 2px dashed #fff4c7;
+}
+#topBar #logo a {
+  display: block;
+  position: fixed;
+  top: 0px;
+  left: 500;
+  z-index: 99999;
+  height: 137px;
+  width: 46px;
+  text-indent: -9999px;
+  background: url('../images/clifbar-logo.png') no-repeat;
+}
+#topBar #logo a.opened {
+  background: url('../images/clifbar-logo-close.png') no-repeat;
+}
+#topBar .expandTrigger {
+  position: absolute;
+  top: 92px;
+  text-transform: uppercase;
+  color: #fff4c7;
+  padding-left: 60px;
+  padding-right: 25px;
+  padding-top: 1px;
+  font-size: 14px;
+  background: url('../images/tan-down-arrow.png') no-repeat 100% 5px;
+}
+#topBar .expandTrigger.opened {
+  background: url('../images/tan-up-arrow.png') no-repeat 100% 5px;
+}
+#topBar .expand {
+  background: url('../images/nav-texture.png');
+  -webkit-box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.9);
+  -moz-box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.9);
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.9);
+  height: 91px;
+  position: fixed;
+  top: -110px;
+  left: 0;
+  width: 1550px;
+  left: 50%;
+  margin-left: -775px;
+}
+#topBar .expand nav {
+  width: 1000px;
+  margin-left: 45px;
+  position: relative;
+  z-index: 50;
+}
+#topBar .expand nav ul {
+  padding: 0;
+  margin: 0;
+}
+#topBar .expand nav .navFood, #topBar .expand nav .navPlay, #topBar .expand nav .navSoul {
+  list-style-type: none;
+  display: inline-block;
+  float: left;
+  width: 200px;
+  z-index: 6;
+}
+#topBar .expand nav .navFood {
+  width: 296px;
+  height: 90px;
+  background: url(../images/header_mast.jpg) no-repeat;
+}
+#topBar .expand nav .navPlay {
+  width: 303px;
+  height: 78px;
+  background: url(../images/header_mast.jpg) no-repeat -296px 0;
+}
+#topBar .expand nav .navSoul {
+  width: 359px;
+  height: 75px;
+  background: url(../images/header_mast.jpg) no-repeat -599px 0;
+}
+#topBar .expand nav .navSoul .nestedNav {
+  padding-right: 60px;
+}
+#topBar .expand nav .mainLink {
+  color: #fff;
+  text-shadow: 2px 2px 0px #cc0000;
+  display: inline-block;
+  float: left;
+  font-family: 'Helvetica Neue', 'Helvetica', sans-serif;
+  font-weight: bold;
+  font-size: 35px;
+  padding: 0;
+  text-indent: -9999px;
+}
+#topBar .expand nav .navFood .mainLink {
+  margin: 10px 0 0 20px;
+  width: 100px;
+}
+#topBar .expand nav .navPlay .mainLink {
+  margin: 10px 0 0 20px;
+  width: 100px;
+}
+#topBar .expand nav .navSoul .mainLink {
+  margin: 10px 0 0 20px;
+  width: 100px;
+}
+#topBar .expand nav .nestedNav {
+  padding-top: 15px;
+  padding-right: 20px;
+  display: inline-block;
+  float: right;
+  text-align: right;
+  font-size: 10px;
+}
+#topBar .expand nav .nestedNav a {
+  text-transform: uppercase;
+  color: #000;
+  font-size: 10px;
+  font-family: sans-serif;
+  line-height: 13px;
+  margin: 0;
+  padding-left: 20px;
+}
+#topBar .expand nav .nestedNav a:hover {
+  color: #fff;
+  background: url('../images/white-drawn-arrow.png') no-repeat;
+  background-position: 0px 2px;
+}
+#topBar .expand nav .navSoul .nestedNav a {
+  padding-right: 15px;
+}
+#topBar .expand .searchBox {
+  background: url('../images/search-box-background.png') no-repeat bottom left;
+  position: absolute;
+  width: 237px;
+  height: 35px;
+  top: 45px;
+  left: 475px;
+  padding: 30px 0 0 75px;
+}
+#topBar .expand .searchBox input {
+  display: inline-block;
+  float: left;
+  width: 98px;
+  background-color: #FAF6E9;
+  border: 1px solid #958269;
+  padding: 2px;
+  font-size: 12px;
+}
+#topBar .expand .searchBox .searchBorder {
+  width: 121px;
+  height: 31px;
+  border: none;
+  float: left;
+}
+#topBar .expand .searchBox .searchBorder input {
+  margin: -2px 0 5px 10px;
+  background-color: transparent;
+  border: none;
+  font-size: 11px;
+  width: 90px;
+  height: 15px;
+  outline: none;
+  padding: 4px 1px 1px 4px;
+}
+#topBar .expand .searchBox #submit {
+  width: 26px;
+  height: 20px;
+  background: url(../images/go_up.gif);
+  text-indent: -9999px;
+  border: 0;
+}
+#topBar .expand .extraLinks {
+  background: url('../images/more-links-background.png') no-repeat;
+  position: absolute;
+  width: 250px;
+  height: 54px;
+  left: 700px;
+  top: 49px;
+  margin: 0;
+  padding: 0;
+}
+#topBar .expand .extraLinks li {
+  display: inline-block;
+  list-style-type: none;
+  width: 100px;
+  padding-top: 25px;
+}
+#topBar .expand .extraLinks li a {
+  display: block;
+  height: 20px;
+  width: 100%;
+}
+#topBar .expand .extraLinks li a.buyNow {
+  background: url('../images/buy-now.png') no-repeat;
+  background-position: 20px 0px;
+}
+#topBar .expand .extraLinks li a.storeLocator {
+  background: url('../images/store-locator.png') no-repeat;
+}
+.edges {
+  width: 100%;
+  position: fixed;
+  z-index: 10001;
+  top: 0;
+  left: 0;
+}
+/* LEFT NAV */
+#leftNav {
+  padding-bottom: 3px;
+  position: absolute;
+  top: 170px;
+  left: -810px;
+  background: url('../images/black-shade.png');
+  width: 1000px;
+  z-index: 100001;
+}
+#leftNav ul {
+  padding: 0;
+  margin: 20px 0;
+}
+#leftNav ul li {
+  width: 100%;
+  height: 20px;
+  padding: 4px 0;
+}
+#leftNav ul li.active, #leftNav ul li.h {
+  background: url('../images/nav-selected-arrow.png') no-repeat 100% 0;
+  position: relative;
+  left: 10px;
+  padding: 6px 0 5px 0;
+}
+#leftNav ul li.active a, #leftNav ul li.h a {
+  position: relative;
+  left: -10px;
+  text-align: right;
+  padding-right: 25px;
+  padding-left: 0;
+  background: none;
+}
+#leftNav ul li a {
+  color: #fff4c7;
+  background: url('../images/tan-left-arrow-fill.png') no-repeat 0% 50%;
+  width: 165px;
+  padding-left: 20px;
+  display: block;
+  float: right;
+  text-transform: uppercase;
+}
+#leftNav ul li a:hover {
+  color: #fff;
+}
+
+
+
+#wrap-1 {
+  background: url('../images/clif-adventures-bg-jeff.jpg') no-repeat top center;
+}
+#wrap-2 {
+  background: url('../images/two-bikers-bg.jpg') no-repeat top center;
+  height: 1742px;
+  padding-top: 150px;
+  border-top: 8px solid #000;
+  top: -150px;
+  z-index: 100;
+  position: relative;
+}
+#wrap-3 {
+  z-index: 100;
+  position: relative;
+  height: 2545px;
+  top: -150px;
+  background: url('../images/mountains-bg.jpg') -100px 0 no-repeat;
+}
+#wrap-4 {
+  position: relative;
+  height: 1481px;
+  top: -319px;
+  background: url('../images/climbing-different-bg.jpg') top center no-repeat;
+}
+
+
+
+/* CLIF ADVENTURES */
+#clif-adventures {
+  height: 610px;
+  position: absolute;
+  width: 1550px;
+  margin-left: -775px;
+  left: 50%;
+}
+#clif-adventures .copyBox {
+  padding-left: 30px;
+  position: absolute;
+  top: 180px;
+  right: 0px;
+  width: 500px;
+  overflow: hidden;
+  background: url('../images/left-tan-arrow.png') no-repeat;
+  background-position: 5px 34px;
+}
+#clif-adventures .copyBox h2 {
+  letter-spacing: 5px;
+  font-size: 56px;
+  line-height: 66px;
+  text-transform: uppercase;
+  font-weight: normal;
+  padding-bottom: 2px;
+  border-bottom: 8px double #fff4c7;
+  margin-bottom: 0;
+  margin-top: 10px;
+  width: 100%;
+}
+#clif-adventures .copyBox h3 {
+  letter-spacing: 6px;
+  font-weight: normal;
+  font-size: 42px;
+  padding: 5px 0px;
+  line-height: 48px;
+  margin: 0;
+  border-bottom: 8px double #fff4c7;
+  text-transform: uppercase;
+}
+#clif-adventures .copyBox p {
+  font-family: sans-serif;
+  line-height: 20px;
+  font-size: 14px;
+  margin: 0;
+  padding-top: 10px;
+}
+
+
+
+/* Taking Risks */
+#risks {
+  position: absolute;
+  z-index: 1000;
+  height: 768px;
+  width: 1550px;
+  margin-left: -775px;
+  left: 50%;
+}
+#risks .background {
+  background: rgba(0, 0, 0, 0.5);
+  height: 100%;
+}
+#risks .seal {
+  position: absolute;
+  z-index: 1001;
+  top: 455px;
+  left: 240px;
+  width: 170px;
+  height: 154px;
+}
+#risks .thankYou {
+  position: absolute;
+  z-index: 1001;
+  top: 490px!important;
+  right: 0px;
+  background: url('../images/thankYou.png') no-repeat;
+  width: 538px;
+  height: 144px;
+  text-indent: -9999px;
+}
+#risks .blackArrows {
+  bottom: -23px;
+}
+#risks .wrapper {
+  border: 10px solid #fff4c7;
+  background: #000;
+  background: rgba(0, 0, 0, 0.5);
+  width: 637px;
+  height: 360px;
+}
+#risks .wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+#risks .opened img {
+  z-index: 0;
+}
+#risks .closed img {
+  z-index: 1000;
+}
+#risks .mediaBox {
+  top: 170px!important;
+  left: 309px;
+}
+#risks .mediaBox .mediaBarLink {
+  top: 270px;
+  left: 240px;
+  width: 700px;
+  z-index: 10001;
+}
+
+
+
+/* Traveling Light */
+#light {
+  height: 801px;
+  width: 1550px;
+  margin-left: -775px;
+  left: 50%;
+  position: absolute;
+  z-index: 1;
+}
+#light .big-clif {
+  background: url('../images/big-clif-adventures.png') no-repeat top left;
+  width: 1313px;
+  height: 703px;
+  position: absolute;
+  top: -480px;
+  left: -175px;
+}
+#light .tanArrows {
+  bottom: -70px;
+}
+#light .mediaBox {
+  z-index: 2;
+  top: 170px!important;
+  left: 309px;
+}
+#light .mediaBox .mediaBarLink {
+  width:1000px!important;
+  left: -600px;
+  top: 222px!important;
+  text-transform: uppercase;
+}
+#light .mediaBox .wrapper .mediaBarLink .playButton {
+  left: 90px;
+}
+#light .wrapper {
+  border: 10px solid #fff4c7;
+  background: #000;
+  background: rgba(0, 0, 0, 0.5);
+  width: 637px;
+  height: 360px;
+}
+#light .wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+#light .opened img {
+  z-index: 0;
+}
+#light .closed img {
+  z-index: 1000;
+}
+
+
+
+/* kindness */
+#kindness {
+  top: 70px;
+  position: absolute;
+  z-index: 1000;
+  height: 702px;
+  width: 1550px;
+  margin-left: -775px;
+  left: 50%;
+}
+#kindness .background {
+  background: rgba(0, 0, 0, 0.5);
+  height: 100%;
+}
+#kindness .seal {
+  position: absolute;
+  z-index: 1001;
+  top: 450px!important;
+  left: 250px;
+  width: 170px;
+  height: 154px;
+}
+#kindness .thankYou {
+  position: absolute;
+  z-index: 1001;
+  top: 490px!important;
+  right: 0px;
+  background: url('../images/thankYou.png') no-repeat;
+  width: 538px;
+  height: 144px;
+  text-indent: -9999px;
+}
+#kindness .wrapper {
+  border: 10px solid #fff4c7;
+  background: #000;
+  background: rgba(0, 0, 0, 0.5);
+  width: 637px;
+  height: 360px;
+}
+#kindness .wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+#kindness .opened img {
+  z-index: 0;
+}
+#kindness .closed img {
+  z-index: 1000;
+}
+#kindness .mediaBox {
+  top: 170px!important;
+  left: 309px;
+}
+#kindness .mediaBox .mediaBarLink {
+  top: 227px;
+  left: 240px;
+  width: 700px;
+  z-index: 10001;
+}
+
+
+
+/* Humor */
+#humor {
+  height: 741px;
+  width: 1550px;
+  margin-left: -775px;
+  left: 50%;
+  position: absolute;
+  z-index: 1;
+}
+#humor .seal {
+  position: absolute;
+  z-index: 1001;
+  top: 485px!important;
+  left: 260px;
+  width: 170px;
+  height: 154px;
+}
+
+#humor .background {
+  background: rgba(0, 0, 0, 0.5);
+  height: 100%;
+}
+
+#humor .blackArrows {
+  bottom: -763px;
+}
+#humor .mediaBox {
+  z-index: 2;
+  top: 170px!important;
+  left: 309px;
+}
+#humor .mediaBox .mediaBarLink {
+  width:1000px!important;
+  left: -600px;
+  top: 222px!important;
+  text-transform: uppercase;
+}
+#humor .mediaBox .wrapper .mediaBarLink .playButton {
+  left: 90px;
+}
+#humor .wrapper {
+  border: 10px solid #fff4c7;
+  background: #000;
+  background: rgba(0, 0, 0, 0.5);
+  width: 637px;
+  height: 360px;
+}
+#humor .wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+#humor p.about-the-journey {
+  z-index: 100!important;
+  position: absolute;
+  text-indent: -9999px;
+  width: 1540px;
+  height: 110px;
+  margin: 0 0 0 -770px;
+  left: 50%;
+  top: -30px;
+  text-align: center;
+  background: url('../images/about-the-journey2.png') no-repeat;
+}
+#humor .opened img {
+  z-index: 0;
+}
+#humor .closed img {
+  z-index: 1000;
+}
+
+
+
+/* EPIPHANY-RIDE */
+#epiphany-ride {
+  top: 742px;
+  height: 826px;
+  width: 1550px;
+  margin-left: -775px;
+  left: 50%;
+  position: absolute;
+  z-index: 1;
+}
+#epiphany-ride .big-clif {
+  background: url('../images/big-clif.png') no-repeat top left;
+  width: 1313px;
+  height: 442px;
+  position: absolute;
+  bottom: -30px;
+  left: -175px;
+}
+#epiphany-ride .tanArrows {
+  bottom: -50px;
+}
+
+#epiphany-ride .mediaBox {
+  z-index: 2;
+  top: 170px!important;
+  left: 309px;
+}
+#epiphany-ride .mediaBox .mediaBarLink {
+  top: 227px;
+  left: 240px;
+  width: 700px;
+  z-index: 10001;
+}
+#epiphany-ride .wrapper {
+  border: 10px solid #fff4c7;
+  background: #000;
+  background: rgba(0, 0, 0, 0.5);
+  width: 637px;
+  height: 360px;
+}
+#epiphany-ride .wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+#epiphany-ride .opened img {
+  z-index: 0;
+}
+#epiphany-ride .closed img {
+  z-index: 1000;
+}
+#epiphany-ride .mediaBox .mediaBarLink {
+  top: 227px;
+  left: 240px;
+  width: 700px;
+  z-index: 10001;
+}
+
+
+
+/* GIVING BACK */
+#giving-back {
+  top: 769px;
+  padding-top: 5px;
+  height: 944px;
+  width: 1570px;
+  margin-left: -775px;
+  left: 50%;
+  background: rgba(0, 0, 0, 0.4);
+}
+#giving-back .blackCopyBox {
+  top: 201px!important;
+  left: 430px;
+  z-index: 10001px!important;
+}
+#giving-back .photo {
+  position: absolute;
+  width: 570px;
+  height: 720px;
+  background: url('../images/ride-photo.jpg');
+  top: 180px!important;
+  left: -60px;
+}
+
+
+
+/* WHITE ROADS */
+#white-roads {
+  position: absolute;
+  background: url('../images/white-roads-bg.jpg') no-repeat top center;
+  height: 1300px;
+  width: 1550px;
+  margin-left: -775px;
+  left: 50%;
+  top: -150px;
+}
+#white-roads p.about-the-journey {
+  z-index: 1000!important;
+  position: absolute;
+  text-indent: -9999px;
+  width: 1540px;
+  height: 110px;
+  margin: 0 0 0 -770px;
+  left: 50%;
+  top: -30px;
+  text-align: center;
+  background: url('../images/about-the-journey1.png') no-repeat;
+}
+#white-roads .mediaBox {
+  z-index: 2;
+  top: 166px!important;
+  left: 309px;
+}
+#white-roads .mediaBox .mediaBarLink {
+  width: 875px;
+  left: -600px;
+  top: 260px;
+  z-index: 10000;
+}
+#white-roads .blackArrows {
+  bottom: 480px;
+  z-index: 100;
+}
+#white-roads .seal2 {
+  position: absolute;
+  z-index: 101;
+  left: 780px;
+  top: 426px;
+  width: 170px;
+  height: 172px;
+  background: url('../images/road-seal.png') no-repeat;
+}
+#white-roads .wrapper {
+  border: 10px solid #fff4c7;
+  background: #000;
+  background: rgba(0, 0, 0, 0.5);
+  width: 637px;
+  height: 360px;
+}
+#white-roads .wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1001;
+}
+#white-roads .opened img {
+  z-index: 0;
+}
+#white-roads .closed img {
+  z-index: 1000;
+}
+
+
+
+/* CLIMBING DIFFERENT */
+#climbing-different {
+  width: 1550px;
+  margin-left: -775px;
+  margin-bottom: -600px;
+  left: 50%;
+  height: 970px;
+  top: -330px;
+}
+#climbing-different .blackCopyBox {
+  top: 220px!important;
+  left: 430px;
+  z-index: 1000;
+}
+#climbing-different .blackArrows {
+  top: 305px;
+  z-index: 1;
+}
+#climbing-different .photo {
+  z-index: 200;
+  position: absolute;
+  background: url('../images/photo2.jpg');
+  border: 10px solid #000;
+  top: 190px!important;
+  left: -60px;
+}
+
+
+
+
+
+/* PANFORTE */
+#panforte {
+  position: absolute;
+  z-index: 1000;
+  height: 780px;
+  width: 1550px;
+  margin-left: -775px;
+  left: 50%;
+  top: 685px;
+}
+#panforte .background {
+  background: rgba(0, 0, 0, 0.5);
+  height: 100%;
+  padding-top: 130px;
+}
+#panforte .wrapper {
+  border: 10px solid #fff4c7;
+  background: #000;
+  background: rgba(0, 0, 0, 0.5);
+  width: 637px;
+  height: 360px;
+}
+#panforte .wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+#panforte .opened img {
+  z-index: 0;
+}
+#panforte .closed img {
+  z-index: 1000;
+}
+#panforte .mediaBox {
+  top: 40px!important;
+  left: 309px;
+}
+#panforte .mediaBox .mediaBarLink {
+  top: 270px;
+  left: 240px;
+  width: 700px;
+  z-index: 10001;
+}
+#panforte .tanArrows {
+  z-index: 1;
+  height: 30px;
+  top: -153px;
+}
+
+
+
+
+
+
+#clif-adventures,
+#risks,
+#light,
+#kindness,
+#humor
+#panforte,
+#epiphany-ride,
+#giving-back,
+#white-roads,
+#climbing-different {
+  background-position: 50% 0%;
+  background-repeat: no-repeat;
+  position: relative;
+}
+#clif-adventures .container,
+#risks .container,
+#light .container,
+#kindness .container,
+#panforte .container,
+#humor .container,
+#epiphany-ride .container,
+#giving-back .container,
+#white-roads .container,
+#climbing-different .container {
+  height: 100%;
+}
+.to-be-continued {
+  background: #cc0000;
+  width: 1550px;
+  margin-left: -775px;
+  left: 50%;
+  top: -320px;
+  position: relative;
+  z-index: 1001;
+  zoom: 1;
+}
+.to-be-continued:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+.to-be-continued h3 {
+  display: inline-block;
+  text-transform: uppercase;
+  display: inline-block;
+  float: left;
+  margin: 5px 0;
+  font-size: 29px;
+  font-weight: normal;
+  padding-left: 420px;
+  background: url('../images/left-tan-arrow.png') no-repeat;
+  background-position: 402px 7px;
+}
+.to-be-continued .socialLinks {
+  display: inline-block;
+  float: left;
+  margin: 0;
+  padding-left: 10px;
+  height: 45px;
+}
+.to-be-continued .socialLinks li {
+  display: inline-block;
+}
+.to-be-continued .socialLinks li a {
+  display: inline-block;
+  float: left;
+  height: 45px;
+  width: 35px;
+}
+.to-be-continued .socialLinks li a.facebook {
+  background: url('../images/facebook-icon.png') no-repeat;
+  background-position: 0px 5px;
+}
+.to-be-continued .socialLinks li a.twitter {
+  background: url('../images/twitter-icon.png') no-repeat;
+  background-position: 0px 2px;
+}
+.blackArrows {
+  position: absolute;
+  bottom: -23px;
+  left: -300px;
+  width: 1563px;
+  height: 46px;
+  margin: 0px auto;
+  background: url('../images/black-arrows.png');
+  z-index: 1000;
+}
+.tanArrows {
+  position: absolute;
+  bottom: -23px;
+  left: -300px;
+  width: 1563px;
+  height: 46px;
+  margin: 0px auto;
+  background: url('../images/black-arrows.png');
+  z-index: 1000;
+  background: url('../images/tan-arrows.png');
+}
+.mediaBox {
+  position: absolute;
+}
+.mediaBox .wrapper {
+  position: relative;
+}
+.mediaBox .wrapper img {
+  vertical-align: top;
+}
+.mediaBox .wrapper .mediaBarLink {
+  position: absolute;
+  background: #000;
+  height: 65px;
+  margin: 0;
+  color: #fff4c7;
+  line-height: 65px;
+  font-size: 20px;
+  z-index: 1000;
+   text-transform: uppercase;
+
+}
+.mediaBox .wrapper .mediaBarLink .playButton {
+  color: #fff4c7;
+  position: absolute;
+  z-index: 10001;
+  display: block;
+  height: 65px;
+  line-height: 65px;
+  left: -60px;
+  width: 800px;
+  padding-left: 78px;
+  background: url('../images/play-button.png') no-repeat top left;
+}
+.mediaBox .wrapper .mediaBarLink .playButton:hover, .mediaBox .wrapper .mediaBarLink .playButton.opened {
+  color: #ba5915;
+}
+.mediaBox .wrapper .mediaBarLink .playButton.opened {
+  background: url('../images/play-button-close.png') no-repeat top left;
+}
+.mediaBox .wrapper .mediaBarLink .linkText {
+  display: inline-block;
+  float: left;
+  height: 25px;
+  background: #000;
+  position: relative;
+  z-index: 100;
+  padding: 20px;
+  line-height: 25px;
+  font-size: 20px;
+  text-transform: uppercase;
+}
+.mediaBox .wrapper .mediaBarLink .blackBar {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  height: 65px;
+  width: 450px;
+  background: #000;
+  z-index: 1;
+}
+.mediaBox .wrapper .mediaBarLink.left {
+  text-align: right;
+}
+.mediaBox .wrapper .mediaBarLink.left .playButton {
+  background: url('../images/play-button-left.png') no-repeat top right;
+  right: 0;
+  left: 0;
+  width: 860px;
+  padding-right: 80px;
+  padding-left: 0;
+}
+.mediaBox .wrapper .mediaBarLink.left .playButton.opened {
+  background: url('../images/play-button-left-close.png') no-repeat top right;
+}
+a.moreLink {
+  color: #ba5915;
+  text-transform: uppercase;
+  padding-top: 7px;
+  width: 87px;
+  height: 26px;
+  text-align: center;
+  font-size: 14px;
+  padding-left: 13px;
+  background: url('../images/more-link-black.png');
+  display: block;
+  cursor: pointer;
+}
+a.moreLink:hover {
+  background: url('../images/more-link-tan.png');
+  color: #000;
+}
+a.moreLink.tan {
+  background: url('../images/more-link-tan.png');
+  color: #000;
+}
+a.moreLink.tan:hover {
+  /* background: url('/assets-adventures/main/assets/images/more-link-black.png'); */
+
+  color: #ba5915;
+}
+.more-info {
+  display: none;
+  z-index: 100001!important;
+  background: #000;
+  width: 1200px;
+  position: absolute;
+  right: 0px;
+  top: -50px;
+  padding: 90px 20px 20px;
+}
+.more-info .scroll-box {
+  position: relative;
+  margin: 40px 0 0 560px;
+  height: 500px;
+  overflow-y: scroll;
+}
+.more-info .scroll-box p {
+  font-size: 14px!important;
+  margin-bottom: 20px;
+}
+.more-info p.close {
+  height: 78px;
+  width: 1235px;
+  background: #fff4c7;
+  position: absolute;
+  top: 20px;
+  padding: 0!important;
+  margin: 0;
+}
+.more-info p.close span {
+  display: block;
+  position: absolute;
+  line-height: 78px;
+  left: 600px;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #000;
+  font-size: 48px;
+  height: 98px;
+  font-family: 'Trade Gothic W01 Bold', "Helvetica", sans-serif;
+}
+.more-info p.close a {
+  right: -40px;
+  text-indent: -9999px;
+  top: 0;
+  display: block;
+  position: absolute;
+  height: 78px;
+  line-height: 78px;
+  width: 50px;
+  background: url('../images/left-tan-close-arrow.png') no-repeat top right;
+  cursor: pointer;
+  z-index: 100001;
+}
+.video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 999;
+}
+.blackCopyBox {
+  position: absolute;
+  background: #000;
+  width: 520px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+.blackCopyBox .wrapper {
+  padding: 30px 0px;
+}
+.blackCopyBox .wrapper h2 {
+  padding: 0px 40px;
+  letter-spacing: 1px;
+  font-size: 48px;
+  line-height: 50px;
+  text-transform: uppercase;
+  font-weight: normal;
+  margin: 0;
+  background: url('../images/left-tan-arrow.png') no-repeat;
+  background-position: 15px 14px;
+}
+.blackCopyBox .wrapper h3 {
+  margin: 0px 40px;
+  letter-spacing: 1px;
+  font-weight: normal;
+  font-size: 23px;
+  padding: 5px 0px;
+  line-height: 30px;
+  text-transform: uppercase;
+  margin-bottom: 1px;
+}
+.blackCopyBox .wrapper p {
+  padding: 0px 40px;
+  font-family: sans-serif;
+  line-height: 23px;
+  font-size: 12px;
+  margin: 0;
+  padding-top: 10px;
+}
+.blackCopyBox .wrapper .moreLink {
+  position: absolute;
+  bottom: -15px;
+  left: 390px;
+}
+.blackCopyBox .wrapper hr {
+  border-bottom: 8px double #fff4c7;
+  display: block;
+  margin: 8px 40px 0px 40px;
+}
+#modal {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10;
+}
+.hide {
+  display: none;
+}
+.preload1 {
+  display: none;
+  background: url('../images/play-button-close.png') no-repeat top left;
+}
+.preload2 {
+  display: none;
+  background: url('../images/play-button-left-close.png') no-repeat top right;
+}
+@media only screen and (max-width: 1000px) {
+  .more-info {
+    right: 80px;
+  }
+}
+@media only screen and (max-width: 768px) {
+  #clif-adventures,
+  #risks,
+  #panforte,
+  #epiphany-ride,
+  #giving-back,
+  #white-roads,
+  #climbing-different {
+    width: 1330px;
+  }
+  #topBar {
+    width: 768px;
+    margin-left: -384px;
+  }
+  #clif-adventures .introducing {
+    right: -280px;
+  }
+  .more-info {
+    right: 180px;
+  }
+  .to-be-continued {
+    margin-left: -875px;
+  }
+  .blackArrows, .tanArrows {
+    left: -200px;
+  }
+  #white-roads p.about-the-journey {
+    margin-left: -675px;
+  }
+}
