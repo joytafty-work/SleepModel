@@ -1,201 +1,380 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-
+    <title> UP Dashboard</title>
+    <meta charset="UTF-8">
     <!-- bootstrap -->
-    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-
-    <title>Basic D3 Dashboard</title>
-
-    <script src="http://d3js.org/d3.v3.min.js"></script>
-    <style>
-
-path.line {
-    fill: none;
-    stroke: #666;
-    stroke-width: 1.5px;
-}
-
-.domain {
-    stroke-width: 1px;
-}
-
-circle {
-    cursor: pointer;
-}
-
-.axis {
-    shape-rendering: crispEdges;
-}
-
-.axis line, .axis path {
-    stroke-width: 1px;
-    stroke: #000;
-    fill: none;
-}
-
-.tooltip {
-    display: none;
-}
-
-.tooltip.active {
-    display: block;
-}
-
-.tooltip rect {
-    fill: #ff0000;
-}
-
-    </style>
-
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css"/>
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.css') }}"/> -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap3.css') }}"/>
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap-modal.css') }}"/> -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/dc.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/dc2.css') }}"/>
 </head>
 <body>
+<style>
+    #monthly-volume-chart g.y {
+        display: none;
+    }
 
-    <h1>Flask UI for Basis Data</h1>
+    /* testing out d3 tooltip */
+    .d3-tip {
+      line-height: 1;
+      font-weight: bold;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      border-radius: 8px;
+    }
 
-    <div id="info1">
-        <div id="point-info">
-            Click on a point on the scatter plot.
-        </div>
+    /* Creates a small triangle extender for the tooltip */
+    .d3-tip:after {
+      box-sizing: border-box;
+      display: inline;
+      font-size: 10px;
+      width: 100%;
+      line-height: 1;
+      color: rgba(0, 0, 0, 0.8);
+      content: "\25BC";
+      position: absolute;
+      text-align: center;
+    }
+
+    /* Style northward tooltips differently */
+    .d3-tip.n:after {
+      margin: -1px 0 0 0;
+      top: 100%;
+      left: 0;
+    }
+
+    .campusLabel {
+      font: 300 18px "Helvetica Neue";
+      color: #525252;
+    }
+
+    .chart-title {
+      font-family: 'Lato', futura, georgia;
+      letter-spacing: 1px;
+      line-height: 15px;
+      text-transform: Uppercase;
+      text-align: center;
+      color: #525252;
+    }
+
+
+    h3 {
+      font-family: 'Helvetica Neue';
+      font-size: 24px;
+      font-weight: 300;
+    }
+
+    body {
+      min-height: 2000px;
+      padding-top: 120px;
+    }
+
+    .myName {
+      font-family: 'Helvetica Neue';
+      font-size: 16px;
+      font-weight: 300;
+      text-align: right;
+      color: #525252;
+      padding-left: 160px;
+    }
+
+</style>
+
+<script type="text/javascript" src="{{ url_for('static',filename='js/jquery.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/d3.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/d3.tip2.js')}}"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
+<!-- <script type="text/javascript" src="{{ url_for('static',filename='js/bootstrap-modal.js')}}"></script> -->
+<script type="text/javascript" src="{{ url_for('static',filename='js/crossfilter.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/dc-1.6.0.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/colorbrewer.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/moment.js')}}"></script>
+
+<!-- Fixed navbar -->
+<div class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header"><h3><a href="https://jawbone.com/up">Jawbone UP</a> data visualization</h3>
+    </div>
+    <div class="nav navbar-nav">
+      <span class="btn-group" data-toggle="buttons-radio">
+        <button type="button" class="btn btn-default" id="btnPhysical">Physical Activity</button>
+        <button type="button" class="btn btn-default" id="btnSleep">Sleep</button>
+        <button type="button" class="btn btn-default" id="btnNutrition">Nutrition</button>
+        <button type="button" class="btn btn-default" id="btnExplore">Exploration</button>
+      </span> 
+      <span class="btn-group" id="btnModal"> 
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">About <span class="caret"></span></button>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="#bioModal" data-toggle="modal" data-target="#bioModal">The Author</a></li>
+          <li class="divider"></li>
+          <li><a href="#chartModal" data-toggle="modal" data-target="#chartModal">The Charts</a></li>
+        </ul>
+      </span>
+      <span class="myName"><a href="https://github.com/joytafty" title="@joytafty">@joytafty</a></span> 
+    </div>
+  </div>
+</div>
+
+<!-- Bio Modal -->
+<div class="modal" id="bioModal" tabindex="-1" role="dialog" aria-labelledby="bioModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">About the Author</h4>
+      </div>
+      <div class="modal-body">
+        <h4 class="modal-title">Who am I ?</h4>
+        <p>I'm Joy Rimchala, a quantified-self enthusiast with backgroudata-nd in driven probabilistic model building and agent-based simulation. I developed my expertise during my PhD in Biological Engineering from MIT, building models that predict cell's aggressiveness based on their shapes and movement patterns.  I am working to bring together my expertise in model building and passion in self-tracking and behavioral modification to personal improve health and wellness of others around me.</p>
+        <hr>
+        <h4 class="modal-title">What do I track and how? </h4>
+        <p>It started with Jawbone UP! I got one as a christmas present in December 2012 and I became interested in sel-tracking since.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.bioModal -->
+
+<!-- Chart Modal -->
+<div class="modal" id="chartModal" tabindex="-1" role="dialog" aria-labelledby="chartModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">About these charts</h4>
+      </div>
+      <div class="modal-body">
+        <h4 class="modal-title">The data source</h4>
+        <p>These charts are drawn using <a href="#bioModal">the author</a>'s self tracking data.</p>
+        <hr>
+        <h4 class="modal-title">The tools</h4>
+        <p>These interactive graphs were made using <a target="_blank" href="http://nickqizhu.github.io/dc.js/">dc.js</a>, which was built to work natively with <a target="_blank" href="http://square.github.com/crossfilter/">crossfilter</a> and leverages the super awesome <a href="http://d3js.org">d3.js</a>.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.chartModal -->
+
+<!-- Physical Activity -->
+<div class="container" id="physical-container">
+  <!-- Row 1 -->
+  <div clas="row">
+  <!-- Physical Activity by month (Pie) -->
+    <div id="phys-month-pie" class="col-md-4">
+      <span class="chart-title">
+        &nbsp;&nbsp;Exercise time per Day (mins)
+        <br>
+        &nbsp;(by Month of 2013) 
+      </span>
+      <a class="reset" href="javascript:physpieChart.filterAll('physchart');dc.redrawAll('physchart');" style="display: none;">refresh</a>
+      <div class="clearfix"></div>      
     </div>
 
-    <div id="plot">
+    <!-- Physical Activity by Week -->
+    <div id="phys-week-bar" class="col-md-4">
+      <span class="chart-title">
+        &nbsp;&nbsp;Average Steps per day 
+        <br>
+        &nbsp;(by day of the weeks) 
+      </span>
+      <a class="reset" href="javascript:physweekRow.filterAll('physchart');dc.redrawAll('physchart');" style="display: none;">refresh</a>
+      <div class="clearfix"></div>      
     </div>
-
-    <div id="info2">
-        <div id="bar-info">
-            Click on a bar.
-        </div>
+      <!-- Row 3 -->
+    <!-- Physical Activity by Week -->
+    <div id="phys-bar-chart" class="col-md-4">
+      <span class="chart-title">
+        &nbsp;&nbsp;Calories burned per day 
+        <br>
+        &nbsp;(by Month of 2013) 
+      </span>
+      <a class="reset" href="javascript:physbarChart.filterAll('physchart');dc.redrawAll('physchart');" style="display: none;">refresh</a>
+      <div class="clearfix"></div>      
     </div>
+  </div> <!-- Close row 1 -->
 
-    <div id="plot2">
+  <!-- Row 2 -->
+  <div clas="row">
+    <!-- Physical Activity by Week -->
+    <div id="phys-move-chart" class="dc-chart">
+      <span class="chart-title">
+        &nbsp;&nbsp;Total distance Travel
+      </span>
+      <a class="reset" href="javascript:physmoveChart.filterAll('physchart');dc.redrawAll('physchart');" style="display: none;">refresh</a>
+      <div class="clearfix"></div>      
     </div>
+  </div> 
+  <!-- Close row 2 -->
+</div>
 
+<!-- Sleep -->
+<div class="container" id="sleep-container" style="display: none;">
+  <!-- Row 1 -->
+  <div clas="row">
+  <p>Nothing about sleep yet!</p>
+  </div>
+</div>
 
-    <script>
-        // Set up the plot window.
-        var margin = 80;
-        var w = 700 - 2 * margin, 
-        h = 500 - 2 * margin;
+<!-- Nutrition -->
+<div class="container" id="nutrition-container" style="display: none;">
+  <!-- Row 1 -->
+  <div clas="row">
+  <p>Nothing about nutrition yet!</p>  
+  </div>
+</div>
 
-        var svg1 = d3.select("#plot").append("svg")
-                        .attr("width", w + 2 * margin)
-                        .attr("height", h + 2 * margin)
-                    .append("svg:g")
-                        .attr("transform", "translate(" + margin + ", " + margin + ")");
-                
-        // The colorbar.
-        var color = d3.scale.quantize()
-                      .range(["#156b87", "#876315", "#543510", "#872815"])
-                      .domain([0, 1]);
+<!-- Nutrition -->
+<div class="container" id="explore-container" style="display: none;">
+  <!-- Row 1 -->
+  <div clas="row">
+  <p>Nothing to explore yet!</p>  
+  </div>
+</div>
 
-        // Axes scaling functions.
-        var xscale = d3.scale.linear().range([0, w]);
-        var yscale = d3.scale.linear().range([h, 0]);
+<div class="container" id="pre-container">
+  <div class="row">
+    <div class="col-md-6">
+      <h4>Sleep Interval Bubble</h4>
+      <div id="slbubble"></div>
+    </div>
+  </div>
+</div>
 
-        // The axes objects themselves.
-        var xaxis = d3.svg.axis().scale(xscale).ticks(8);
-        var yaxis = d3.svg.axis().scale(yscale).ticks(8).orient("left");
+<script type="text/javascript">
+var slBubble = dc.bubbleChart("#slbubble");
+var physmoveChart = dc.lineChart("#phys-move-chart");
 
-        svg1.append("svg:g").attr("class", "x axis")
-                           .attr("transform", "translate(0, " + h + ")");
-        svg1.append("svg:g").attr("class", "y axis");
+d3.csv("../static/data/AllUPs.csv", function(error, data) {
+  var dateFormat = d3.time.format("%m/%d/%Y");
+  var numberFormat = d3.format(".2f");
+  
+  // Parse date
+  data.forEach(function (d) {
+    d.month = parseInt((d.DATE).substring(4,6));
+    d.wkday = moment(d.DATE, 'YYYYMMDD').weekday();
+  })
 
-        // Show the information about a particular point.
-        var show_info = function (d) {
-            d3.select("#point-info").text("data point :" + d._id + ". "
-                + "Coordinates : (" 
-                    + parseFloat(d.x).toFixed(2) + ", " 
-                    + parseFloat(d.y).toFixed(2) + ").");
-        };
+  // Load data
+  var ups = crossfilter(data);
+  // Dimension for Bubble plot
+  var weekdayDimension = ups.dimension(function (d) {return +d.wkday+1; });
+  // Group for Bubble plot
+  var weekdayValueGroup = weekdayDimension.group().reduce(
+    // add
+    function (p, v) {
+      ++p.count;
+      p.slint += v.s_asleep_time;
+      p.slint_avg = p.slint / p.count;
+      p.awakeInt += v.s_awake_time;
+      p.deepInt += v.s_deep;
+      p.lightInt += v.s_light; 
+      p.slDuration += v.s_duration;
+      p.s_quality += v.s_quality; 
+      return p;
+    },
+    // remove
+    function (p, v) {
+      --p.count;
+      p.slint -= v.s_asleep_time;
+      p.slint_avg = p.slint / p.count;
+      p.awakeInt -= v.s_awake_time;
+      p.deepInt -= v.s_deep;
+      p.lightInt -= v.s_light; 
+      p.slDuration -= v.s_duration;
+      p.slQuality -= v.s_quality; 
+      return p;
+    },
+    // initialize
+    function () {
+      return {count: 0, slint:0, slint_avg: 0,
+        awakeInt: 0, deepInt: 0, lightInt: 0, slDuration: 0, slQuality:0};
+    }
+    )
 
-        // Draw Circle plots
-        var drawCirc = function (data) {
-            // Rescale the axes.
-            xscale.domain([d3.min(data, function (d) { return d.x; }) - 0.05,
-                           d3.max(data, function (d) { return d.x; }) + 0.05]);
-            yscale.domain([d3.min(data, function (d) { return d.y; }) - 0.05,
-                           d3.max(data, function (d) { return d.y; }) + 0.05]);
+// Dimension for movement distance
+var moveDays = ups.dimension(function (d) {
+  doy = moment(d.DATE, 'YYYYMMDD');
+  return doy;
+});
 
-            // Display the axes.
-            svg1.select(".x.axis").call(xaxis);
-            svg1.select(".y.axis").call(yaxis);
+// Group for movement distance
+var moveDaysGroup = moveDays.group().reduce(
+  function (p, v) {
+    ++p.days;
+    p.total += v.m_distance/1000; 
+    p.mvavg = Math.round(p.total / p.days);
+    return p;
+  },
+  function (p, v) {
+    --p.days;
+    p.total -= v.m_distance; 
+    p.mvavg = Math.round(p.total / p.days);
+    return p;
+  },
+  function () {
+    return {days:0, total:0, mvavg:0};
+  });
 
-            // Insert the data points.
-            svg1.selectAll("circle").data(data).enter()
-                .append("circle")
-                    .attr("id", function (d) { return d._id; })
-                    .attr("cx", function (d) { return xscale(d.x); })
-                    .attr("cy", function (d) { return yscale(d.y); })
-                    .attr("r", function (d) { return 2 * Math.sqrt(d.area); })
-                    .style("fill", function (d) { return color(d.color); })
-                    .on("mousedown", show_info);
-        };
+  slBubble
+    .width(400)
+    .height(280)
+    .transitionDuration(1500)
+    .margins({top: 10, right: 10, bottom: 30, left: 50})
+    .dimension(weekdayDimension)
+    .group(weekdayValueGroup)
+    .colors(colorbrewer.RdYlGn[9]) // color function or array for bubbles
+    .colorDomain([0, 500])
+    .colorAccessor(function (p) {
+      return Math.random()*parseInt(p.value.awakeInt);})
+    .keyAccessor(function (p) {return 0.01*Math.random()+parseInt(p.key);})
+    .valueAccessor(function (p) {return parseInt(p.value.slint);})
+    .radiusValueAccessor(function (p) {return parseInt(p.value.awakeInt);})
+    .maxBubbleRelativeSize(0.1)
+    .x(d3.scale.linear().domain([0, 10]))
+    .y(d3.scale.linear().domain([0, 2000]))
+    .r(d3.scale.linear().domain([0, 1000]))
+    .renderHorizontalGridLines(true)
+    .renderVerticalGridLines(true)
+    .xAxisLabel("Month")
+    .yAxisLabel("Sleep Interval")
+    // .elasticY(true)
+    .elasticX(true); 
 
+  slBubble.render();
 
-        // Windor for Bar plots
-        // Axes scaling functions.
-        var xscale = d3.scale.linear().range([0, w]);
-        var yscale = d3.scale.linear().range([h, 0]);
+  // physmoveChart
+  //   .renderArea(true)
+  //   .width(960)
+  //   .height(360)
+  //   .transitionDuration(800)
+  //   .margins({top: 50, right: 50, bottom: 30, left: 50})
+  //   .mouseZoomable(true)
+  //   // .x(d3.scale.linear().domain([0, 365]))
+  //   .x(d3.time.scale().domain([new Date(2012, 11, 31), new Date(2013, 11, 31)]))
+  //   .round(d3.time.month.round)
+  //   .xUnits(d3.time.months)
+  //   .dimension(moveDays)
+  //   .group(moveDaysGroup)
+  //   .yAxisLabel("Distance Moved (km)")
+  //   .valueAccessor(function (p) {
+  //     return p.value.total;
+  //   })  
+  //   .renderHorizontalGridLines(true)
+  //   .legend(dc.legend().x(800).y(10).itemHeight(13).gap(5))
+  //   .elasticY(true);
 
-        // The axes objects themselves.
-        var xaxis = d3.svg.axis().scale(xscale).ticks(8);
-        var yaxis = d3.svg.axis().scale(yscale).ticks(8).orient("left");
-
-
-        var svg2 = d3.select("#plot2").append("svg")
-                        .attr("width", w + 2 * margin)
-                        .attr("height", h + 2 * margin)
-                    .append("svg:g")
-                        .attr("transform", "translate(" + margin + ", " + margin + ")");
-
-        var show_bar = function (d) {
-            d3.select("#bar-info").text("data point :" + d._id + ". "
-                + "Value : (" 
-                    + parseFloat(d.y).toFixed(2) + ").");
-        };
-
-
-        var drawBar = function(data) {
-            var barPadding = 1;
-            var yscale = 50;
-
-            svg2.selectAll("rect").data(data).enter()
-                .append("rect")
-                    .attr("x", function(d,i) {
-                        return i*(w/data.length);
-                    })
-                    // .attr("width", x.rangeBand())
-                    .attr("y", function (d) {
-                        return h/2-Math.abs(d.y)*yscale;
-                    })
-                    .attr("width", function (d) { 
-                        return w/data.length - barPadding; 
-                    })
-                    .attr("height", function (d) { 
-                        return Math.abs(d.y)*yscale; 
-                    })
-                    .attr("fill", function (d) {
-                        return "rgb(0, 0, " + Math.abs(d.y)*yscale + ")";
-                    })
-                    .text(function (d) { return parseFloat(d.y*yscale).toFixed(2); })
-                    .on("mousedown", show_bar);
-
-            // svg2.selectAll("text")
-            // .data(data)
-            // .enter()
-            // .text( function (d) { return d.y; });
-            // .attr("x", function (d,i) {
-            //     return i*(w/data.length);
-            // })
-            // .attr("y", function (d) { return h/2-(d.y*yscale)};);
-        }
-
-        d3.json("/data", drawCirc);
-        d3.json("/data", drawBar);
-
-    </script>
-
+  // physmoveChart.render();
+});
+</script>
+<script type="text/javascript" src="../static/js/physical.js"></script>
+<script type="text/javascript" src="../static/js/ups_all.js"></script>
 </body>
 </html>

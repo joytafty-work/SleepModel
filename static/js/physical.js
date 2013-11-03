@@ -1,7 +1,7 @@
 var physpieChart = dc.pieChart("#phys-month-pie", "physchart");
 var physweekRow = dc.rowChart("#phys-week-bar", "physchart");
 var physbarChart = dc.barChart("#phys-bar-chart", "physchart");
-// var physmoveChart = dc.lineChart("#phys-move-chart", "physchart");
+var physmoveChart = dc.lineChart("#phys-move-chart", "physchart");
 
 // var phystodBar = dc.barChart("#phys-tod-bar", "physbarchart");
 

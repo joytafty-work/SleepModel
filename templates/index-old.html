@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+
+    <title>Basic D3 Dashboard</title>
+
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <style>
+
+path.line {
+    fill: none;
+    stroke: #666;
+    stroke-width: 1.5px;
+}
+
+.domain {
+    stroke-width: 1px;
+}
+
+circle {
+    cursor: pointer;
+}
+
+.axis {
+    shape-rendering: crispEdges;
+}
+
+.axis line, .axis path {
+    stroke-width: 1px;
+    stroke: #000;
+    fill: none;
+}
+
+.tooltip {
+    display: none;
+}
+
+.tooltip.active {
+    display: block;
+}
+
+.tooltip rect {
+    fill: #ff0000;
+}
+
+    </style>
+
+</head>
+<body>
+
+    <h1>Flask UI for Basis Data</h1>
+
+    <div id="info1">
+        <div id="point-info">
+            Click on a point on the scatter plot.
+        </div>
+    </div>
+
+    <div id="plot">
+    </div>
+
+    <div id="info2">
+        <div id="bar-info">
+            Click on a bar.
+        </div>
+    </div>
+
+    <div id="plot2">
+    </div>
+
+
+    <script>
+        // Set up the plot window.
+        var margin = 80;
+        var w = 700 - 2 * margin, 
+        h = 500 - 2 * margin;
+
+        var svg1 = d3.select("#plot").append("svg")
+                        .attr("width", w + 2 * margin)
+                        .attr("height", h + 2 * margin)
+                    .append("svg:g")
+                        .attr("transform", "translate(" + margin + ", " + margin + ")");
+                
+        // The colorbar.
+        var color = d3.scale.quantize()
+                      .range(["#156b87", "#876315", "#543510", "#872815"])
+                      .domain([0, 1]);
+
+        // Axes scaling functions.
+        var xscale = d3.scale.linear().range([0, w]);
+        var yscale = d3.scale.linear().range([h, 0]);
+
+        // The axes objects themselves.
+        var xaxis = d3.svg.axis().scale(xscale).ticks(8);
+        var yaxis = d3.svg.axis().scale(yscale).ticks(8).orient("left");
+
+        svg1.append("svg:g").attr("class", "x axis")
+                           .attr("transform", "translate(0, " + h + ")");
+        svg1.append("svg:g").attr("class", "y axis");
+
+        // Show the information about a particular point.
+        var show_info = function (d) {
+            d3.select("#point-info").text("data point :" + d._id + ". "
+                + "Coordinates : (" 
+                    + parseFloat(d.x).toFixed(2) + ", " 
+                    + parseFloat(d.y).toFixed(2) + ").");
+        };
+
+        // Draw Circle plots
+        var drawCirc = function (data) {
+            // Rescale the axes.
+            xscale.domain([d3.min(data, function (d) { return d.x; }) - 0.05,
+                           d3.max(data, function (d) { return d.x; }) + 0.05]);
+            yscale.domain([d3.min(data, function (d) { return d.y; }) - 0.05,
+                           d3.max(data, function (d) { return d.y; }) + 0.05]);
+
+            // Display the axes.
+            svg1.select(".x.axis").call(xaxis);
+            svg1.select(".y.axis").call(yaxis);
+
+            // Insert the data points.
+            svg1.selectAll("circle").data(data).enter()
+                .append("circle")
+                    .attr("id", function (d) { return d._id; })
+                    .attr("cx", function (d) { return xscale(d.x); })
+                    .attr("cy", function (d) { return yscale(d.y); })
+                    .attr("r", function (d) { return 2 * Math.sqrt(d.area); })
+                    .style("fill", function (d) { return color(d.color); })
+                    .on("mousedown", show_info);
+        };
+
+
+        // Windor for Bar plots
+        // Axes scaling functions.
+        var xscale = d3.scale.linear().range([0, w]);
+        var yscale = d3.scale.linear().range([h, 0]);
+
+        // The axes objects themselves.
+        var xaxis = d3.svg.axis().scale(xscale).ticks(8);
+        var yaxis = d3.svg.axis().scale(yscale).ticks(8).orient("left");
+
+
+        var svg2 = d3.select("#plot2").append("svg")
+                        .attr("width", w + 2 * margin)
+                        .attr("height", h + 2 * margin)
+                    .append("svg:g")
+                        .attr("transform", "translate(" + margin + ", " + margin + ")");
+
+        var show_bar = function (d) {
+            d3.select("#bar-info").text("data point :" + d._id + ". "
+                + "Value : (" 
+                    + parseFloat(d.y).toFixed(2) + ").");
+        };
+
+
+        var drawBar = function(data) {
+            var barPadding = 1;
+            var yscale = 50;
+
+            svg2.selectAll("rect").data(data).enter()
+                .append("rect")
+                    .attr("x", function(d,i) {
+                        return i*(w/data.length);
+                    })
+                    // .attr("width", x.rangeBand())
+                    .attr("y", function (d) {
+                        return h/2-Math.abs(d.y)*yscale;
+                    })
+                    .attr("width", function (d) { 
+                        return w/data.length - barPadding; 
+                    })
+                    .attr("height", function (d) { 
+                        return Math.abs(d.y)*yscale; 
+                    })
+                    .attr("fill", function (d) {
+                        return "rgb(0, 0, " + Math.abs(d.y)*yscale + ")";
+                    })
+                    .text(function (d) { return parseFloat(d.y*yscale).toFixed(2); })
+                    .on("mousedown", show_bar);
+
+            // svg2.selectAll("text")
+            // .data(data)
+            // .enter()
+            // .text( function (d) { return d.y; });
+            // .attr("x", function (d,i) {
+            //     return i*(w/data.length);
+            // })
+            // .attr("y", function (d) { return h/2-(d.y*yscale)};);
+        }
+
+        d3.json("/data", drawCirc);
+        d3.json("/data", drawBar);
+
+    </script>
+
+</body>
+</html>

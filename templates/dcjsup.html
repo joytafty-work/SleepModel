@@ -4,9 +4,10 @@
     <title> UP Dashboard</title>
     <meta charset="UTF-8">
     <!-- bootstrap -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css"/>
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.css') }}"/> -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap3.css') }}"/>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap-modal.css') }}"/>
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap-modal.css') }}"/> -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/dc.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/dc2.css') }}"/>
 </head>
@@ -83,11 +84,11 @@
 
 </style>
 
-<!-- YUI seed file -->
-<script src="http://yui.yahooapis.com/3.13.0/build/yui/yui-min.js"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/jquery.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/d3.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/d3.tip2.js')}}"></script>
-<script type="text/javascript" src="{{ url_for('static',filename='js/bootstrap-modal.js')}}"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
+<!-- <script type="text/javascript" src="{{ url_for('static',filename='js/bootstrap-modal.js')}}"></script> -->
 <script type="text/javascript" src="{{ url_for('static',filename='js/crossfilter.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/dc-1.6.0.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='js/colorbrewer.js')}}"></script>
@@ -96,42 +97,64 @@
 <!-- Fixed navbar -->
 <div class="navbar navbar-default navbar-fixed-top">
   <div class="container">
-    <div class="navbar-header"><h3>Jawbone UP data visualization</h3>
+    <div class="navbar-header"><h3><a href="https://jawbone.com/up">Jawbone UP</a> data visualization</h3>
     </div>
     <div class="nav navbar-nav">
       <span class="btn-group" data-toggle="buttons-radio">
-        <button type="button" class="btn btn-default active" id="btnPhysical">Physical Activity</button>
+        <button type="button" class="btn btn-default" id="btnPhysical">Physical Activity</button>
         <button type="button" class="btn btn-default" id="btnSleep">Sleep</button>
         <button type="button" class="btn btn-default" id="btnNutrition">Nutrition</button>
         <button type="button" class="btn btn-default" id="btnExplore">Exploration</button>
       </span> 
-      <span class="btn-group"> 
-        <button type="button" data-loading-text="Loading..." class="btn btn-default dropdown-toggle" data-toggle="dropdown">About <span class="caret"></span></button>
+      <span class="btn-group" id="btnModal"> 
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">About <span class="caret"></span></button>
         <ul class="dropdown-menu" role="menu">
-          <li><a target="_blank" href="https://github.com/joytafty" title="github">by Joy Rimchala</a></li>
+          <li><a href="#bioModal" data-toggle="modal" data-target="#bioModal">The Author</a></li>
           <li class="divider"></li>
-          <li><a data-toggle="modal" href="#myModal">Source Data</a></li>
+          <li><a href="#chartModal" data-toggle="modal" data-target="#chartModal">The Charts</a></li>
         </ul>
       </span>
-      <span class="myName"><a target="_blank" href="https://github.com/joytafty" title="@joytafty">@joytafty</a></span> 
+      <span class="myName"><a href="https://github.com/joytafty" title="@joytafty">@joytafty</a></span> 
     </div>
   </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<!-- Bio Modal -->
+<div class="modal" id="bioModal" tabindex="-1" role="dialog" aria-labelledby="bioModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">About these graphs</h4>
+        <h4 class="modal-title">About Author</h4>
+      </div>
+      <div class="modal-body">
+        <h4 class="modal-title">Who am I ?</h4>
+        <p>I'm Joy Rimchala, a quantified-self enthusiast with backgroudata-nd in driven probabilistic model building and agent-based simulation. I developed my expertise during my PhD in Biological Engineering from MIT, building models that predict cell's aggressiveness based on their shapes and movement patterns.  I am working to bring together my expertise in model building and passion in self-tracking and behavioral modification to personal improve health and wellness of others around me.</p>
+        <hr>
+        <h4 class="modal-title">What do I track and how? </h4>
+        <p>It started with Jawbone UP! I got one as a christmas present in December 2012 and I became interested in sel-tracking since.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Graph Modal -->
+<div class="modal" id="chartModal" tabindex="-1" role="dialog" aria-labelledby="chartModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">About these charts</h4>
       </div>
       <div class="modal-body">
         <h4 class="modal-title">The data source</h4>
         <p>The data source for these graphs is my jawbone UP data.</p>
         <hr>
         <h4 class="modal-title">The technology</h4>
-        <p>These interactive graphs were made using <a target="_blank" href="http://nickqizhu.github.io/dc.js/">dc.js</a>, which was built to work natively with <a target="_blank" href="http://square.github.com/crossfilter/">crossfilter</a> and leverages the super awesome <a target="_blank" href="http://d3js.org">d3.js</a></p>.
+        <p>These interactive graphs were made using <a target="_blank" href="http://nickqizhu.github.io/dc.js/">dc.js</a>, which was built to work natively with <a target="_blank" href="http://square.github.com/crossfilter/">crossfilter</a> and leverages the super awesome <a href="http://d3js.org">d3.js</a>.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -327,28 +350,28 @@ var moveDaysGroup = moveDays.group().reduce(
 
   slBubble.render();
 
-  physmoveChart
-    .renderArea(true)
-    .width(960)
-    .height(360)
-    .transitionDuration(800)
-    .margins({top: 50, right: 50, bottom: 30, left: 50})
-    .mouseZoomable(true)
-    // .x(d3.scale.linear().domain([0, 365]))
-    .x(d3.time.scale().domain([new Date(2012, 11, 31), new Date(2013, 11, 31)]))
-    .round(d3.time.month.round)
-    .xUnits(d3.time.months)
-    .dimension(moveDays)
-    .group(moveDaysGroup)
-    .yAxisLabel("Distance Moved (km)")
-    .valueAccessor(function (p) {
-      return p.value.total;
-    })  
-    .renderHorizontalGridLines(true)
-    .legend(dc.legend().x(800).y(10).itemHeight(13).gap(5))
-    .elasticY(true);
+  // physmoveChart
+  //   .renderArea(true)
+  //   .width(960)
+  //   .height(360)
+  //   .transitionDuration(800)
+  //   .margins({top: 50, right: 50, bottom: 30, left: 50})
+  //   .mouseZoomable(true)
+  //   // .x(d3.scale.linear().domain([0, 365]))
+  //   .x(d3.time.scale().domain([new Date(2012, 11, 31), new Date(2013, 11, 31)]))
+  //   .round(d3.time.month.round)
+  //   .xUnits(d3.time.months)
+  //   .dimension(moveDays)
+  //   .group(moveDaysGroup)
+  //   .yAxisLabel("Distance Moved (km)")
+  //   .valueAccessor(function (p) {
+  //     return p.value.total;
+  //   })  
+  //   .renderHorizontalGridLines(true)
+  //   .legend(dc.legend().x(800).y(10).itemHeight(13).gap(5))
+  //   .elasticY(true);
 
-  physmoveChart.render();
+  // physmoveChart.render();
 });
 </script>
 <script type="text/javascript" src="../static/js/physical.js"></script>
