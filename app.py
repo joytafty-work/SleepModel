@@ -27,9 +27,9 @@ def bar():
 def number():
     return render_template("number.html")
 
-@app.route("/dcchart/")
+@app.route("/sleep/")
 def dcchart():
-    return render_template("dcchart.html")
+    return render_template("sleep.html")
 
 @app.route("/up/")
 def up():
@@ -56,6 +56,9 @@ def data(ndata=100):
         "color": c[i]}
         for i in range(ndata)])
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 if __name__ == "__main__":
     import os

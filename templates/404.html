@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title> UP Dashboard</title>
+    <meta charset="UTF-8">
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap3.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/dc.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/dc2.css') }}"/>
+</head>
+
+<body>
+<style>
+    #monthly-volume-chart g.y {
+        display: none;
+    }
+
+    /* testing out d3 tooltip */
+    .d3-tip {
+      line-height: 1;
+      font-weight: bold;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      border-radius: 8px;
+    }
+
+    /* Creates a small triangle extender for the tooltip */
+    .d3-tip:after {
+      box-sizing: border-box;
+      display: inline;
+      font-size: 10px;
+      width: 100%;
+      line-height: 1;
+      color: rgba(0, 0, 0, 0.8);
+      content: "\25BC";
+      position: absolute;
+      text-align: center;
+    }
+
+    /* Style northward tooltips differently */
+    .d3-tip.n:after {
+      margin: -1px 0 0 0;
+      top: 100%;
+      left: 0;
+    }
+
+    .campusLabel {
+      font: 300 18px "Helvetica Neue";
+      color: #525252;
+    }
+
+    .chart-title {
+      font-family: 'Lato', futura, georgia;
+      letter-spacing: 1px;
+      line-height: 15px;
+      text-transform: Uppercase;
+      text-align: center;
+      color: #525252;
+    }
+
+
+    h3 {
+      font-family: 'Helvetica Neue';
+      font-size: 24px;
+      font-weight: 300;
+    }
+
+    body {
+      min-height: 2000px;
+      padding-top: 120px;
+    }
+
+    .myName {
+      font-family: 'Helvetica Neue';
+      font-size: 16px;
+      font-weight: 300;
+      text-align: right;
+      color: #525252;
+      padding-left: 160px;
+    }
+
+</style>
+
+<!-- Fixed navbar -->
+<div class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header"><h3><a href="https://jawbone.com/up">Jawbone UP</a> data visualization</h3>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="span12">
+          <h1>Page Not Found <small><font face="Tahoma" color="red">Error 404</font></small></h1>
+          <br />
+          <p>The page you requested could not be found, either contact your webmaster or try again. Use your browsers <b>Back</b> button to navigate to the page you have prevously come from</p>
+          <p><b>Or you could just press this neat little button:</b></p>
+          <a href="/" class="btn btn-large btn-info">Take Me Home</a>
+        </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
