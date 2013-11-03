@@ -17,7 +17,7 @@ var barTip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
   .html(function (d) { return "<span style='color: #f0027f'>" + d.data.key + "</span> : " + numberFormat(d.y);});
-    
+
 d3.select("#btnPhysical")
   .on("click", function() {  
     d3.select("#physical-container").style("display", "block");
@@ -25,15 +25,16 @@ d3.select("#btnPhysical")
     d3.select("#nutrition-container").style("display", "none");
     d3.select("#explore-container").style("display", "none");
           
-          // // how do I get the charts to reset all of their filters and transition during the redraw?
-          // if ((expByCampusChart.filters().length | 
-          //     functionChart.filters().length | 
-          //     functionPieChart.filters().length) > 0) {
-          //   dc.redrawAll("expenditures");
-          // }
-          // else {
-          //   dc.renderAll("expenditures");
-          // }
+      // how do I get the charts to reset all of their filters and transition during the redraw?
+      if ((physpieChart.filters().length | 
+        physweekRow.filters().length | 
+        physbarChart.filters().length | 
+        physmoveChart.filters().length) > 0) {
+          dc.redrawAll("physchart");
+        }
+        else {
+          dc.renderAll("physchart");
+        }
 
     formatXAxis();      
     setUpToolTips();
@@ -46,16 +47,6 @@ d3.select("#btnSleep")
     d3.select("#nutrition-container").style("display", "none");
     d3.select("#explore-container").style("display", "none");
 
-          // // use workaround to check for # of filters present & either redrawAll or renderAll
-          // if ((revByCampusChart.filters().length | 
-          //     sourceOfRevenueChart.filters().length | 
-          //     revSourcePieChart.filters().length) > 0) {
-          //   dc.redrawAll("revenue");
-          // }
-          // else {
-          //   dc.renderAll("revenue");
-          // }
-
     formatXAxis();
     setUpToolTips();
 });
@@ -66,16 +57,6 @@ d3.select("#btnNutrition")
     d3.select("#sleep-container").style("display", "none");
     d3.select("#nutrition-container").style("display", "block");
     d3.select("#explore-container").style("display", "none");          
-                   
-          // // use workaround to check for # of filters present & either redrawAll or renderAll
-          // if ((targetExpByCampusChart.filters().length | 
-          //     targetExpenseChart.filters().length | 
-          //     targetExpensePieChart.filters().length) > 0) {
-          //   dc.redrawAll("targetExpenses");
-          // }
-          // else {
-          //   dc.renderAll("targetExpenses");
-          // }
         
     formatXAxis();
     setUpToolTips();

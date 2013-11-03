@@ -3,8 +3,6 @@ var physweekRow = dc.rowChart("#phys-week-bar", "physchart");
 var physbarChart = dc.barChart("#phys-bar-chart", "physchart");
 var physmoveChart = dc.lineChart("#phys-move-chart", "physchart");
 
-// var phystodBar = dc.barChart("#phys-tod-bar", "physbarchart");
-
 var g;
 
 // set dc.js version in title

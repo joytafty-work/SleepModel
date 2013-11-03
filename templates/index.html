@@ -5,9 +5,7 @@
     <meta charset="UTF-8">
     <!-- bootstrap -->
     <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css"/>
-    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.css') }}"/> -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap3.css') }}"/>
-    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap-modal.css') }}"/> -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/dc.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/dc2.css') }}"/>
 </head>
@@ -174,7 +172,8 @@
         <br>
         &nbsp;(by Month of 2013) 
       </span>
-      <a class="reset" href="javascript:physpieChart.filterAll('physchart');dc.redrawAll('physchart');" style="display: none;">refresh</a>
+      <a class="reset" href="javascript:physpieChart.filterAll('physchart');
+      dc.redrawAll('physchart');" style="display: none;">refresh</a>
       <div class="clearfix"></div>      
     </div>
 
@@ -185,7 +184,8 @@
         <br>
         &nbsp;(by day of the weeks) 
       </span>
-      <a class="reset" href="javascript:physweekRow.filterAll('physchart');dc.redrawAll('physchart');" style="display: none;">refresh</a>
+      <a class="reset" href="javascript:physweekRow.filterAll('physchart');
+      dc.redrawAll('physchart');" style="display: none;">refresh</a>
       <div class="clearfix"></div>      
     </div>
       <!-- Row 3 -->
@@ -196,7 +196,8 @@
         <br>
         &nbsp;(by Month of 2013) 
       </span>
-      <a class="reset" href="javascript:physbarChart.filterAll('physchart');dc.redrawAll('physchart');" style="display: none;">refresh</a>
+      <a class="reset" href="javascript:physbarChart.filterAll('physchart');
+      dc.redrawAll('physchart');" style="display: none;">refresh</a>
       <div class="clearfix"></div>      
     </div>
   </div> <!-- Close row 1 -->
@@ -208,7 +209,8 @@
       <span class="chart-title">
         &nbsp;&nbsp;Total distance Travel
       </span>
-      <a class="reset" href="javascript:physmoveChart.filterAll('physchart');dc.redrawAll('physchart');" style="display: none;">refresh</a>
+      <a class="reset" href="javascript:physmoveChart.filterAll('physchart');
+      dc.redrawAll('physchart');" style="display: none;">refresh</a>
       <div class="clearfix"></div>      
     </div>
   </div> 
@@ -231,150 +233,32 @@
   </div>
 </div>
 
-<!-- Nutrition -->
+<!-- Explore -->
 <div class="container" id="explore-container" style="display: none;">
   <!-- Row 1 -->
   <div clas="row">
-  <p>Nothing to explore yet!</p>  
+  <!-- Explore by Week -->
+    <div id="sleep-bubble" class="dc-chart">
+      <span class="chart-title">
+        &nbsp;&nbsp;Data as Bubbles
+      </span>
+      <a class="reset" href="javascript:slBubble.filterAll('explores');
+      dc.redrawAll('explores');" style="display: none;">refresh</a>
+      <div class="clearfix"></div>      
+    </div>
+  </div> 
+  <!-- Close row 1 -->
   </div>
 </div>
 
 <div class="container" id="pre-container">
   <div class="row">
-    <div class="col-md-6">
-      <h4>Sleep Interval Bubble</h4>
-      <div id="slbubble"></div>
-    </div>
+  A place holder here!
   </div>
 </div>
 
-<script type="text/javascript">
-var slBubble = dc.bubbleChart("#slbubble");
-var physmoveChart = dc.lineChart("#phys-move-chart");
-
-d3.csv("../static/data/AllUPs.csv", function(error, data) {
-  var dateFormat = d3.time.format("%m/%d/%Y");
-  var numberFormat = d3.format(".2f");
-  
-  // Parse date
-  data.forEach(function (d) {
-    d.month = parseInt((d.DATE).substring(4,6));
-    d.wkday = moment(d.DATE, 'YYYYMMDD').weekday();
-  })
-
-  // Load data
-  var ups = crossfilter(data);
-  // Dimension for Bubble plot
-  var weekdayDimension = ups.dimension(function (d) {return +d.wkday+1; });
-  // Group for Bubble plot
-  var weekdayValueGroup = weekdayDimension.group().reduce(
-    // add
-    function (p, v) {
-      ++p.count;
-      p.slint += v.s_asleep_time;
-      p.slint_avg = p.slint / p.count;
-      p.awakeInt += v.s_awake_time;
-      p.deepInt += v.s_deep;
-      p.lightInt += v.s_light; 
-      p.slDuration += v.s_duration;
-      p.s_quality += v.s_quality; 
-      return p;
-    },
-    // remove
-    function (p, v) {
-      --p.count;
-      p.slint -= v.s_asleep_time;
-      p.slint_avg = p.slint / p.count;
-      p.awakeInt -= v.s_awake_time;
-      p.deepInt -= v.s_deep;
-      p.lightInt -= v.s_light; 
-      p.slDuration -= v.s_duration;
-      p.slQuality -= v.s_quality; 
-      return p;
-    },
-    // initialize
-    function () {
-      return {count: 0, slint:0, slint_avg: 0,
-        awakeInt: 0, deepInt: 0, lightInt: 0, slDuration: 0, slQuality:0};
-    }
-    )
-
-// Dimension for movement distance
-var moveDays = ups.dimension(function (d) {
-  doy = moment(d.DATE, 'YYYYMMDD');
-  return doy;
-});
-
-// Group for movement distance
-var moveDaysGroup = moveDays.group().reduce(
-  function (p, v) {
-    ++p.days;
-    p.total += v.m_distance/1000; 
-    p.mvavg = Math.round(p.total / p.days);
-    return p;
-  },
-  function (p, v) {
-    --p.days;
-    p.total -= v.m_distance; 
-    p.mvavg = Math.round(p.total / p.days);
-    return p;
-  },
-  function () {
-    return {days:0, total:0, mvavg:0};
-  });
-
-  slBubble
-    .width(400)
-    .height(280)
-    .transitionDuration(1500)
-    .margins({top: 10, right: 10, bottom: 30, left: 50})
-    .dimension(weekdayDimension)
-    .group(weekdayValueGroup)
-    .colors(colorbrewer.RdYlGn[9]) // color function or array for bubbles
-    .colorDomain([0, 500])
-    .colorAccessor(function (p) {
-      return Math.random()*parseInt(p.value.awakeInt);})
-    .keyAccessor(function (p) {return 0.01*Math.random()+parseInt(p.key);})
-    .valueAccessor(function (p) {return parseInt(p.value.slint);})
-    .radiusValueAccessor(function (p) {return parseInt(p.value.awakeInt);})
-    .maxBubbleRelativeSize(0.1)
-    .x(d3.scale.linear().domain([0, 10]))
-    .y(d3.scale.linear().domain([0, 2000]))
-    .r(d3.scale.linear().domain([0, 1000]))
-    .renderHorizontalGridLines(true)
-    .renderVerticalGridLines(true)
-    .xAxisLabel("Month")
-    .yAxisLabel("Sleep Interval")
-    // .elasticY(true)
-    .elasticX(true); 
-
-  slBubble.render();
-
-  // physmoveChart
-  //   .renderArea(true)
-  //   .width(960)
-  //   .height(360)
-  //   .transitionDuration(800)
-  //   .margins({top: 50, right: 50, bottom: 30, left: 50})
-  //   .mouseZoomable(true)
-  //   // .x(d3.scale.linear().domain([0, 365]))
-  //   .x(d3.time.scale().domain([new Date(2012, 11, 31), new Date(2013, 11, 31)]))
-  //   .round(d3.time.month.round)
-  //   .xUnits(d3.time.months)
-  //   .dimension(moveDays)
-  //   .group(moveDaysGroup)
-  //   .yAxisLabel("Distance Moved (km)")
-  //   .valueAccessor(function (p) {
-  //     return p.value.total;
-  //   })  
-  //   .renderHorizontalGridLines(true)
-  //   .legend(dc.legend().x(800).y(10).itemHeight(13).gap(5))
-  //   .elasticY(true);
-
-  // physmoveChart.render();
-});
-</script>
 <script type="text/javascript" src="../static/js/physical.js"></script>
+<script type="text/javascript" src="../static/js/explore.js"></script>
 <script type="text/javascript" src="../static/js/ups_all.js"></script>
 </body>
 </html>
