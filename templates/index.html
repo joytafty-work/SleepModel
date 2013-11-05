@@ -221,7 +221,18 @@
 <div class="container" id="sleep-container" style="display: none;">
   <!-- Row 1 -->
   <div clas="row">
-  <p>Nothing about sleep yet!</p>
+      <!-- Sleep by weekday (Pie) -->
+    <div id="sleep-pie" class="col-md-4">
+      <span class="chart-title">
+        &nbsp;&nbsp;Sleep time per Day (mins)
+        <br>
+        &nbsp;(by Month of 2013) 
+      </span>
+      <a class="reset" href="javascript:sleeppieChart.filterAll('sleepchart');
+      dc.redrawAll('sleepchart');" style="display: none;">refresh</a>
+      <div class="clearfix"></div>      
+    </div>
+
   </div>
 </div>
 
@@ -258,6 +269,7 @@
 </div>
 
 <script type="text/javascript" src="../static/js/physical.js"></script>
+<script type="text/javascript" src="../static/js/sleepchart.js"></script>
 <script type="text/javascript" src="../static/js/explore.js"></script>
 <script type="text/javascript" src="../static/js/ups_all.js"></script>
 </body>

@@ -1,73 +1,97 @@
-"""
-This file is part of the flask+d3 Hello World project.
-"""
 import json
 import flask
 from flask import Flask, url_for, render_template
+from functools import update_wrapper
+from cherrypy import wsgiserver
+import argparse
+import fitbit
+import datetime
+import os
+import redis
+import time
 import numpy as np
 
+redis = redis.Redis()
 
-app = Flask(__name__)
+# Load data from local redis
+def load():
+    # see: http://python-fitbit.readthedocs.org/en/latest/#fitbit-api
+    fb = fitbit.Fitbit(
+        os.getenv('CONSUMER_KEY'),
+        os.getenv('CONSUMER_SECRET'), 
+        user_key=os.getenv('USER_KEY'),
+        user_secret=os.getenv('USER_SECRET'))
+    
+    redis.delete('fitbit')
+    
+    if True:
+        sleepData = dict();
+        sl1 = fb.time_series('sleep/startTime', period='max')['sleep-startTime']
+        sl2 = fb.time_series('sleep/timeInBed', period='max')['sleep-timeInBed']
+        sl3 = fb.time_series('sleep/minutesAsleep', period='max')['sleep-minutesAsleep']
+        sl4 = fb.time_series('sleep/minutesAwake', period='max')['sleep-minutesAwake']
+        sl5 = fb.time_series('sleep/minutesToFallAsleep', period='max')['sleep-minutesToFallAsleep']
+        sl6 = fb.time_series('sleep/minutesAfterWakeup', period='max')['sleep-minutesAfterWakeup']
+        sl7 = fb.time_series('sleep/efficiency', period='max')['sleep-efficiency']
+        
+        for sl in range(len(sl1)-1):            
+            if sl1[sl]['value'] != '':                
+                tempdate = datetime.datetime.strptime(sl1[sl]['dateTime'], '%Y-%m-%d').timetuple()
+                sleepData['date'] = time.mktime(tempdate)
+                temptime = time.strptime((sl1[sl]['dateTime'] + '-' + sl1[sl]['value']), '%Y-%m-%d-%H:%M')
+                sleepData['startTime'] = time.mktime(temptime)
+                sleepData['timeInBed'] = sl2[sl]['value']
+                sleepData['minutesAsleep'] = sl3[sl]['value']
+                sleepData['minutesAwake'] = sl4[sl]['value']
+                sleepData['minutesToFallAsleep'] = sl5[sl]['value']
+                sleepData['minutesAfterWakeup'] = sl6[sl]['value']
+                sleepData['efficiency'] = sl7[sl]['value']
+                s = json.dumps(sleepData)
+                redis.sadd('fitbit', s)
+                print s
 
 
-@app.route("/")
-def index():
-    """
-    When you request the root path, you'll get the index.html template.
+def server():
+    from cherrypy import wsgiserver
+    app = Flask(__name__)
 
-    """
-    return render_template("index.html")
+    @app.route("/")
+    def index():
+        return render_template("index.html")
 
+    @app.route("/bar/")
+    def bar():
+        return render_template("bar.html")
 
-@app.route("/bar/")
-def bar():
-    return render_template("bar.html")
+    @app.route("/sleep/")
+    def sleep():
+        return render_template("sleep.html")
 
-@app.route("/number/")
-def number():
-    return render_template("number.html")
+    @app.route("/up/")
+    def up():
+        return render_template("dcjsup.html")    
 
-@app.route("/sleep/")
-def dcchart():
-    return render_template("sleep.html")
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('404.html'), 404
 
-@app.route("/up/")
-def up():
-    return render_template("dcjsup.html")    
-
-@app.route("/data")
-@app.route("/data/<int:ndata>")
-def data(ndata=100):
-    """
-    On request, this returns a list of ``ndata`` randomly made data points.
-
-    :param ndata: (optional)
-        The number of data points to return.
-
-    :returns data:
-        A JSON string of ``ndata`` data points.
-
-    """
-    x = 20 * np.random.rand(ndata) - 5
-    y = 0.2 * x + 0.5 * np.random.randn(ndata)
-    A = 10. ** np.random.rand(ndata)
-    c = np.random.rand(ndata)
-    return json.dumps([{"_id": i, "x": x[i], "y": y[i], "area": A[i],
-        "color": c[i]}
-        for i in range(ndata)])
-
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
+    app.debug = True
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
+    d = wsgiserver.WSGIPathInfoDispatcher({'/': app})
+    server = wsgiserver.CherryPyWSGIServer(('0.0.0.0', 8001), d)
 
 if __name__ == "__main__":
-    import os
+    parser = argparse.ArgumentParser(description="Do stuff")
+    parser.add_argument('command', action="store", choices=['load', 'server'])
+    args = parser.parse_args()
 
     # port = 8000
-    port = int(os.environ.get("PORT", 5000))
     # Open a web browser pointing at the app.
     # os.system("open http://localhost:{0}".format(port))
 
     # Set up the development server on port 8000.
-    app.debug = True
-    app.run(host='0.0.0.0', port=port)
+    if args.command == 'load':
+        load()
+    if args.command == 'server':
+        server()
