@@ -1,13 +1,11 @@
 import json
 import flask
 from flask import Flask, url_for, render_template
-from functools import update_wrapper
-from cherrypy import wsgiserver
 import argparse
 import fitbit
 import datetime
 import os
-from store import redis
+import redis
 import time
 import numpy as np
 import urlparse
@@ -87,10 +85,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Do stuff")
     parser.add_argument('command', action="store", choices=['load', 'server'])
     args = parser.parse_args()
-
-    # port = 8000
-    # Open a web browser pointing at the app.
-    # os.system("open http://localhost:{0}".format(port))
 
     # Set up the development server on port 8000.
     if args.command == 'load':
