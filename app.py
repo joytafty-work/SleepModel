@@ -12,9 +12,6 @@ import time
 import numpy as np
 import urlparse
 
-# Local
-redis = redis.Redis()
-
 # Load data from local redis
 def load():
     # see: http://python-fitbit.readthedocs.org/en/latest/#fitbit-api
