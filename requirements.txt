@@ -13,4 +13,4 @@ oauth2==1.5.211
 python-dateutil==1.5
 redis==2.8.0
 requests==0.14.0
-wsgiref==0.1.w
+wsgiref==0.1.2
