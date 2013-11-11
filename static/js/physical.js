@@ -38,12 +38,19 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
   });
 
   // Define Groups
-  var upCalMonth = monthlyDimension.group().reduceSum(function(d) {
-  	return +d.e_calories/30;});
+  // Longest Active
+  var upLcatMM = monthlyDimension.group().reduceSum(function(d) {
+  	return +(d.m_lcat/60)/30;
+  });
+  // Longest Idle
+  var upLcitMM = monthlyDimension.group().reduceSum(function(d) {
+  	return +(d.m_lcit/60)/30;
+  });
+  // Steps
   var upStepWeekday = dayOfWeekDimension.group().reduceSum(function (d) {
   	return +d.m_steps/30;
   });
-
+  // Workout by Month
   var upWorkoutMonth = monthNameDimension.group().reduceSum(function (d) {
   	var nmins_month = 30*24;
   	return (+d.m_workout_time)/nmins_month;
@@ -78,24 +85,24 @@ var moveDaysGroup = moveDays.group().reduce(
 var tip = d3.tip()
 	.attr('class', 'd3-tip')
     .offset([-10, 0])
-    .html(function (d) { return "<span style='color: #f0027f'>" +  d.key + "</span> : "  + numberFormat(d.value) + " steps"; });
+    .html(function (d) { return "<span style='color: yellow'>" +  d.key + "</span> : "  + numberFormat(d.value) + " steps"; });
 
 // tooltips for pie chart
 var pieTip = d3.tip()
 	.attr('class', 'd3-tip')
 	.offset([-10, 0])
-	.html(function (d) { return "<span style='color: #f0027f'>" +  d.data.key + "</span> : "  + numberFormat(d.value) + " mins"; });
+	.html(function (d) { return "<span style='color: yellow'>" +  d.data.key + "</span> : "  + numberFormat(d.value) + " mins"; });
 
 
 var barTip = d3.tip()
 	.attr('class', 'd3-tip')
 	.offset([-10, 0])
 	.html(function (d) { 
-		return "<span style='color: #f0027f'>" + d.data.key + "</span> : " + numberFormat(d.y) + " calories";
+		return "<span style='color: yellow'>" + d.data.key + "</span> : " + numberFormat(d.y) + " mins";
 	});
 
-	// set colors to red <--> purple
-    var physColors = ["#fde0dd","#fa9fb5","#e7e1ef","#d4b9da","#c994c7","#fcc5c0","#df65b0","#e7298a","#ce1256", "#f768a1","#dd3497","#e78ac3","#f1b6da","#c51b7d"];
+	// set colors to green <--> blue
+    var physColors = ["#d9ef8b","#a6d96a","#66bd63","#D9EDF7","#ccece6", "#e6f5d0","#b8e186","#7fbc41","#99d8c9","#41ae76","#238b45","#ccebc5","#e0f3db","#78c679","#41ab5d"];
 
 // 1. Chart : physpieChart
 physpieChart
@@ -131,20 +138,18 @@ physbarChart
     .height(240)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
     .x(d3.scale.linear().domain([-.5, 12.5]))
- //    .xUnits(dc.units.ordinal)
-	// .x(d3.scale.ordinal()
-	// 	.domain(["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-	// 			"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]))
-	.brushOn(false)
+ 	.brushOn(false)
     .xAxisLabel("Months")
-    .yAxisLabel("Total Calories Recorded")
+    .yAxisLabel("Average Montly Longest Active Time")
     .dimension(monthlyDimension, "Monthly Value Group")
-    .group(upCalMonth)	
+    .group(upLcitMM, "Longest Idle")	
+    .stack(upLcatMM, "Longest Active")
     .renderHorizontalGridLines(true)
-    .elasticX(true)
+    .colors([physColors[1], physColors[9]])
+    .renderLabel(true)
     .elasticY(true)
     .centerBar(true)
-	.colors(physColors)
+    .legend(dc.legend().x(240).y(10))
     .gap(5);
 
 // 4. Chart: physmovechart
@@ -167,6 +172,7 @@ physbarChart
     })  
     .renderHorizontalGridLines(true)
     .legend(dc.legend().x(800).y(10).itemHeight(13).gap(5))
+    .elasticX(true)
     .elasticY(true);
 
 // 5. Data Table: 
