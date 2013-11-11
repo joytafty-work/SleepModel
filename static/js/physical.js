@@ -49,63 +49,6 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
   	return (+d.m_workout_time)/nmins_month;
   })
 
-  var weekdayValueGroup = weekdayDimension.group().reduce(
-    // add
-    function (p, v) {
-      ++p.count;
-      p.slint += v.s_asleep_time;
-      p.slint_avg = p.slint / p.count;
-      p.awakeInt += v.s_awake_time;
-      p.deepInt += v.s_deep;
-      p.lightInt += v.s_light; 
-      p.slDuration += v.s_duration;
-      p.s_quality += v.s_quality; 
-      return p;
-    },
-    // remove
-    function (p, v) {
-      --p.count;
-      p.slint -= v.s_asleep_time;
-      p.slint_avg = p.slint / p.count;
-      p.awakeInt -= v.s_awake_time;
-      p.deepInt -= v.s_deep;
-      p.lightInt -= v.s_light; 
-      p.slDuration -= v.s_duration;
-      p.slQuality -= v.s_quality; 
-      return p;
-    },
-    // initialize
-    function () {
-      return {count: 0, slint:0, slint_avg: 0,
-        awakeInt: 0, deepInt: 0, lightInt: 0, slDuration: 0, slQuality:0};
-    }
-    )
-
-  var monthlyValueGroup = monthlyDimension.group().reduce(
-    // add
-    function (p, v) {
-      ++p.count; 
-      p.carbs += v.e_carbs;
-      p.carbs_avg = p.carbs / p.count;
-      p.protein += v.e_protein;
-      p.protein_avg = p.protein / p.count;
-      return p;
-    }, 
-    // remove
-    function (p, v) {
-      --p.count; 
-      p.carbs -= v.e_carbs;
-      p.carbs_avg = p.carbs / p.count;
-      p.protein -= v.e_protein;
-      p.protein_avg = p.protein / p.count;
-      return p;
-    },
-    /* initialize p */
-    function () {
-      return {count: 0, carbs: 0, carbs_avg: 0, protein: 0, protein_avg: 0};
-    }
-  );
-
 // Dimension for movement distance
 var moveDays = ups.dimension(function (d) {
   doy = moment(d.DATE, 'YYYYMMDD');
@@ -113,16 +56,17 @@ var moveDays = ups.dimension(function (d) {
 });
 
 // Group for movement distance
+var meter2mi = 0.000621371; 
 var moveDaysGroup = moveDays.group().reduce(
   function (p, v) {
     ++p.days;
-    p.total += v.m_distance/1000; 
+    p.total += v.m_distance*meter2mi; 
     p.mvavg = Math.round(p.total / p.days);
     return p;
   },
   function (p, v) {
     --p.days;
-    p.total -= v.m_distance; 
+    p.total -= v.m_distance*meter2mi; 
     p.mvavg = Math.round(p.total / p.days);
     return p;
   },
@@ -134,20 +78,20 @@ var moveDaysGroup = moveDays.group().reduce(
 var tip = d3.tip()
 	.attr('class', 'd3-tip')
     .offset([-10, 0])
-    .html(function (d) { return "<span style='color: #f0027f'>" +  d.key + "</span> : "  + numberFormat(d.value); });
+    .html(function (d) { return "<span style='color: #f0027f'>" +  d.key + "</span> : "  + numberFormat(d.value) + " steps"; });
 
 // tooltips for pie chart
 var pieTip = d3.tip()
 	.attr('class', 'd3-tip')
 	.offset([-10, 0])
-	.html(function (d) { return "<span style='color: #f0027f'>" +  d.data.key + "</span> : "  + numberFormat(d.value); });
+	.html(function (d) { return "<span style='color: #f0027f'>" +  d.data.key + "</span> : "  + numberFormat(d.value) + " mins"; });
 
 
 var barTip = d3.tip()
 	.attr('class', 'd3-tip')
 	.offset([-10, 0])
 	.html(function (d) { 
-		return "<span style='color: #f0027f'>" + d.data.key + "</span> : " + numberFormat(d.y);
+		return "<span style='color: #f0027f'>" + d.data.key + "</span> : " + numberFormat(d.y) + " calories";
 	});
 
 	// set colors to red <--> purple
@@ -203,7 +147,7 @@ physbarChart
 	.colors(physColors)
     .gap(5);
 
-// // 4. Chart: physmovechart
+// 4. Chart: physmovechart
  physmoveChart
     .renderArea(true)
     .width(960)
@@ -217,13 +161,15 @@ physbarChart
     .xUnits(d3.time.months)
     .dimension(moveDays)
     .group(moveDaysGroup)
-    .yAxisLabel("Distance Moved (km)")
+    .yAxisLabel("Distance Covered (miles)")
     .valueAccessor(function (p) {
       return p.value.total;
     })  
     .renderHorizontalGridLines(true)
     .legend(dc.legend().x(800).y(10).itemHeight(13).gap(5))
     .elasticY(true);
+
+// 5. Data Table: 
 
 // Render!!!
 dc.renderAll("physchart");
