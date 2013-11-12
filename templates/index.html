@@ -164,19 +164,7 @@
 <!-- Physical Activity -->
 <div class="container" id="physical-container">
   <!-- Row 1 -->
-  <div clas="row">
-  <!-- Physical Activity by month (Pie) -->
-    <div id="phys-month-pie" class="col-md-4">
-      <span class="chart-title">
-        &nbsp;&nbsp;Exercise time per Day (mins)
-        <br>
-        &nbsp;(by Month of 2013) 
-      </span>
-      <a class="reset" href="javascript:physpieChart.filterAll('physchart');
-      dc.redrawAll('physchart');" style="display: none;">refresh</a>
-      <div class="clearfix"></div>      
-    </div>
-
+  <div class="row">
     <!-- Physical Activity by Week -->
     <div id="phys-week-bar" class="col-md-4">
       <span class="chart-title">
@@ -200,16 +188,37 @@
       dc.redrawAll('physchart');" style="display: none;">refresh</a>
       <div class="clearfix"></div>      
     </div>
+
+      <!-- Physical Activity by month (Pie) -->
+    <div id="phys-month-pie" class="col-md-4">
+      <span class="chart-title">
+        &nbsp;&nbsp;Exercise time per Day (mins)
+        <br>
+        &nbsp;(by Month of 2013) 
+      </span>
+      <a class="reset" href="javascript:physpieChart.filterAll('physchart');
+      dc.redrawAll('physchart');" style="display: none;">refresh</a>
+      <div class="clearfix"></div>      
+    </div>
   </div> <!-- Close row 1 -->
 
   <!-- Row 2 -->
-  <div clas="row">
+  <div class="row">
     <!-- Physical Activity by Week -->
     <div id="phys-move-chart" class="dc-chart">
       <span class="chart-title">
         &nbsp;&nbsp;Total distance Travel
       </span>
       <a class="reset" href="javascript:physmoveChart.filterAll('physchart');
+      dc.redrawAll('physchart');" style="display: none;">refresh</a>
+      <div class="clearfix"></div>      
+    </div>
+    <!-- Physical Activity by Week -->
+    <div id="steps-v-lcat" class="dc-chart">
+      <span class="chart-title">
+        &nbsp;&nbsp;Long Active vs. Total Active Time
+      </span>
+      <a class="reset" href="javascript:stepVlcatChart.filterAll('physchart');
       dc.redrawAll('physchart');" style="display: none;">refresh</a>
       <div class="clearfix"></div>      
     </div>
@@ -220,7 +229,7 @@
 <!-- Sleep -->
 <div class="container" id="sleep-container" style="display: none;">
   <!-- Row 1 -->
-  <div clas="row">
+  <div class="row">
       <!-- Sleep by weekday (Pie) -->
     <div id="sleep-pie" class="col-md-4">
       <span class="chart-title">
@@ -257,14 +266,13 @@
       dc.redrawAll('explores');" style="display: none;">refresh</a>
       <div class="clearfix"></div>      
     </div>
-  </div> 
-  <!-- Close row 1 -->
+  </div>   <!-- Close row 1 -->
   </div>
 </div>
 
 <div class="container" id="pre-container">
   <div class="row">
-  A place holder here!
+  Bubble Chart correlating longest active time vs. total number of steps
   </div>
 </div>
 

@@ -2,6 +2,7 @@ var physpieChart = dc.pieChart("#phys-month-pie", "physchart");
 var physweekRow = dc.rowChart("#phys-week-bar", "physchart");
 var physbarChart = dc.barChart("#phys-bar-chart", "physchart");
 var physmoveChart = dc.lineChart("#phys-move-chart", "physchart");
+var stepVlcatChart = dc.bubbleChart("#steps-v-lcat", "physchart");
 
 var g;
 
@@ -38,6 +39,14 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
   });
 
   // Define Groups
+  // Total Active
+  var TactMM = monthlyDimension.group().reduceSum(function (d) {
+  	return +(d.m_active_time/60)/30;
+  });
+  var TictMM = monthlyDimension.group().reduceSum(function (d) {
+  	return +(d.m_inactive_time/60)/30;
+  })
+
   // Longest Active
   var upLcatMM = monthlyDimension.group().reduceSum(function(d) {
   	return +(d.m_lcat/60)/30;
@@ -56,6 +65,8 @@ d3.csv("../static/data/AllUPs.csv", function(error, data) {
   	return (+d.m_workout_time)/nmins_month;
   })
 
+// Longest Active. vs. Steps
+
 // Dimension for movement distance
 var moveDays = ups.dimension(function (d) {
   doy = moment(d.DATE, 'YYYYMMDD');
@@ -69,6 +80,7 @@ var moveDaysGroup = moveDays.group().reduce(
     ++p.days;
     p.total += v.m_distance*meter2mi; 
     p.mvavg = Math.round(p.total / p.days);
+
     return p;
   },
   function (p, v) {
@@ -80,6 +92,28 @@ var moveDaysGroup = moveDays.group().reduce(
   function () {
     return {days:0, total:0, mvavg:0};
   });
+
+var actGroup = monthlyDimension.group().reduce(
+	function (p,v) {
+	    ++p.months;
+    	p.lcat += v.m_lcat/60/30;
+    	p.lcit += v.m_lcit/60/30;
+    	p.tact += v.m_active_time/60/30; 
+    	p.tict += v.m_inactive_time/60/30; 
+		return p;		
+	}, 
+	function (p,v) {
+	    --p.months;
+    	p.lcat -= v.m_lcat/60/30;
+    	p.lcit -= v.m_lcit/60/30;
+    	p.tact -= v.m_active_time/60/30; 
+    	p.tict -= v.m_inactive_time/60/30; 
+		return p;		
+	}, 
+  	function () {
+    return {months:0,
+    		lcat:0, lcit:0, tact:0, tict:0};
+    });
 
 // Define tooltips
 var tip = d3.tip()
@@ -137,10 +171,10 @@ physbarChart
     .width(320)
     .height(240)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
-    .x(d3.scale.linear().domain([-.5, 12.5]))
+    .x(d3.scale.linear().domain([0.5, 12.5]))
  	.brushOn(false)
     .xAxisLabel("Months")
-    .yAxisLabel("Average Montly Longest Active Time")
+    .yAxisLabel("Longest Active Time")
     .dimension(monthlyDimension, "Monthly Value Group")
     .group(upLcitMM, "Longest Idle")	
     .stack(upLcatMM, "Longest Active")
@@ -149,14 +183,14 @@ physbarChart
     .renderLabel(true)
     .elasticY(true)
     .centerBar(true)
-    .legend(dc.legend().x(240).y(10))
+    .legend(dc.legend().x(235).y(10))
     .gap(5);
 
 // 4. Chart: physmovechart
  physmoveChart
     .renderArea(true)
-    .width(960)
-    .height(360)
+    .width(450)
+    .height(250)
     .transitionDuration(800)
     .margins({top: 50, right: 50, bottom: 30, left: 50})
     .mouseZoomable(true)
@@ -171,11 +205,37 @@ physbarChart
       return p.value.total;
     })  
     .renderHorizontalGridLines(true)
-    .legend(dc.legend().x(800).y(10).itemHeight(13).gap(5))
     .elasticX(true)
     .elasticY(true);
 
-// 5. Data Table: 
+// 5. BubbleChart
+stepVlcatChart
+    .width(450)
+    .height(250)
+    .transitionDuration(800)
+    .margins({top: 50, right: 50, bottom: 30, left: 50})
+    .dimension(monthlyDimension)
+    .group(actGroup)
+    .colors(physColors) // (optional) define color function or array for bubbles
+    // .colorDomain([0, 50]) 
+    .xAxisLabel("Total Active Time (mins)")
+    .yAxisLabel("Longest Active Time (mins)")
+    .keyAccessor(function (p) {
+    	return p.value.tact;
+    })
+    .valueAccessor(function (p) {
+      	return p.value.lcat;
+    })
+    .radiusValueAccessor(function (p) {
+        return p.value.lcit;
+    })
+    .maxBubbleRelativeSize(0.5)
+    .x(d3.scale.linear().domain([0, 250]))
+    .y(d3.scale.linear().domain([0, 1000]))
+    .r(d3.scale.linear().domain([0, 7000]))  
+    .renderHorizontalGridLines(true)
+    .elasticX(true)
+    .elasticY(true); 
 
 // Render!!!
 dc.renderAll("physchart");
