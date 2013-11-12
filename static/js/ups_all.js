@@ -4,19 +4,26 @@ var numberFormat = d3.format(",f");
 var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
-  .html(function (d) { return "<span style='color: #f0027f'>" +  d.key + "</span> : "  + numberFormat(d.value); });
+  .html(function (d) { return "<span style='color: yellow'>" +  d.key + "</span> : "  + numberFormat(d.value); });
 
 // tooltips for pie chart
 var pieTip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
-  .html(function (d) { return "<span style='color: #f0027f'>" +  d.data.key + "</span> : "  + numberFormat(d.value); });
+  .html(function (d) { return "<span style='color: yellow'>" +  d.data.key + "</span> : "  + numberFormat(d.value); });
 
 // tooltips for bar chart
 var barTip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
-  .html(function (d) { return "<span style='color: #f0027f'>" + d.data.key + "</span> : " + numberFormat(d.y);});
+  .html(function (d) { return "<span style='color: yellow'>" + d.data.key + "</span> : " + numberFormat(d.y);});
+
+var bubTip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function (d) { 
+    return "<span style='color: yellow'> (" + numberFormat(d.value.tact) + "</span>, " + numberFormat(d.value.lcat) + ") mins";
+  });
 
 d3.select("#btnPhysical")
   .on("click", function() {  
@@ -92,5 +99,9 @@ function setUpToolTips() {
 
   d3.selectAll(".bar").call(barTip);
   d3.selectAll(".bar").on('mouseover', barTip.show)
-  .on('mouseout', barTip.hide);  
+  .on('mouseout', barTip.hide);
+
+  d3.selectAll(".node").call(bubTip);
+  d3.selectAll(".node").on('mouseover', bubTip.show)
+  .on('mouseout', bubTip.hide);  
 }

@@ -135,6 +135,14 @@ var barTip = d3.tip()
 		return "<span style='color: yellow'>" + d.data.key + "</span> : " + numberFormat(d.y) + " mins";
 	});
 
+var bubTip = d3.tip()
+	.attr('class', 'd3-tip')
+	.offset([-10, 0])
+	.html(function (d) { 
+		return "<span style='color: yellow'> (" + numberFormat(d.value.tact) + "</span>, " + numberFormat(d.value.lcat) + ") mins";
+	});
+
+
 	// set colors to green <--> blue
     var physColors = ["#d9ef8b","#a6d96a","#66bd63","#D9EDF7","#ccece6", "#e6f5d0","#b8e186","#7fbc41","#99d8c9","#41ae76","#238b45","#ccebc5","#e0f3db","#78c679","#41ab5d"];
 
@@ -172,10 +180,13 @@ physbarChart
     .height(240)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
     .x(d3.scale.linear().domain([0.5, 12.5]))
+	// .x(d3.time.scale().domain([new Date(2013, 1, 1), new Date(2013, 11, 31)]))
+    // .round(d3.time.month.round)
+    // .xUnits(d3.time.months)
  	.brushOn(false)
     .xAxisLabel("Months")
     .yAxisLabel("Longest Active Time")
-    .dimension(monthlyDimension, "Monthly Value Group")
+    .dimension(monthNameDimension, "Monthly Value Group")
     .group(upLcitMM, "Longest Idle")	
     .stack(upLcatMM, "Longest Active")
     .renderHorizontalGridLines(true)
@@ -190,7 +201,7 @@ physbarChart
  physmoveChart
     .renderArea(true)
     .width(450)
-    .height(250)
+    .height(270)
     .transitionDuration(800)
     .margins({top: 50, right: 50, bottom: 30, left: 50})
     .mouseZoomable(true)
@@ -211,15 +222,16 @@ physbarChart
 // 5. BubbleChart
 stepVlcatChart
     .width(450)
-    .height(250)
+    .height(270)
     .transitionDuration(800)
     .margins({top: 50, right: 50, bottom: 30, left: 50})
+    .mouseZoomable(true)
     .dimension(monthlyDimension)
     .group(actGroup)
     .colors(physColors) // (optional) define color function or array for bubbles
     // .colorDomain([0, 50]) 
-    .xAxisLabel("Total Active Time (mins)")
-    .yAxisLabel("Longest Active Time (mins)")
+    .xAxisLabel("Total Active (mins)")
+    .yAxisLabel("Longest Active (mins)")
     .keyAccessor(function (p) {
     	return p.value.tact;
     })
@@ -234,11 +246,13 @@ stepVlcatChart
     .y(d3.scale.linear().domain([0, 1000]))
     .r(d3.scale.linear().domain([0, 7000]))  
     .renderHorizontalGridLines(true)
+    .renderVerticalGridLines(true)
     .elasticX(true)
     .elasticY(true); 
 
 // Render!!!
 dc.renderAll("physchart");
+
 d3.selectAll("g.x text")
 	.attr("class", "campusLabel")
     .style("text-anchor", "end") 
@@ -259,4 +273,9 @@ d3.selectAll(".bar").call(barTip);
 d3.selectAll(".bar")
 	.on('mouseover', barTip.show)
 	.on('mouseout', barTip.hide); 
+
+d3.selectAll(".node").call(bubTip);
+d3.selectAll(".node")
+	.on('mouseover', bubTip.show)
+	.on('mouseout', bubTip.hide);
 });
