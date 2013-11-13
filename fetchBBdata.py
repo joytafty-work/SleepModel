@@ -14,6 +14,23 @@ import argparse
 #     conn = engine.connect()
 #     return conn
 
+fpathdefault = 'static/data/BBdata_nooffset/'
+
+def fetchBB(user_id, startdate, enddate, *BBargs, **BBkeys):
+    # First date to import
+    startdate = datetime.datetime.strptime(startdate, '%Y-%m-%d').date()
+    enddate = datetime.datetime.strptime(enddate, '%Y-%m-%d').date()
+    if 'fname' and 'fpath' in BBkeys:
+        fname = BBkeys['fname']
+        fpath = BBkeys['fpath']
+    else:
+        fname = 'BBdata' + startdate.strftime('%Y-%m-%d') + '.csv'
+        fpath = fpathdefault
+
+    if user_id != '':
+        for dat in get_data(user_id, startdate, enddate):
+            append_csv(dat, fname, fpath)
+
 ######## Fetch data from basis website ########
 def get_data(user_id, startdate, enddate):
     d = startdate
@@ -70,10 +87,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Fetch BB data from specified date range")
     parser.add_argument('startdate', nargs='?', type=str, default="2013-10-01")
     parser.add_argument('enddate', nargs='?', type=str, default="2013-10-31")
-    parser.add_argument('fpath', nargs='?', type=str, default='static/data/BBdata_nooffset/')
+    parser.add_argument('fpath', nargs='?', type=str, default=fpathdefault)
     args = parser.parse_args()
     # Basis Band ID
-    BB_user_id = os.getenv("BBid")
+    # BB_user_id = os.getenv("BBid")
     # First date to import
     startdate = datetime.datetime.strptime(args.startdate, '%Y-%m-%d').date()
     # Append startdate to filename

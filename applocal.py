@@ -14,7 +14,14 @@ import urlparse
 redis = redis.Redis()
 
 # Load data from local redis
-def load():
+def loadBB():
+    import fetchBBdata
+    d0 = '2013-11-01'
+    df = '2013-11-02'
+    BB_user_id = os.getenv("BBid")
+    fetchBBdata.fetchBB(BB_user_id, d0, df)
+
+def loadFB():
     # see: http://python-fitbit.readthedocs.org/en/latest/#fitbit-api
     fb = fitbit.Fitbit(
         os.getenv('CONSUMER_KEY'),
@@ -83,11 +90,13 @@ def server():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Do stuff")
-    parser.add_argument('command', action="store", choices=['load', 'server'])
+    parser.add_argument('command', action="store", choices=['load', 'loadFB', 'loadBB', 'server'])
     args = parser.parse_args()
 
     # Set up the development server on port 8000.
-    if args.command == 'load':
-        load()
+    if args.command == 'loadBB':
+        loadBB()
+    if args.command == 'load' or 'loadFB':
+        loadFB()
     if args.command == 'server':
         server()
