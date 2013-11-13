@@ -104,13 +104,10 @@ load data local
 	enclosed by '"' 
 	lines terminated by '\n'; 
 
-# Manipulate sleep data
-# 1. Convert sl_bedtime and sl_awaketime in mins after midnight to timestamp
-ALTER TABLE sleep MODIFY sl_bedtime SET SEC_TO_TIME(sl_bedtime) TIMESTAMP
--- SELECT SEC_TO_TIME(sl_bedtime) AS slbed_timestamp,
--- SEC_TO_TIME(sl_awake_time) AS slawake_timestamp
--- FROM sleep; 
+-- Local Dump from database
+mysqldump -u root -h localhost -p upsdata activity > activity.sql
+mysqldump -u root -h localhost -p upsdata nutrient > nutrient.sql
+mysqldump -u root -h localhost -p upsdata sleep > sleep.sql
+mysqldump -u root -h localhost -p upsdata nap > nap.sql
+mysqldump -u root -h localhost -p upsdata mood > mood.sql
 
--- SELECT SEC_TO_TIME(nap_bedtime) AS napbed_timestamp,
--- SEC_TO_TIME(nap_awake_time) AS napawake_timestamp
--- FROM nap;

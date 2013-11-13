@@ -14,7 +14,19 @@ import numpy as np
 import urlparse
 
 # Load data from local redis
-def load():
+def loadBB():
+    DATABASES['default'] = {
+    'ENGINE': 'django.db.backends.mysql',
+    'HOST': 'my-host-goes-here',
+    'USER': 'my-user-goes-here',
+    'NAME': 'my-db-name-goes-here',
+    'PASSWORD': 'my-db-pass-goes-here',
+    'OPTIONS': {'ssl': {'ca':'/path/to/ca-cert.pem', 'cert':'/path/to/cert.pem', 'key':'/path/to/key.pem'},},
+}
+
+
+
+def loadFB():
     # see: http://python-fitbit.readthedocs.org/en/latest/#fitbit-api
     fb = fitbit.Fitbit(
         os.getenv('CONSUMER_KEY'),
@@ -73,9 +85,12 @@ r = s.get(login_url)
 print(r.text)
 credentials = {
     'inUserName': 'joytafty@gmail.com',
-    'inUserPass': '=&W1st3rya',
+    'inUserPass': '',
     'server': 'nudge'
 }
+
+def CDBserver():
+    app.config['SQLALCHEMY_DATABASE_URI'] = mysql://your-username:your-password@localhost/ufosightings
 
 def server():
     from cherrypy import wsgiserver
@@ -110,7 +125,7 @@ def server():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Do stuff")
-    parser.add_argument('command', action="store", choices=['load', 'server'])
+    parser.add_argument('command', action="store", choices=['load', 'loadFB','server'])
     args = parser.parse_args()
 
     # port = 8000
@@ -118,7 +133,7 @@ if __name__ == "__main__":
     # os.system("open http://localhost:{0}".format(port))
 
     # Set up the development server on port 8000.
-    if args.command == 'load':
-        load()
+    if args.command == 'load' or 'loadFB':
+        loadFB()
     if args.command == 'server':
         server()

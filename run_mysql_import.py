@@ -24,7 +24,6 @@ while a != []:
 		print l0
 	# Append line 
 
-
 # Run SQL script
 
 
