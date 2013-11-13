@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 # Connect to database
 usr = os.getenv("MYSQL_USR")
 pwd = os.getenv("MYSQL_PWD")
-dbname = os.getenv("MYSQL_UPSDB")
+dbname = os.getenv("MYSQL_BBDB")
 connectstr = "mysql+mysqldb://"+usr+":"+pwd+"@localhost/"+dbname
 engine = create_engine(connectstr, pool_recycle=3600)
 conn = engine.connect()
