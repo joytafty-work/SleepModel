@@ -31,13 +31,36 @@ def loadBB():
     cdb_pwd = os.getenv("CLEARDB_PWD")
     cdb_host = os.getenv("CLEARDB_HOST")
     cdb_port = os.getenv("CLEARDB_PORT")
+    # Define connection url
+    cdb_url = "mysql://" + cdb_usr + ":" + cdb_pwd + "@" + cdb_host + ".cleardb.com/heroku_" + cdb_port
+    # Create core interface to ClearDB database
+    engine = create_engine(cdb_url, pool_recycle=3600, echo=False)
 
-    cdb_url = "mysql://" + cdb_usr + ":" + cdb_pwd + "@" + cdb_host + ".cleardb.com/heroku_" + cdb_port + "?reconnect=true"
+    from sqlalchemy.ext.declarative import declarative_base
+    from sqlalchemy import Column, Integer, String, Float, SMALLINT
+    from sqlalchemy import TIMESTAMP as T
+    from sqlalchemy import Date as D
+    Base = declarative_base()
 
-    import MySQLdb
-    conn = MySQLdb.connect(host=cdb_host, user=cdb_usr, passwd=cdb_pwd, db="cdb_port")
-    x = conn.cursor()
-    print x
+    # Define table mapped class
+    class BBmeasure(Base):
+        __tablename__ = 'BBraw'
+        # Properties
+        recdate = Column(D)
+        rectime = Column(T)
+        skin_temp = Column(Float(3, 1))
+        air_temp = Column(Float(3, 1))
+        heartrate = Column(SMALLINT)
+        steps = Column(SMALLINT)
+        gsr = Column(Float(9, 7))
+        calories = Column(Float(6, 2))
+
+        def __repr__(self):
+            return "<BBmeasure(heartrate='%i', steps='%i', calories='%d')>" % (self.heartrate, self.steps, self.calories)
+
+    # Connect engine to ClearDB
+    conn = engine.connect()
+
 
     # Register database schemes in URLs.
     urlparse.uses_netloc.append('mysql')

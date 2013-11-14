@@ -111,3 +111,7 @@ mysqldump -u root -h localhost -p upsdata sleep > sleep.sql
 mysqldump -u root -h localhost -p upsdata nap > nap.sql
 mysqldump -u root -h localhost -p upsdata mood > mood.sql
 
+
+mysql --host=xxxxx.cleardb.com --user=user --password=password --reconnect heroku_xxxxxx < file_name.sql
+
+
