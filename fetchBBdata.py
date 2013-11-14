@@ -3,18 +3,23 @@ import os, datetime, requests, csv
 import argparse
 
 # TASK: Write data to CSV first, then write CSV to SQL
-# ######## Connect to local database ########
-# def connectMySQL(usr, pwd, dbname):
-#     import os
-#     import MySQLdb
-#     from sqlalchemy import create_engine
+######## Connect to local database ########
+def connectMySQL(usr, pwd, dbname):
+    import os
+    import MySQLdb
+    from sqlalchemy import create_engine
 
-#     connectstr = "mysql+mysqldb://"+usr+":"+pwd+"@localhost/"+dbname
-#     engine = create_engine(connectstr, pool_recycle=3600)
-#     conn = engine.connect()
-#     return conn
+    connectstr = "mysql+mysqldb://"+usr+":"+pwd+"@localhost/"+dbname
+    engine = create_engine(connectstr, pool_recycle=3600)
+    conn = engine.connect()
+    return conn
 
 fpathdefault = 'static/data/BBdata_nooffset/'
+if not os.path.exists(fpathdefault):
+    input("Will create datafiles in %r.\n"
+        "To reset the cache + database, delete this directory.\n"
+        "Press enter to continue.\n" % fpathdefault)
+    os.makedirs(fpathdefault)
 
 def fetchBB(user_id, startdate, enddate, *BBargs, **BBkeys):
     # First date to import

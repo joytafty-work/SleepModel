@@ -17,3 +17,4 @@ load data local
 	into TABLE BBraw fields terminated by ',' 
 	enclosed by '"' 
 	lines terminated by '\n';
+
