@@ -34,12 +34,15 @@ def loadBB():
 
     cdb_url = "mysql://" + cdb_usr + ":" + cdb_pwd + "@" + cdb_host + ".cleardb.com/heroku_" + cdb_port + "?reconnect=true"
 
+    import MySQLdb
+    conn = MySQLdb.connect(host=cdb_host, user=cdb_usr, passwd=cdb_pwd, db="cdb_port")
+    x = conn.cursor()
+    print x
+
     # Register database schemes in URLs.
     urlparse.uses_netloc.append('mysql')
 
     try:
-        # Check to make sure DATABASES is set in settings.py file.
-        # If not default to {}
 
         if 'DATABASES' not in locals():
             DATABASES = {}
