@@ -106,15 +106,15 @@ def authenticate():
     resp, content = client.request(auth_url1)
     resp, content = client.request(auth_url2)
 
-s = requests.Session()
-login_url = 'https://jawbone.com/user/signin/login'
-r = s.get(login_url)
-print(r.text)
-credentials = {
-    'inUserName': 'joytafty@gmail.com',
-    'inUserPass': '',
-    'server': 'nudge'
-}
+# s = requests.Session()
+# login_url = 'https://jawbone.com/user/signin/login'
+# r = s.get(login_url)
+# print(r.text)
+# credentials = {
+#     'inUserName': 'joytafty@gmail.com',
+#     'inUserPass': '',
+#     'server': 'nudge'
+# }
 
 def server():
     from cherrypy import wsgiserver
