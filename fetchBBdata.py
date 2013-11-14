@@ -49,7 +49,7 @@ def append_csv(dat, fname, fpath):
         writer = csv.writer(csvo)
         # Write header
         writer.writerow(['datetime', 'date', 'timestamp', 'skin_temp', 'air_temp', 'heartrate', 'steps', 'gsr', 'calories'])
-        print(dat)        
+        # print(dat)        
         if 'endtime' not in dat:
             return
         epoch = datetime.datetime(1969, 12, 31, 20, 0, 0)

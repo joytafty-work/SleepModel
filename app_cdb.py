@@ -19,8 +19,10 @@ def loadBB():
     import os, fetchBBdata
     d0 = '2013-11-01'
     df = '2013-11-10'
+    Fpath = os.getcwd() + '/static/data/'
+    Fname = 'BB' + d0 + '.csv'
     BB_user_id = os.getenv("BBid")
-    fetchBBdata.fetchBB(BB_user_id, d0, df)
+    fetchBBdata.fetchBB(BB_user_id, d0, df, fname=Fname, fpath=Fpath)
     print "fetch data successfully!"
 
     # connect to clearDB database
