@@ -116,9 +116,6 @@ credentials = {
     'server': 'nudge'
 }
 
-def CDBserver():
-    app.config['SQLALCHEMY_DATABASE_URI'] = mysql://your-username:your-password@localhost/ufosightings
-
 def server():
     from cherrypy import wsgiserver
     app = Flask(__name__)
