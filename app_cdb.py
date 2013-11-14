@@ -149,7 +149,7 @@ def server():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Do stuff")
-    parser.add_argument('command', action="store", choices=['load', 'loadFB','server'])
+    parser.add_argument('command', action="store", choices=['load', 'loadBB', 'loadFB','server'])
     args = parser.parse_args()
 
     # port = 8000
@@ -157,6 +157,8 @@ if __name__ == "__main__":
     # os.system("open http://localhost:{0}".format(port))
 
     # Set up the development server on port 8000.
+    if args.command == 'loadBB':
+        loadBB()
     if args.command == 'load' or 'loadFB':
         loadFB()
     if args.command == 'server':
