@@ -45,6 +45,7 @@ def get_data(user_id, startdate, enddate):
 def append_csv(dat, fname, fpath):
     # import csv
     fname = fpath + fname
+    print fname
     with open(fname, 'ab') as csvo:
         writer = csv.writer(csvo)
         # Write header
