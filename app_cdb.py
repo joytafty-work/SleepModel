@@ -157,9 +157,9 @@ if __name__ == "__main__":
     # os.system("open http://localhost:{0}".format(port))
 
     # Set up the development server on port 8000.
-    if args.command == 'loadBB':
+    if args.command == 'load' or 'loadBB':
         loadBB()
-    if args.command == 'load' or 'loadFB':
+    if args.command == 'loadFB':
         loadFB()
     if args.command == 'server':
         server()
