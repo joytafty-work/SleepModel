@@ -16,7 +16,7 @@ import urlparse
 # Load data from local redis
 def loadBB():
     # fetch data
-    import fetchBBdata
+    import os, fetchBBdata
     d0 = '2013-11-01'
     df = '2013-11-10'
     BB_user_id = os.getenv("BBid")
