@@ -15,6 +15,15 @@ import urlparse
 
 # Load data from local redis
 def loadBB():
+    # fetch data
+    import fetchBBdata
+    d0 = '2013-11-01'
+    df = '2013-11-10'
+    BB_user_id = os.getenv("BBid")
+    fetchBBdata.fetchBB(BB_user_id, d0, df)
+    print "fetch data successfully!"
+
+    # connect to clearDB database
     import os, sys, urlparse
     cdb_usr = os.getenv("CLEARDB_USR")
     cdb_pwd = os.getenv("CLEARDB_PWD")
