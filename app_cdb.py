@@ -17,6 +17,9 @@ from table_def import Subject, BBdaily
 # Load data from local redis
 def loadBB():
     import os, sys, urlparse
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
+    
     # fetch data
     d0 = '2013-11-01'
     df = '2013-11-10'
