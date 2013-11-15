@@ -58,8 +58,14 @@ def loadBB():
         gsr = Column(Float(9, 7))
         calories = Column(Float(6, 2))
 
+        # Update Return Statement so it includes all the parameters
         def __repr__(self):
             return "<BBmeasure(heartrate='%i', steps='%i', calories='%d')>" % (self.heartrate, self.steps, self.calories)
+
+    #Create tables
+    Base.metadata.create_all(engine)
+    # Create Session to talking to databases
+
 
     # Connect engine to ClearDB
     conn = engine.connect()
