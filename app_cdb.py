@@ -16,7 +16,7 @@ from table_def import Subject, BBdaily
 
 # Load data from local redis
 def loadBB():
-    import os, sys, urlparse
+    import os, sys, urlparse, requests
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
     
