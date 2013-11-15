@@ -16,6 +16,7 @@ from table_def import Subject, BBdaily
 
 # Load data from local redis
 def loadBB():
+    import os, sys, urlparse
     # fetch data
     d0 = '2013-11-01'
     df = '2013-11-10'
@@ -24,7 +25,6 @@ def loadBB():
     BB_user_id = os.getenv("BBid")
 
     # connect to clearDB database
-    import os, sys, urlparse
     cdb_usr = os.getenv("CLEARDB_USR")
     cdb_pwd = os.getenv("CLEARDB_PWD")
     cdb_host = os.getenv("CLEARDB_HOST")
