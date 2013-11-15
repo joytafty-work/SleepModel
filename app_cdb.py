@@ -12,18 +12,16 @@ from store import redis
 import time
 import numpy as np
 import urlparse
+from table_def import Subject, BBdaily
 
 # Load data from local redis
 def loadBB():
     # fetch data
-    import os, fetchBBdata
     d0 = '2013-11-01'
     df = '2013-11-10'
     Fpath = os.getcwd() + '/static/data/'
     Fname = 'BB' + d0 + '.csv'
     BB_user_id = os.getenv("BBid")
-    fetchBBdata.fetchBB(BB_user_id, d0, df, fname=Fname, fpath=Fpath)
-    print "fetch data successfully!"
 
     # connect to clearDB database
     import os, sys, urlparse
@@ -34,70 +32,38 @@ def loadBB():
     # Define connection url
     cdb_url = "mysql://" + cdb_usr + ":" + cdb_pwd + "@" + cdb_host + ".cleardb.com/heroku_" + cdb_port
     # Create core interface to ClearDB database
-    engine = create_engine(cdb_url, pool_recycle=3600, echo=False)
+    engine = create_engine(cdb_url, pool_recycle=3600, echo=True)
 
-    from sqlalchemy.ext.declarative import declarative_base
-    from sqlalchemy.schema import CreateTable
-    from sqlalchemy import Column, Integer, String, Float, SMALLINT
-    from sqlalchemy import TIMESTAMP as T
-    from sqlalchemy import Date as D
-    Base = declarative_base()
+    # Create a Session
+    Session = sessionmaker(bind=engine)
+    session = Session()
 
-    # Define table mapped class
-    class BBmeasure(Base):
-        __tablename__ = 'BBraw'
+    new_subject = Subject()
+    d = d0 
+    url = 'https://app.mybasis.com/api/v1/chart/{0}.json?summary=true&interval=60&units=ms&start_date={1}&start_offset=0&end_offset=0&heartrate=true&steps=true&calories=true&gsr=true&skin_temp=true&air_temp=true&bodystates=true'.format(user_id, d.strftime('%Y-%m-%d'))
+    dat = requests.get(url).json
+    print dat.viewkeys()
 
-        # Properties
-        id = Column(Integer, primary_key=True)
-        recdate = Column(D)
-        rectime = Column(T)
-        skin_temp = Column(Float(3, 1))
-        air_temp = Column(Float(3, 1))
-        heartrate = Column(SMALLINT)
-        steps = Column(SMALLINT)
-        gsr = Column(Float(9, 7))
-        calories = Column(Float(6, 2))
+    session.add_all
 
-        # Update Return Statement so it includes all the parameters
-        def __repr__(self):
-            return "<BBmeasure(heartrate='%i', steps='%i', calories='%d')>" % (self.heartrate, self.steps, self.calories)
+    ######## Fetch data from basis website ########
+    def get_BBdata(user_id, startdate, enddate):
+        d = startdate
+        delta = datetime.timedelta(days=1)
+    
+        while d <= enddate:
+            url = 'https://app.mybasis.com/api/v1/chart/{0}.json?summary=true&interval=60&units=ms&start_date={1}&start_offset=0&end_offset=0&heartrate=true&steps=true&calories=true&gsr=true&skin_temp=true&air_temp=true&bodystates=true'.format(user_id, d.strftime('%Y-%m-%d'))
+            yield requests.get(url).json # Fetch generator
+            d += delta
 
-    #Create tables
-    Base.metadata.create_all(engine)
-    # Create Session to talking to databases
-
-
-    # Connect engine to ClearDB
-    conn = engine.connect()
-
-
-    # Register database schemes in URLs.
-    urlparse.uses_netloc.append('mysql')
-
-    try:
-
-        if 'DATABASES' not in locals():
-            DATABASES = {}
-
-        if 'DATABASE_URL' in os.environ:
-            url = urlparse.urlparse(os.environ['DATABASE_URL'])
-
-            # Ensure default database exists.
-            DATABASES['default'] = DATABASES.get('default', {})
-
-            # Update with environment configuration.
-            DATABASES['default'].update({
-                'NAME': url.path[1:],
-                'USER': url.username,
-                'PASSWORD': url.password,
-                'HOST': url.hostname,
-                'PORT': url.port,
-            })
-
-            if url.scheme == 'mysql':
-                DATABASES['default']['ENGINE'] = 'django.db.backends.mysql'
-    except Exception:
-        print 'Unexpected error:', sys.exc_info()
+    def write_BBdata(dat):
+        print dat
+        if 'endtime' not in dat:
+            return
+        epoch = datetime.datetime(1969, 12, 31, 20, 0, 0)
+        tpass = datetime.timedelta(seconds=dat['starttime'])
+        recdate = (epoch + tpass).date()
+        print recdate
 
 def loadFB():
     # see: http://python-fitbit.readthedocs.org/en/latest/#fitbit-api

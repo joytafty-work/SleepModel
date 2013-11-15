@@ -4,51 +4,51 @@ import argparse
 
 # TASK: Write data to CSV first, then write CSV to SQL
 ######## Connect to local database ########
-def connectMySQL(usr, pwd, dbname):
-     # connect to clearDB database
-    import os, sys, urlparse
-    cdb_usr = os.getenv("CLEARDB_USR")
-    cdb_pwd = os.getenv("CLEARDB_PWD")
-    cdb_host = os.getenv("CLEARDB_HOST")
-    cdb_port = os.getenv("CLEARDB_PORT")
-    # Define connection url
-    cdb_url = "mysql://" + cdb_usr + ":" + cdb_pwd + "@" + cdb_host + ".cleardb.com/heroku_" + cdb_port
-    # Create core interface to ClearDB database
-    engine = create_engine(cdb_url, pool_recycle=3600, echo=False)
+# def connectMySQL(usr, pwd, dbname):
+#      # connect to clearDB database
+#     import os, sys, urlparse
+#     cdb_usr = os.getenv("CLEARDB_USR")
+#     cdb_pwd = os.getenv("CLEARDB_PWD")
+#     cdb_host = os.getenv("CLEARDB_HOST")
+#     cdb_port = os.getenv("CLEARDB_PORT")
+#     # Define connection url
+#     cdb_url = "mysql://" + cdb_usr + ":" + cdb_pwd + "@" + cdb_host + ".cleardb.com/heroku_" + cdb_port
+#     # Create core interface to ClearDB database
+#     engine = create_engine(cdb_url, pool_recycle=3600, echo=False)
 
-    from sqlalchemy.ext.declarative import declarative_base
-    from sqlalchemy.schema import CreateTable
-    from sqlalchemy.orm import sessionmaker
-    from sqlalchemy import Column, Integer, String, Float, SMALLINT
-    from sqlalchemy import TIMESTAMP as T
-    from sqlalchemy import Date as D
-    Base = declarative_base()
+#     from sqlalchemy.ext.declarative import declarative_base
+#     from sqlalchemy.schema import CreateTable
+#     from sqlalchemy.orm import sessionmaker
+#     from sqlalchemy import Column, Integer, String, Float, SMALLINT
+#     from sqlalchemy import TIMESTAMP as T
+#     from sqlalchemy import Date as D
+#     Base = declarative_base()
 
-    # Define table mapped class
-    class BBmeasure(Base):
-        __tablename__ = 'BBraw'
+#     # Define table mapped class
+#     class BBmeasure(Base):
+#         __tablename__ = 'BBraw'
 
-        # Properties
-        id = Column(Integer, primary_key=True)
-        recdate = Column(D)
-        rectime = Column(T)
-        skin_temp = Column(Float(3, 1))
-        air_temp = Column(Float(3, 1))
-        heartrate = Column(SMALLINT)
-        steps = Column(SMALLINT)
-        gsr = Column(Float(9, 7))
-        calories = Column(Float(6, 2))
+#         # Properties
+#         id = Column(Integer, primary_key=True)
+#         recdate = Column(D)
+#         rectime = Column(T)
+#         skin_temp = Column(Float(3, 1))
+#         air_temp = Column(Float(3, 1))
+#         heartrate = Column(SMALLINT)
+#         steps = Column(SMALLINT)
+#         gsr = Column(Float(9, 7))
+#         calories = Column(Float(6, 2))
 
-        # Update Return Statement so it includes all the parameters
-        def __repr__(self):
-            return "<BBmeasure(heartrate='%i', steps='%i', calories='%d')>" % (self.heartrate, self.steps, self.calories)
+#         # Update Return Statement so it includes all the parameters
+#         def __repr__(self):
+#             return "<BBmeasure(heartrate='%i', steps='%i', calories='%d')>" % (self.heartrate, self.steps, self.calories)
 
-    #Create tables
-    Base.metadata.create_all(engine)
-    # Create Session to talking to databases
+#     #Create tables
+#     Base.metadata.create_all(engine)
+#     # Create Session to talking to databases
 
-    # Connect engine to ClearDB
-    conn = engine.connect()
+#     # Connect engine to ClearDB
+#     conn = engine.connect()
 
 fpathdefault = 'static/data/BBdata_nooffset/'
 if not os.path.exists(fpathdefault):
@@ -71,6 +71,7 @@ def fetchBB(user_id, startdate, enddate, *BBargs, **BBkeys):
     if user_id != '':
         for dat in get_data(user_id, startdate, enddate):
             append_csv(dat, fname, fpath)
+            return dat
 
 ######## Fetch data from basis website ########
 def get_data(user_id, startdate, enddate):
