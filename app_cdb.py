@@ -37,6 +37,7 @@ def loadBB():
     engine = create_engine(cdb_url, pool_recycle=3600, echo=False)
 
     from sqlalchemy.ext.declarative import declarative_base
+    from sqlalchemy.schema import CreateTable
     from sqlalchemy import Column, Integer, String, Float, SMALLINT
     from sqlalchemy import TIMESTAMP as T
     from sqlalchemy import Date as D
@@ -45,7 +46,9 @@ def loadBB():
     # Define table mapped class
     class BBmeasure(Base):
         __tablename__ = 'BBraw'
+
         # Properties
+        id = Column(Integer, primary_key=True)
         recdate = Column(D)
         rectime = Column(T)
         skin_temp = Column(Float(3, 1))
