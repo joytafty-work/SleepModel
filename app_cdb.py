@@ -49,7 +49,16 @@ def loadBB():
     dat = requests.get(url).json
     print dat.viewkeys()
 
-    session.add_all
+    epoch = datetime.datetime(1969, 12, 31, 20, 0, 0)
+    tpass = datetime.timedelta(seconds=dat['starttime'])
+    Recdate = (epoch + tpass).date()
+    unix_time_utc = dat['starttime'] + i*dat['interval']
+    mydt = datetime.datetime.fromtimestamp(unix_time_utc)
+    Steps = dat['metrics']['steps']['values']
+    
+    new_subject.bbdaily = [BBdaily(recdate=Recdate, steps=Steps)]
+
+    session.add(new_subject)
 
     ######## Fetch data from basis website ########
     def get_BBdata(user_id, startdate, enddate):
@@ -68,7 +77,6 @@ def loadBB():
         epoch = datetime.datetime(1969, 12, 31, 20, 0, 0)
         tpass = datetime.timedelta(seconds=dat['starttime'])
         recdate = (epoch + tpass).date()
-        print recdate
 
 def loadFB():
     # see: http://python-fitbit.readthedocs.org/en/latest/#fitbit-api
