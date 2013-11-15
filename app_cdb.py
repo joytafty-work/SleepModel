@@ -41,7 +41,7 @@ def loadBB():
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    new_subject = Subject()
+    new_subject = Subject("tester")
     d = d0 
     url = 'https://app.mybasis.com/api/v1/chart/{0}.json?summary=true&interval=60&units=ms&start_date={1}&start_offset=0&end_offset=0&heartrate=true&steps=true&calories=true&gsr=true&skin_temp=true&air_temp=true&bodystates=true'.format(user_id, d.strftime('%Y-%m-%d'))
     dat = requests.get(url).json
