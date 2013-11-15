@@ -23,6 +23,8 @@ def loadBB():
     # fetch data
     d0 = '2013-11-01'
     df = '2013-11-10'
+    startdate = datetime.datetime.strptime(d0, '%Y-%m-%d').date()
+    enddate = datetime.datetime.strptime(df, '%Y-%m-%d').date()
     Fpath = os.getcwd() + '/static/data/'
     Fname = 'BB' + d0 + '.csv'
     BB_user_id = os.getenv("BBid")
@@ -42,7 +44,7 @@ def loadBB():
     session = Session()
 
     new_subject = Subject("tester")
-    d = d0 
+    d = startdate
     url = 'https://app.mybasis.com/api/v1/chart/{0}.json?summary=true&interval=60&units=ms&start_date={1}&start_offset=0&end_offset=0&heartrate=true&steps=true&calories=true&gsr=true&skin_temp=true&air_temp=true&bodystates=true'.format(BB_user_id, d.strftime('%Y-%m-%d'))
     dat = requests.get(url).json
     print dat.viewkeys()
