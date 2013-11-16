@@ -181,17 +181,15 @@ def server():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Do stuff")
     parser.add_argument('command', action="store", choices=['load', 'loadBB', 'loadFB','server'])
-    parser.add_argument('startdate', nargs='?', type=str, default='2013-08-01')
-    parser.add_argument('enddate', nargs='?', type=str, default='2013-08-31')
+    parser.add_argument('startdate', nargs='?', type=str, default="2013-08-01")
+    parser.add_argument('enddate', nargs='?', type=str, default="2013-08-31")
     args = parser.parse_args()
-
-    # port = 8000
-    # Open a web browser pointing at the app.
-    # os.system("open http://localhost:{0}".format(port))
 
     # Set up the development server on port 8000.
     if args.command == 'load' or 'loadBB':
         # Check that startdate comes before enddate
+        print startdate
+        print enddate
         loadBB(startdate, enddate)
 
     if args.command == 'loadFB':
