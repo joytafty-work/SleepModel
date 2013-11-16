@@ -15,7 +15,7 @@ import urlparse
 from table_def import Subject, BBdaily
 
 # Load data from local redis
-def loadBB():
+def loadBB(startdate, enddate):
     import os, sys, urlparse, requests
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
@@ -81,6 +81,8 @@ def loadBB():
             session, subject = insert_BBdata(dat, session, subject)
 
         session.add(subject)
+
+    # Commit change
     session.commit()
 
 def loadFB():
@@ -180,6 +182,8 @@ def server():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Do stuff")
     parser.add_argument('command', action="store", choices=['load', 'loadBB', 'loadFB','server'])
+    parser.add_argument('startdate', narg='?', type=str, default='2013-08-01')
+    parser.add_argument('enddate', narg='?', type=str, default='2013-08-31')
     args = parser.parse_args()
 
     # port = 8000
@@ -188,7 +192,9 @@ if __name__ == "__main__":
 
     # Set up the development server on port 8000.
     if args.command == 'load' or 'loadBB':
-        loadBB()
+        # Check that startdate comes before enddate
+        loadBB(startdate, enddate)
+
     if args.command == 'loadFB':
         loadFB()
     if args.command == 'server':
