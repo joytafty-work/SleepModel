@@ -57,7 +57,7 @@ def loadBB():
     unix_time_utc = [(i-1)*dat['interval'] for i in xrange(nvals)]
     Steps = dat['metrics']['steps']['values']
     
-    new_subject.bbdaily = [BBdaily(recdate=Recdate, time=unix_time_utc, steps=Steps)]
+    new_subject.bbdaily = [BBdaily(recdate=Recdate, rectime=unix_time_utc, steps=Steps)]
 
     session.add(new_subject)
 
