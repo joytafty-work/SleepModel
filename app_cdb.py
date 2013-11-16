@@ -22,7 +22,7 @@ def loadBB():
     
     # fetch data
     d0 = '2013-11-01'
-    df = '2013-11-10'
+    df = '2013-11-05'
     startdate = datetime.datetime.strptime(d0, '%Y-%m-%d').date()
     enddate = datetime.datetime.strptime(df, '%Y-%m-%d').date()
     Fpath = os.getcwd() + '/static/data/'
@@ -43,30 +43,13 @@ def loadBB():
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    new_subject = Subject("tester")
-    d = startdate
-    url = 'https://app.mybasis.com/api/v1/chart/{0}.json?summary=true&interval=60&units=ms&start_date={1}&start_offset=0&end_offset=0&heartrate=true&steps=true&calories=true&gsr=true&skin_temp=true&air_temp=true&bodystates=true'.format(BB_user_id, d.strftime('%Y-%m-%d'))
-    dat = requests.get(url).json
-    print dat.viewkeys()
+    if BB_user_id != '':
+        subject = Subject("s")
+        for dat in get_BBdata(BB_user_id, startdate, enddate):
+            session, subject = insert_BBdata(dat, session, subject)
 
-    epoch = datetime.datetime(1969, 12, 31, 20, 0, 0)
-    tpass = datetime.timedelta(seconds=dat['starttime'])
-    Recdate = (epoch + tpass).date()
-
-    nvals = (dat['endtime']-dat['starttime'])/dat['interval'] + 1
-    unix_time_utc = [(i-1)*dat['interval'] for i in xrange(nvals)]
-    Skin_temp = dat['metrics']['skin_temp']['values']
-    Air_temp = dat['metrics']['air_temp']['values']
-    Heartrate = dat['metrics']['heartrate']['values']
-    Steps = dat['metrics']['steps']['values']
-    Gsr = dat['metrics']['gsr']['values']    
-    Calories = dat['metrics']['calories']['values']
-        
-    new_subject.bbdaily = [BBdaily(recdate=Recdate, rectime=unix_time_utc,
-        skin_temp=Skin_temp, air_temp=Air_temp, heartrate=Heartrate, 
-        steps=Steps, gsr=Gsr, calories=Calories)]
-
-    session.add(new_subject)
+        session.add(subject)
+    session.commit()
 
     ######## Fetch data from basis website ########
     def get_BBdata(user_id, startdate, enddate):
@@ -78,13 +61,27 @@ def loadBB():
             yield requests.get(url).json # Fetch generator
             d += delta
 
-    def write_BBdata(dat):
-        print dat
+    def insert_BBdata(dat, session, subject):
         if 'endtime' not in dat:
             return
         epoch = datetime.datetime(1969, 12, 31, 20, 0, 0)
         tpass = datetime.timedelta(seconds=dat['starttime'])
-        recdate = (epoch + tpass).date()
+        Recdate = (epoch + tpass).date()
+
+        nvals = (dat['endtime']-dat['starttime'])/dat['interval'] + 1
+        unix_time_utc = [(i-1)*dat['interval'] for i in xrange(nvals)]
+        Skin_temp = dat['metrics']['skin_temp']['values']
+        Air_temp = dat['metrics']['air_temp']['values']
+        Heartrate = dat['metrics']['heartrate']['values']
+        Steps = dat['metrics']['steps']['values']
+        Gsr = dat['metrics']['gsr']['values']    
+        Calories = dat['metrics']['calories']['values']
+        
+        subject.bbdaily = [BBdaily(recdate=Recdate, rectime=unix_time_utc,
+            skin_temp=Skin_temp, air_temp=Air_temp, heartrate=Heartrate, 
+            steps=Steps, gsr=Gsr, calories=Calories)]
+
+        return session, subject
 
 def loadFB():
     # see: http://python-fitbit.readthedocs.org/en/latest/#fitbit-api
