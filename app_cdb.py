@@ -30,15 +30,19 @@ def loadBB(startdate, enddate):
             yield requests.get(url).json # Fetch generator
             d += delta
 
-    def insert_BBdata(dat, session):
+    def insert_BBdata(dat):
+        # Create a Session
+        Session = sessionmaker(bind=engine)
+        session = Session()
+
         if 'endtime' not in dat:
+            print "No endtime in dataset"
             record = [Record(recdate=NULL, rectime=NULL,
             skin_temp=NULL, air_temp=NULL, heartrate=NULL, 
             steps=NULL, gsr=Gsr, calories=NULL)]
-            print "No endtime in dataset"
-            print record
+
             return
-            
+
         epoch = datetime.datetime(1969, 12, 31, 20, 0, 0)
         tpass = datetime.timedelta(seconds=dat['starttime'])
         Recdate = (epoch + tpass).date()
@@ -55,7 +59,8 @@ def loadBB(startdate, enddate):
         record = [Record(recdate=Recdate, rectime=unix_time_utc,
             skin_temp=Skin_temp, air_temp=Air_temp, heartrate=Heartrate, 
             steps=Steps, gsr=Gsr, calories=Calories)]
-        return session, record
+
+        session.add(record)
 
     # fetch data
     BB_user_id = os.getenv("BBid")
@@ -70,14 +75,10 @@ def loadBB(startdate, enddate):
     # Create core interface to ClearDB database
     engine = create_engine(cdb_url, pool_recycle=3600, echo=True)
 
-    # Create a Session
-    Session = sessionmaker(bind=engine)
-    session = Session()
     if BB_user_id != '':
         for dat in get_BBdata(BB_user_id, startdate, enddate):
-            session, record = insert_BBdata(dat, session)
+            insert_BBdata(dat, session)
         
-        session.add(record)
         # Commit change
         session.commit()
 
