@@ -52,11 +52,12 @@ def loadBB():
     epoch = datetime.datetime(1969, 12, 31, 20, 0, 0)
     tpass = datetime.timedelta(seconds=dat['starttime'])
     Recdate = (epoch + tpass).date()
-    unix_time_utc = dat['starttime'] + i*dat['interval']
-    mydt = datetime.datetime.fromtimestamp(unix_time_utc)
+
+    nvals = (dat['endtime']-dat['starttime'])/dat['interval'] + 1
+    unix_time_utc = [(i-1)*dat['interval'] for i in xrange(nvals)]
     Steps = dat['metrics']['steps']['values']
     
-    new_subject.bbdaily = [BBdaily(recdate=Recdate, steps=Steps)]
+    new_subject.bbdaily = [BBdaily(recdate=Recdate, time=unix_time_utc, steps=Steps)]
 
     session.add(new_subject)
 
