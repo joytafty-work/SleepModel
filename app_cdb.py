@@ -37,7 +37,7 @@ def loadBB(startdate, enddate):
         # tpass = datetime.timedelta(seconds=dat['starttime'])
         # Recdate = (epoch + tpass).date()
 
-        for i in (dat['endtime'] - dat['starttime'])/dat['interval']:
+        for i in range(dat['endtime'] - dat['starttime'])/dat['interval']:
         # nvals = (dat['endtime']-dat['starttime'])/dat['interval'] + 1
         # unix_time_utc = [(i-1)*dat['interval'] for i in xrange(nvals)]
             unix_time_utc = dat['starttime'] + i*dat['interval']
