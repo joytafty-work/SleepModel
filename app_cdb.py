@@ -56,9 +56,9 @@ def loadBB(startdate, enddate):
             bbdate.records.extend(record)
 
         session.add(bbdate)
-        session.commit()
+        # session.commit()
         # return session, record
-        return bbdate
+        return session, bbdate
 
     # fetch data
     BB_user_id = os.getenv("BBid")
@@ -83,7 +83,7 @@ def loadBB(startdate, enddate):
             Recdate = (epoch + tpass).date()
 
             bbdate = BBdate(Recdate)
-            bbdate = insert_BBdata(dat, session, bbdate, Recdate)
+            session, bbdate = insert_BBdata(dat, session, bbdate, Recdate)
         
         # Commit change
         session.commit()
