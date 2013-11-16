@@ -32,7 +32,13 @@ def loadBB(startdate, enddate):
 
     def insert_BBdata(dat, session):
         if 'endtime' not in dat:
+            record = [Record(recdate=NULL, rectime=NULL,
+            skin_temp=NULL, air_temp=NULL, heartrate=NULL, 
+            steps=NULL, gsr=Gsr, calories=NULL)]
+            print "No endtime in dataset"
+            print record
             return
+            
         epoch = datetime.datetime(1969, 12, 31, 20, 0, 0)
         tpass = datetime.timedelta(seconds=dat['starttime'])
         Recdate = (epoch + tpass).date()
@@ -49,8 +55,6 @@ def loadBB(startdate, enddate):
         record = [Record(recdate=Recdate, rectime=unix_time_utc,
             skin_temp=Skin_temp, air_temp=Air_temp, heartrate=Heartrate, 
             steps=Steps, gsr=Gsr, calories=Calories)]
-        print session
-        print record
         return session, record
 
     # fetch data
@@ -68,15 +72,14 @@ def loadBB(startdate, enddate):
 
     # Create a Session
     Session = sessionmaker(bind=engine)
-
+    session = Session()
     if BB_user_id != '':
         for dat in get_BBdata(BB_user_id, startdate, enddate):
-            session = Session()
             session, record = insert_BBdata(dat, session)
-            session.add(record)
-
-    # Commit change
-    session.commit()
+        
+        session.add(record)
+        # Commit change
+        session.commit()
 
 def loadFB():
     # see: http://python-fitbit.readthedocs.org/en/latest/#fitbit-api
