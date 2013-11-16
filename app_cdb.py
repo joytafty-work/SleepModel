@@ -20,7 +20,7 @@ def loadBB(startdate, enddate):
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
     
-        ######## Fetch data from basis website ########
+    ######## Fetch data from basis website ########
     def get_BBdata(user_id, startdate, enddate):
         d = startdate
         delta = datetime.timedelta(days=1)
@@ -31,7 +31,6 @@ def loadBB(startdate, enddate):
             d += delta
 
     def insert_BBdata(dat, session):
-        record = Record()
         if 'endtime' not in dat:
             return
         epoch = datetime.datetime(1969, 12, 31, 20, 0, 0)
@@ -54,12 +53,6 @@ def loadBB(startdate, enddate):
         return session, record
 
     # fetch data
-    # d0 = '2013-11-01'
-    # df = '2013-11-05'
-    # startdate = datetime.datetime.strptime(d0, '%Y-%m-%d').date()
-    # enddate = datetime.datetime.strptime(df, '%Y-%m-%d').date()
-    # Fpath = os.getcwd() + '/static/data/'
-    # Fname = 'BB' + d0 + '.csv'
     BB_user_id = os.getenv("BBid")
 
     # connect to clearDB database

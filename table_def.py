@@ -27,6 +27,9 @@ class Record(Base):
 	gsr = Column(Float(9, 7))
 	calories = Column(Float(6, 2))
 
+	# def __init__(self, recdate):
+	# 	self.recdate = recdate
+
 	def __init__(self, recdate, rectime, skin_temp, air_temp, heartrate, steps, gsr, calories):
 		self.recdate = recdate
 		self.rectime = rectime
