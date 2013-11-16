@@ -20,38 +20,7 @@ def loadBB():
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
     
-    # fetch data
-    d0 = '2013-11-01'
-    df = '2013-11-05'
-    startdate = datetime.datetime.strptime(d0, '%Y-%m-%d').date()
-    enddate = datetime.datetime.strptime(df, '%Y-%m-%d').date()
-    Fpath = os.getcwd() + '/static/data/'
-    Fname = 'BB' + d0 + '.csv'
-    BB_user_id = os.getenv("BBid")
-
-    # connect to clearDB database
-    cdb_usr = os.getenv("CLEARDB_USR")
-    cdb_pwd = os.getenv("CLEARDB_PWD")
-    cdb_host = os.getenv("CLEARDB_HOST")
-    cdb_port = os.getenv("CLEARDB_PORT")
-    # Define connection url
-    cdb_url = "mysql://" + cdb_usr + ":" + cdb_pwd + "@" + cdb_host + ".cleardb.com/heroku_" + cdb_port
-    # Create core interface to ClearDB database
-    engine = create_engine(cdb_url, pool_recycle=3600, echo=True)
-
-    # Create a Session
-    Session = sessionmaker(bind=engine)
-    session = Session()
-
-    if BB_user_id != '':
-        subject = Subject("s")
-        for dat in get_BBdata(BB_user_id, startdate, enddate):
-            session, subject = insert_BBdata(dat, session, subject)
-
-        session.add(subject)
-    session.commit()
-
-    ######## Fetch data from basis website ########
+        ######## Fetch data from basis website ########
     def get_BBdata(user_id, startdate, enddate):
         d = startdate
         delta = datetime.timedelta(days=1)
@@ -82,6 +51,37 @@ def loadBB():
             steps=Steps, gsr=Gsr, calories=Calories)]
 
         return session, subject
+
+    # fetch data
+    d0 = '2013-11-01'
+    df = '2013-11-05'
+    startdate = datetime.datetime.strptime(d0, '%Y-%m-%d').date()
+    enddate = datetime.datetime.strptime(df, '%Y-%m-%d').date()
+    Fpath = os.getcwd() + '/static/data/'
+    Fname = 'BB' + d0 + '.csv'
+    BB_user_id = os.getenv("BBid")
+
+    # connect to clearDB database
+    cdb_usr = os.getenv("CLEARDB_USR")
+    cdb_pwd = os.getenv("CLEARDB_PWD")
+    cdb_host = os.getenv("CLEARDB_HOST")
+    cdb_port = os.getenv("CLEARDB_PORT")
+    # Define connection url
+    cdb_url = "mysql://" + cdb_usr + ":" + cdb_pwd + "@" + cdb_host + ".cleardb.com/heroku_" + cdb_port
+    # Create core interface to ClearDB database
+    engine = create_engine(cdb_url, pool_recycle=3600, echo=True)
+
+    # Create a Session
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+    if BB_user_id != '':
+        subject = Subject("s")
+        for dat in get_BBdata(BB_user_id, startdate, enddate):
+            session, subject = insert_BBdata(dat, session, subject)
+
+        session.add(subject)
+    session.commit()
 
 def loadFB():
     # see: http://python-fitbit.readthedocs.org/en/latest/#fitbit-api
