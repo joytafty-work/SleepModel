@@ -55,9 +55,16 @@ def loadBB():
 
     nvals = (dat['endtime']-dat['starttime'])/dat['interval'] + 1
     unix_time_utc = [(i-1)*dat['interval'] for i in xrange(nvals)]
+    Skin_temp = dat['metrics']['skin_temp']['values']
+    Air_temp = dat['metrics']['air_temp']['values']
+    Heartrate = dat['metrics']['heartrate']['values']
     Steps = dat['metrics']['steps']['values']
-    
-    new_subject.bbdaily = [BBdaily(recdate=Recdate, rectime=unix_time_utc, steps=Steps)]
+    Gsr = dat['metrics']['gsr']['values']    
+    Calories = dat['metrics']['calories']['values']
+        
+    new_subject.bbdaily = [BBdaily(recdate=Recdate, rectime=unix_time_utc,
+        skin_temp=Skin_temp, air_temp=Air_temp, heartrate=Heartrate, 
+        steps=Steps, gsr=Gsr, calories=Calories)]
 
     session.add(new_subject)
 
