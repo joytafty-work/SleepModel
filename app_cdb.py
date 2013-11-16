@@ -49,7 +49,8 @@ def loadBB(startdate, enddate):
         record = [Record(recdate=Recdate, rectime=unix_time_utc,
             skin_temp=Skin_temp, air_temp=Air_temp, heartrate=Heartrate, 
             steps=Steps, gsr=Gsr, calories=Calories)]
-
+        print session
+        print record
         return session, record
 
     # fetch data
