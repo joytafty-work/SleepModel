@@ -56,6 +56,7 @@ def loadBB(startdate, enddate):
             bbdate.records.extend(record)
 
         session.add(bbdate)
+        session.commit()
         # return session, record
         return bbdate
 

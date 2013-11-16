@@ -14,6 +14,16 @@ cdb_url = "mysql://" + cdb_usr + ":" + cdb_pwd + "@" + cdb_host + ".cleardb.com/
 engine = create_engine(cdb_url, pool_recycle=3600, echo=True)
 Base = declarative_base()
 
+### Define table mapped classes
+class BBdate(Base):
+	__tablename__ = 'bbdates'
+
+	id = Column(Integer, primary_key=True)
+	recdate = Column(Date)
+
+	def __init__(self, recdate):
+		self.recdate = recdate
+
 class Record(Base):
 	__tablename__ = 'records'
 
@@ -27,11 +37,8 @@ class Record(Base):
 	gsr = Column(Float(9, 7))
 	calories = Column(Float(6, 2))
 
-	dateid = Column(Integer, ForeignKey("bbdates.id"))
+	date_id = Column(Integer, ForeignKey("bbdates.id"))
 	bbdate = relationship("BBdate", backref=backref("records", order_by=id))
-
-	# def __init__(self, recdate):
-	# 	self.recdate = recdate
 
 	def __init__(self, recdate, rectime, skin_temp, air_temp, heartrate, steps, gsr, calories):
 		self.recdate = recdate
@@ -51,30 +58,6 @@ class Subject(Base):
 
 	def __init__(self, name):
 		self.name = name
-
-### Define table mapped classes
-class BBdate(Base):
-	__tablename__ = 'bbdates'
-
-	id = Column(Integer, primary_key=True)
-	recdate = Column(Date)
-	# rectime = Column(Time)
-	# skin_temp = Column(Float(3, 1))
-	# air_temp = Column(Float(3, 1))
-	# heartrate = Column(SMALLINT)
-	# steps = Column(SMALLINT)
-	# gsr = Column(Float(9, 7))
-	# calories = Column(Float(6, 2))
-
-	def __init__(self, recdate):
-		self.recdate = recdate
-		# self.rectime = rectime
-		# self.skin_temp = skin_temp
-		# self.air_temp = air_temp
-		# self.heartrate = heartrate
-		# self.steps = steps
-		# self.gsr = gsr
-		# self.calories = calories
 
 ### Create tables
 Base.metadata.create_all(engine)
