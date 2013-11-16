@@ -18,7 +18,8 @@ from table_def import Subject, BBdaily, Record
 def loadBB(startdate, enddate):
     import os, sys, urlparse, requests
     from sqlalchemy import create_engine
-    
+    from sqlalchemy.orm import sessionmaker
+
     ######## Fetch data from basis website ########
     def get_BBdata(user_id, startdate, enddate):
         d = startdate
