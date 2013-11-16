@@ -72,8 +72,7 @@ def loadBB(startdate, enddate):
     if BB_user_id != '':
         for dat in get_BBdata(BB_user_id, startdate, enddate):
             session, record = insert_BBdata(dat, session)
-
-        session.add(record)
+            session.add(record)
 
     # Commit change
     session.commit()
