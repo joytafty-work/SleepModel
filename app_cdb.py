@@ -52,11 +52,12 @@ def loadBB(startdate, enddate):
             record = [Record(recdate=Recdate, rectime=Rectime,
                 skin_temp=Skin_temp, air_temp=Air_temp, heartrate=Heartrate, 
                 steps=Steps, gsr=Gsr, calories=Calories)]
-
+            print Recdate
             bbdate.records.extend(record)
 
-            # return session, record
-            return bbdate
+        session.add(bbdate)
+        # return session, record
+        return bbdate
 
     # fetch data
     BB_user_id = os.getenv("BBid")
