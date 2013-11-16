@@ -14,6 +14,29 @@ cdb_url = "mysql://" + cdb_usr + ":" + cdb_pwd + "@" + cdb_host + ".cleardb.com/
 engine = create_engine(cdb_url, pool_recycle=3600, echo=True)
 Base = declarative_base()
 
+class Record(Base):
+	__tablename__ = 'records'
+
+	id = Column(Integer, primary_key=True)
+	recdate = Column(Date)
+	rectime = Column(Time)
+	skin_temp = Column(Float(3, 1))
+	air_temp = Column(Float(3, 1))
+	heartrate = Column(SMALLINT)
+	steps = Column(SMALLINT)
+	gsr = Column(Float(9, 7))
+	calories = Column(Float(6, 2))
+
+	def __init__(self, recdate, rectime, skin_temp, air_temp, heartrate, steps, gsr, calories):
+		self.recdate = recdate
+		self.rectime = rectime
+		self.skin_temp = skin_temp
+		self.air_temp = air_temp
+		self.heartrate = heartrate
+		self.steps = steps
+		self.gsr = gsr
+		self.calories = calories
+
 class Subject(Base):
 	__tablename__ = 'subjects'
 

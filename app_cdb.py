@@ -30,7 +30,7 @@ def loadBB(startdate, enddate):
             yield requests.get(url).json # Fetch generator
             d += delta
 
-    def insert_BBdata(dat, session, subject):
+    def insert_BBdata(dat, session):
         if 'endtime' not in dat:
             return
         epoch = datetime.datetime(1969, 12, 31, 20, 0, 0)
@@ -46,11 +46,11 @@ def loadBB(startdate, enddate):
         Gsr = dat['metrics']['gsr']['values']    
         Calories = dat['metrics']['calories']['values']
         
-        subject.bbdaily = [BBdaily(recdate=Recdate, rectime=unix_time_utc,
+        record = [Record(recdate=Recdate, rectime=unix_time_utc,
             skin_temp=Skin_temp, air_temp=Air_temp, heartrate=Heartrate, 
             steps=Steps, gsr=Gsr, calories=Calories)]
 
-        return session, subject
+        return session, record
 
     # fetch data
     d0 = '2013-11-01'
@@ -76,11 +76,10 @@ def loadBB(startdate, enddate):
     session = Session()
 
     if BB_user_id != '':
-        subject = Subject("s")
         for dat in get_BBdata(BB_user_id, startdate, enddate):
-            session, subject = insert_BBdata(dat, session, subject)
+            session, record = insert_BBdata(dat, session)
 
-        session.add(subject)
+        session.add(record)
 
     # Commit change
     session.commit()
