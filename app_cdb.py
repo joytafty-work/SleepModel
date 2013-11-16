@@ -58,8 +58,8 @@ def loadBB(startdate, enddate):
     # df = '2013-11-05'
     # startdate = datetime.datetime.strptime(d0, '%Y-%m-%d').date()
     # enddate = datetime.datetime.strptime(df, '%Y-%m-%d').date()
-    Fpath = os.getcwd() + '/static/data/'
-    Fname = 'BB' + d0 + '.csv'
+    # Fpath = os.getcwd() + '/static/data/'
+    # Fname = 'BB' + d0 + '.csv'
     BB_user_id = os.getenv("BBid")
 
     # connect to clearDB database
