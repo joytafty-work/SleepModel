@@ -188,8 +188,8 @@ if __name__ == "__main__":
     # Set up the development server on port 8000.
     if args.command == 'load' or 'loadBB':
         # Check that startdate comes before enddate
-        print startdate
-        print enddate
+        startdate = datetime.datetime.strptime(args.startdate, '%Y-%m-%d').date()
+        enddate = datetime.datetime.strptime(args.enddate, '%Y-%m-%d').date()
         loadBB(startdate, enddate)
 
     if args.command == 'loadFB':
