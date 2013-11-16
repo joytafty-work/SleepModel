@@ -31,6 +31,7 @@ def loadBB(startdate, enddate):
             d += delta
 
     def insert_BBdata(dat, session):
+        record = Record()
         if 'endtime' not in dat:
             return
         epoch = datetime.datetime(1969, 12, 31, 20, 0, 0)
@@ -53,10 +54,10 @@ def loadBB(startdate, enddate):
         return session, record
 
     # fetch data
-    d0 = '2013-11-01'
-    df = '2013-11-05'
-    startdate = datetime.datetime.strptime(d0, '%Y-%m-%d').date()
-    enddate = datetime.datetime.strptime(df, '%Y-%m-%d').date()
+    # d0 = '2013-11-01'
+    # df = '2013-11-05'
+    # startdate = datetime.datetime.strptime(d0, '%Y-%m-%d').date()
+    # enddate = datetime.datetime.strptime(df, '%Y-%m-%d').date()
     Fpath = os.getcwd() + '/static/data/'
     Fname = 'BB' + d0 + '.csv'
     BB_user_id = os.getenv("BBid")
@@ -136,16 +137,6 @@ def authenticate():
     client = oauth.Client(consumer)
     resp, content = client.request(auth_url1)
     resp, content = client.request(auth_url2)
-
-# s = requests.Session()
-# login_url = 'https://jawbone.com/user/signin/login'
-# r = s.get(login_url)
-# print(r.text)
-# credentials = {
-#     'inUserName': 'joytafty@gmail.com',
-#     'inUserPass': '',
-#     'server': 'nudge'
-# }
 
 def server():
     from cherrypy import wsgiserver
