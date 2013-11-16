@@ -52,7 +52,6 @@ def loadBB(startdate, enddate):
             record = [Record(recdate=Recdate, rectime=Rectime,
                 skin_temp=Skin_temp, air_temp=Air_temp, heartrate=Heartrate, 
                 steps=Steps, gsr=Gsr, calories=Calories)]
-            print Recdate
             bbdate.records.extend(record)
 
         session.add(bbdate)
