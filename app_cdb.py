@@ -36,8 +36,8 @@ def loadBB(startdate, enddate):
         # epoch = datetime.datetime(1969, 12, 31, 20, 0, 0)
         # tpass = datetime.timedelta(seconds=dat['starttime'])
         # Recdate = (epoch + tpass).date()
-        print date
-        print type(date)
+        print dat
+        print type(dat)
 
         for i in range((dat['endtime'] - dat['starttime'])/dat['interval']):
         # nvals = (dat['endtime']-dat['starttime'])/dat['interval'] + 1
