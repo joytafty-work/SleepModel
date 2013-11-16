@@ -12,7 +12,7 @@ from store import redis
 import time
 import numpy as np
 import urlparse
-from table_def import Subject, BBdaily, Record
+from table_def import Subject, BBdate, Record
 
 # Load data from local redis
 def loadBB(startdate, enddate):
