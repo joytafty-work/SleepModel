@@ -30,7 +30,7 @@ def loadBB(startdate, enddate):
             yield requests.get(url).json # Fetch generator
             d += delta
 
-    def insert_BBdata(dat):
+    def insert_BBdata(dat, new_user):
         # Create a Session
         Session = sessionmaker(bind=engine)
         session = Session()
@@ -60,7 +60,8 @@ def loadBB(startdate, enddate):
             skin_temp=Skin_temp, air_temp=Air_temp, heartrate=Heartrate, 
             steps=Steps, gsr=Gsr, calories=Calories)]
 
-        session.add(record)
+        new_user.records.extend(record)
+        session.add(new_user)
         # Commit change
         session.commit()
 
@@ -78,8 +79,9 @@ def loadBB(startdate, enddate):
     engine = create_engine(cdb_url, pool_recycle=3600, echo=True)
 
     if BB_user_id != '':
+        new_user = User("tester")
         for dat in get_BBdata(BB_user_id, startdate, enddate):
-            insert_BBdata(dat)
+            insert_BBdata(dat, new_user)
         
 def loadFB():
     # see: http://python-fitbit.readthedocs.org/en/latest/#fitbit-api
