@@ -27,6 +27,9 @@ class Record(Base):
 	gsr = Column(Float(9, 7))
 	calories = Column(Float(6, 2))
 
+	dateid = Column(Integer, ForeignKey("bbdates.id"))
+	bbdate = relationship("BBdate", backref=backref("records", order_by=id))
+
 	# def __init__(self, recdate):
 	# 	self.recdate = recdate
 

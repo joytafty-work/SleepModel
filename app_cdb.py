@@ -36,8 +36,6 @@ def loadBB(startdate, enddate):
         # epoch = datetime.datetime(1969, 12, 31, 20, 0, 0)
         # tpass = datetime.timedelta(seconds=dat['starttime'])
         # Recdate = (epoch + tpass).date()
-        print dat
-        print type(dat)
 
         for i in range((dat['endtime'] - dat['starttime'])/dat['interval']):
         # nvals = (dat['endtime']-dat['starttime'])/dat['interval'] + 1
@@ -57,7 +55,8 @@ def loadBB(startdate, enddate):
 
             bbdate.records.extend(record)
 
-            return session, record
+            # return session, record
+            return bbdate
 
     # fetch data
     BB_user_id = os.getenv("BBid")
@@ -82,7 +81,7 @@ def loadBB(startdate, enddate):
             Recdate = (epoch + tpass).date()
 
             bbdate = BBdate(Recdate)
-            session, record = insert_BBdata(dat, session, bbdate, Recdate)
+            bbdate = insert_BBdata(dat, session, bbdate, Recdate)
         
         # Commit change
         session.commit()
