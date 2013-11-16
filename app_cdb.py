@@ -18,7 +18,6 @@ from table_def import Subject, BBdaily, Record
 def loadBB(startdate, enddate):
     import os, sys, urlparse, requests
     from sqlalchemy import create_engine
-    from sqlalchemy.orm import sessionmaker
     
     ######## Fetch data from basis website ########
     def get_BBdata(user_id, startdate, enddate):
@@ -61,6 +60,8 @@ def loadBB(startdate, enddate):
             steps=Steps, gsr=Gsr, calories=Calories)]
 
         session.add(record)
+        # Commit change
+        session.commit()
 
     # fetch data
     BB_user_id = os.getenv("BBid")
@@ -77,11 +78,8 @@ def loadBB(startdate, enddate):
 
     if BB_user_id != '':
         for dat in get_BBdata(BB_user_id, startdate, enddate):
-            insert_BBdata(dat, session)
+            insert_BBdata(dat)
         
-        # Commit change
-        session.commit()
-
 def loadFB():
     # see: http://python-fitbit.readthedocs.org/en/latest/#fitbit-api
     fb = fitbit.Fitbit(
