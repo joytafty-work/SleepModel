@@ -181,8 +181,8 @@ def server():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Do stuff")
     parser.add_argument('command', action="store", choices=['load', 'loadBB', 'loadFB','server'])
-    parser.add_argument('startdate', narg='?', type=str, default='2013-08-01')
-    parser.add_argument('enddate', narg='?', type=str, default='2013-08-31')
+    parser.add_argument('startdate', nargs='?', type=str, default='2013-08-01')
+    parser.add_argument('enddate', nargs='?', type=str, default='2013-08-31')
     args = parser.parse_args()
 
     # port = 8000
