@@ -68,10 +68,10 @@ def loadBB(startdate, enddate):
 
     # Create a Session
     Session = sessionmaker(bind=engine)
-    session = Session()
 
     if BB_user_id != '':
         for dat in get_BBdata(BB_user_id, startdate, enddate):
+            session = Session()
             session, record = insert_BBdata(dat, session)
             session.add(record)
 
