@@ -19,7 +19,7 @@ def loadBB(startdate, enddate):
     import os, sys, urlparse, requests
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
-
+    
     ######## Fetch data from basis website ########
     def get_BBdata(user_id, startdate, enddate):
         d = startdate
@@ -30,40 +30,32 @@ def loadBB(startdate, enddate):
             yield requests.get(url).json # Fetch generator
             d += delta
 
-    def insert_BBdata(dat, subject):
-        # Create a Session
-        Session = sessionmaker(bind=engine)
-        session = Session()
-
+    def insert_BBdata(dat, session, bbdate, Recdate):
         if 'endtime' not in dat:
-            print "No endtime in dataset"
-            record = [Record(recdate=NULL, rectime=NULL,
-            skin_temp=NULL, air_temp=NULL, heartrate=NULL, 
-            steps=NULL, gsr=Gsr, calories=NULL)]
-
             return
+        # epoch = datetime.datetime(1969, 12, 31, 20, 0, 0)
+        # tpass = datetime.timedelta(seconds=dat['starttime'])
+        # Recdate = (epoch + tpass).date()
 
-        epoch = datetime.datetime(1969, 12, 31, 20, 0, 0)
-        tpass = datetime.timedelta(seconds=dat['starttime'])
-        Recdate = (epoch + tpass).date()
-
-        nvals = (dat['endtime']-dat['starttime'])/dat['interval'] + 1
-        unix_time_utc = [(i-1)*dat['interval'] for i in xrange(nvals)]
-        Skin_temp = dat['metrics']['skin_temp']['values']
-        Air_temp = dat['metrics']['air_temp']['values']
-        Heartrate = dat['metrics']['heartrate']['values']
-        Steps = dat['metrics']['steps']['values']
-        Gsr = dat['metrics']['gsr']['values']    
-        Calories = dat['metrics']['calories']['values']
+        for i in (dat['endtime'] - dat['starttime'])/dat['interval']:
+        # nvals = (dat['endtime']-dat['starttime'])/dat['interval'] + 1
+        # unix_time_utc = [(i-1)*dat['interval'] for i in xrange(nvals)]
+            unix_time_utc = dat['starttime'] + i*dat['interval']
+            Rectime = datetime.datetime.fromtimestamp(unix_time_utc)
+            Skin_temp = dat['metrics']['skin_temp']['values'][i]
+            Air_temp = dat['metrics']['air_temp']['values'][i]
+            Heartrate = dat['metrics']['heartrate']['values'][i]
+            Steps = dat['metrics']['steps']['values'][i]
+            Gsr = dat['metrics']['gsr']['values'][i]    
+            Calories = dat['metrics']['calories']['values'][i]
         
-        record = [Record(recdate=Recdate, rectime=unix_time_utc,
-            skin_temp=Skin_temp, air_temp=Air_temp, heartrate=Heartrate, 
-            steps=Steps, gsr=Gsr, calories=Calories)]
+            record = [Record(recdate=Recdate, rectime=Rectime,
+                skin_temp=Skin_temp, air_temp=Air_temp, heartrate=Heartrate, 
+                steps=Steps, gsr=Gsr, calories=Calories)]
 
-        subject.records.extend(record)
-        session.add(subject)
-        # Commit change
-        session.commit()
+            bbdate.records.extend(record)
+
+            return session, record
 
     # fetch data
     BB_user_id = os.getenv("BBid")
@@ -78,11 +70,21 @@ def loadBB(startdate, enddate):
     # Create core interface to ClearDB database
     engine = create_engine(cdb_url, pool_recycle=3600, echo=True)
 
+    # Create a Session
+    Session = sessionmaker(bind=engine)
+    session = Session()
     if BB_user_id != '':
-        subject = Subject("tester")
         for dat in get_BBdata(BB_user_id, startdate, enddate):
-            insert_BBdata(dat, subject)
+            epoch = datetime.datetime(1969, 12, 31, 20, 0, 0)
+            tpass = datetime.timedelta(seconds=dat['starttime'])
+            Recdate = (epoch + tpass).date()
+
+            bbdate = BBdate(Recdate)
+            session, record = insert_BBdata(dat, session, bbdate, Recdate)
         
+        # Commit change
+        session.commit()
+
 def loadFB():
     # see: http://python-fitbit.readthedocs.org/en/latest/#fitbit-api
     fb = fitbit.Fitbit(

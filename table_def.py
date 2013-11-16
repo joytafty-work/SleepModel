@@ -50,28 +50,28 @@ class Subject(Base):
 		self.name = name
 
 ### Define table mapped classes
-class BBdaily(Base):
-	__tablename__ = 'bbdailies'
+class BBdate(Base):
+	__tablename__ = 'bbdates'
 
 	id = Column(Integer, primary_key=True)
 	recdate = Column(Date)
-	rectime = Column(Time)
-	skin_temp = Column(Float(3, 1))
-	air_temp = Column(Float(3, 1))
-	heartrate = Column(SMALLINT)
-	steps = Column(SMALLINT)
-	gsr = Column(Float(9, 7))
-	calories = Column(Float(6, 2))
+	# rectime = Column(Time)
+	# skin_temp = Column(Float(3, 1))
+	# air_temp = Column(Float(3, 1))
+	# heartrate = Column(SMALLINT)
+	# steps = Column(SMALLINT)
+	# gsr = Column(Float(9, 7))
+	# calories = Column(Float(6, 2))
 
-	def __init__(self, recdate, rectime, skin_temp, air_temp, heartrate, steps, gsr, calories):
+	def __init__(self, recdate):
 		self.recdate = recdate
-		self.rectime = rectime
-		self.skin_temp = skin_temp
-		self.air_temp = air_temp
-		self.heartrate = heartrate
-		self.steps = steps
-		self.gsr = gsr
-		self.calories = calories
+		# self.rectime = rectime
+		# self.skin_temp = skin_temp
+		# self.air_temp = air_temp
+		# self.heartrate = heartrate
+		# self.steps = steps
+		# self.gsr = gsr
+		# self.calories = calories
 
 ### Create tables
 Base.metadata.create_all(engine)
