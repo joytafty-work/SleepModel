@@ -235,26 +235,39 @@
 <div class="container" id="sleep-container" style="display: none;">
   <!-- Row 1 -->
   <div class="row">
-      <!-- Sleep by weekday (Bar) -->
+
+    <!-- Sleep by weekday (Pie) -->
+  <div id="sleep-pie" class="col-md-4">
+    <span class="chart-title">
+      &nbsp;&nbsp;Sleep interruptions
+      <br>
+      &nbsp;(Number of time awakens) 
+    </span>
+    <a class="reset" href="javascript:sleeppieChart.filterAll('sleepchart');
+    dc.redrawAll('sleepchart');" style="display: none;">refresh</a>
+    <div class="clearfix"></div>      
+  </div>
+
+    <!-- Sleep Duration by weekday (Bar) -->
+  <div id="sleep-dur-bar" class="col-md-4">
+    <span class="chart-title">
+      &nbsp;&nbsp;Sleep Duration (%)
+      <br>
+      &nbsp;(Day of week of 2013) 
+    </span>
+    <a class="reset" href="javascript:sleepdurChart.filterAll('sleepchart');
+    dc.redrawAll('sleepchart');" style="display: none;">refresh</a>
+    <div class="clearfix"></div>      
+  </div>
+
+      <!-- Sleep Quality by weekday (Bar) -->
     <div id="sleep-qual-bar" class="col-md-4">
       <span class="chart-title">
         &nbsp;&nbsp;Sleep Quality (%)
         <br>
         &nbsp;(Day of week of 2013) 
       </span>
-      <a class="reset" href="javascript:sleepbarChart.filterAll('sleepchart');
-      dc.redrawAll('sleepchart');" style="display: none;">refresh</a>
-      <div class="clearfix"></div>      
-    </div>
-
-      <!-- Sleep by weekday (Pie) -->
-    <div id="sleep-pie" class="col-md-4">
-      <span class="chart-title">
-        &nbsp;&nbsp;Sleep interruptions
-        <br>
-        &nbsp;(Number of time awakens) 
-      </span>
-      <a class="reset" href="javascript:sleeppieChart.filterAll('sleepchart');
+      <a class="reset" href="javascript:sleepqualChart.filterAll('sleepchart');
       dc.redrawAll('sleepchart');" style="display: none;">refresh</a>
       <div class="clearfix"></div>      
     </div>

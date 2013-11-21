@@ -1,5 +1,6 @@
 var sleeppieChart = dc.pieChart("#sleep-pie", "sleepchart");
-var sleepbarChart = dc.barChart("#sleep-qual-bar", "sleepchart");
+var sleepqualChart = dc.barChart("#sleep-qual-bar", "sleepchart");
+var sleepdurChart = dc.barChart("#sleep-dur-bar", "sleepchart");
 
 var g;
 
@@ -33,7 +34,6 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
   	});
 
   var awakenDimension = ups.dimension(function (d) {
-    console.log(d);
     return +d.s_awakenings;
   })
 
@@ -46,22 +46,30 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
   })
 
   // Counts of data types by Months
-
   var avgByDayOfWeekGroup = weekdayDimension.group().reduce(
     function (p, v) {
-      ++p.days; 
-      p.asleep += v.s_duration; 
-      p.avg_asleep = Math.round(p.asleep / p.days);
+      ++p.days;
+      // Sleep duration in hr
+      p.s_duration += Number(v.s_duration/3600); 
+      p.avg_duration = Math.round(p.s_duration / p.days);
+      p.s_quality += Number(v.s_quality);
+      p.avg_quality = Math.round(p.s_quality / p.days);
       return p; 
     }, 
     function (p, v) {
       --p.days; 
-      p.asleep -= v.s_duration; 
-      p.avg_asleep = p.days ? Math.round(p.asleep / p.days) : 0;
+      // Sleep duration in hr
+      p.s_duration -= Number(v.s_duration/3600); 
+      p.avg_duration = p.days ? Math.round(p.s_duration / p.days) : 0;
+      p.s_quality -= Number(v.s_quality);
+      p.avg_quality = p.days ? Math.round(p.s_quality / p.days) : 0;
       return p; 
     }, 
-    function (p, v) {
-      return {days: 0, asleep:0, avg_asleep: 0};
+    function () {
+      return {
+        days: 0, s_duration:0, avg_duration:0, 
+        s_quality:0, avg_quality:0
+        };
     });
 
 	// Define group
@@ -85,15 +93,29 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
   // Define plot color
   var sleepColors = colorbrewer.BuPu[5]
 
+  sleeppieChart
+    .width(280)
+    .height(280)
+    .radius(80)
+    .renderLabel(false)
+      .dimension(awakenDimension)
+      .group(sleepQualAwakening)
+      .innerRadius(20)
+      .transitionDuration(500)
+      .colors(sleepColors);
+
   // Sleep quality Chart
-  sleepbarChart
+  sleepqualChart
     .width(320)
     .height(240)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
     .x(d3.scale.linear().domain([0, 7.5]))
     .brushOn(false)
     .dimension(weekdayDimension, "Weekday dimension")
-    .group(upSleepQualWeek , "Sleep quality over weekdays")
+    .group(avgByDayOfWeekGroup, "Sleep quality over weekdays")
+    .valueAccessor(function (p) {
+      return p.value.avg_quality;
+    })
     .yAxisLabel('Sleep Quality (%)')
     .xAxisLabel('Day of week')
     .renderHorizontalGridLines(true)
@@ -102,16 +124,25 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
     .centerBar(true)
     .gap(5)
 
-	sleeppieChart
-		.width(280)
-		.height(280)
-		.radius(80)
-		.renderLabel(false)
-    	.dimension(awakenDimension)
-    	.group(sleepQualAwakening)
-    	.innerRadius(20)
-    	.transitionDuration(500)
-    	.colors(sleepColors);
+sleepdurChart
+    .width(320)
+    .height(240)
+    .margins({top: 10, right: 50, bottom: 30, left: 50})
+    .x(d3.scale.linear().domain([0, 7.5]))
+    .brushOn(false)
+    .dimension(weekdayDimension, "Weekday dimension")
+    .group(avgByDayOfWeekGroup , "Sleep quality over weekdays")
+    .valueAccessor(function (p) {
+      console.log(p.value);
+      return p.value.avg_duration;
+    })
+    .yAxisLabel('Sleep Duration (hr)')
+    .xAxisLabel('Day of week')
+    .renderHorizontalGridLines(true)
+    .renderLabel(true)
+    .elasticY(true)
+    .centerBar(true)
+    .gap(5)    
 
   // 6. Data-Count
   dc.dataCount("#sleep-data-count", "sleepchart")
