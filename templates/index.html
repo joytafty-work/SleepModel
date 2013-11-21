@@ -95,7 +95,8 @@
 <!-- Fixed navbar -->
 <div class="navbar navbar-default navbar-fixed-top">
   <div class="container">
-    <div class="navbar-header"><h3><a href="https://jawbone.com/up">Jawbone UP</a> data visualization</h3>
+    <div class="navbar-header">
+    <h3><a href="https://jawbone.com/up">Jawbone UP</a> data visualization</h3>
     </div>
     <div class="nav navbar-nav">
       <span class="btn-group" data-toggle="buttons-radio">
@@ -213,6 +214,7 @@
       dc.redrawAll('physchart');" style="display: none;">refresh</a>
       <div class="clearfix"></div>      
     </div>
+
     <!-- Physical Activity by Week -->
     <div id="steps-v-lcat" class="dc-chart">
       <span class="chart-title">
@@ -224,24 +226,43 @@
     </div>
   </div> 
   <!-- Close row 2 -->
+  <div class="dc-data-count" id="phys-data-count">
+    Displaying <span class="filter-count"></span> out of <span class="total-count"></span> measurements.
+  </div>
 </div>
 
 <!-- Sleep -->
 <div class="container" id="sleep-container" style="display: none;">
   <!-- Row 1 -->
   <div class="row">
+      <!-- Sleep by weekday (Bar) -->
+    <div id="sleep-qual-bar" class="col-md-4">
+      <span class="chart-title">
+        &nbsp;&nbsp;Sleep Quality (%)
+        <br>
+        &nbsp;(Day of week of 2013) 
+      </span>
+      <a class="reset" href="javascript:sleepbarChart.filterAll('sleepchart');
+      dc.redrawAll('sleepchart');" style="display: none;">refresh</a>
+      <div class="clearfix"></div>      
+    </div>
+
       <!-- Sleep by weekday (Pie) -->
     <div id="sleep-pie" class="col-md-4">
       <span class="chart-title">
-        &nbsp;&nbsp;Sleep time per Day (mins)
+        &nbsp;&nbsp;Total sleep time (mins)
         <br>
-        &nbsp;(by Month of 2013) 
+        &nbsp;(Month of 2013) 
       </span>
       <a class="reset" href="javascript:sleeppieChart.filterAll('sleepchart');
       dc.redrawAll('sleepchart');" style="display: none;">refresh</a>
       <div class="clearfix"></div>      
     </div>
 
+  </div>
+
+  <div class="dc-data-count" id="sleep-data-count">
+    Displaying <span class="filter-count"></span> out of <span class="total-count"></span> measurements.
   </div>
 </div>
 

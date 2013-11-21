@@ -248,7 +248,16 @@ stepVlcatChart
     .renderHorizontalGridLines(true)
     .renderVerticalGridLines(true)
     .elasticX(true)
-    .elasticY(true); 
+    .elasticY(true);
+
+// 6. Data-Count
+dc.dataCount("#phys-data-count", "physchart")
+  .dimension(ups)
+  .group(ups.groupAll());
+
+// 7. Data-Table
+// dc.dataTable('#phys-data-table', "physchart")
+
 
 // Render!!!
 dc.renderAll("physchart");

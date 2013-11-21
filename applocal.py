@@ -21,41 +21,41 @@ def loadBB():
     BB_user_id = os.getenv("BBid")
     fetchBBdata.fetchBB(BB_user_id, d0, df)
 
-def loadFB():
-    # see: http://python-fitbit.readthedocs.org/en/latest/#fitbit-api
-    fb = fitbit.Fitbit(
-        os.getenv('CONSUMER_KEY'),
-        os.getenv('CONSUMER_SECRET'), 
-        user_key=os.getenv('USER_KEY'),
-        user_secret=os.getenv('USER_SECRET'))
+# def loadFB():
+#     # see: http://python-fitbit.readthedocs.org/en/latest/#fitbit-api
+#     fb = fitbit.Fitbit(
+#         os.getenv('CONSUMER_KEY'),
+#         os.getenv('CONSUMER_SECRET'), 
+#         user_key=os.getenv('USER_KEY'),
+#         user_secret=os.getenv('USER_SECRET'))
     
-    redis.delete('fitbit')
+#     redis.delete('fitbit')
     
-    if True:
-        sleepData = dict();
-        sl1 = fb.time_series('sleep/startTime', period='max')['sleep-startTime']
-        sl2 = fb.time_series('sleep/timeInBed', period='max')['sleep-timeInBed']
-        sl3 = fb.time_series('sleep/minutesAsleep', period='max')['sleep-minutesAsleep']
-        sl4 = fb.time_series('sleep/minutesAwake', period='max')['sleep-minutesAwake']
-        sl5 = fb.time_series('sleep/minutesToFallAsleep', period='max')['sleep-minutesToFallAsleep']
-        sl6 = fb.time_series('sleep/minutesAfterWakeup', period='max')['sleep-minutesAfterWakeup']
-        sl7 = fb.time_series('sleep/efficiency', period='max')['sleep-efficiency']
+#     if True:
+#         sleepData = dict();
+#         sl1 = fb.time_series('sleep/startTime', period='max')['sleep-startTime']
+#         sl2 = fb.time_series('sleep/timeInBed', period='max')['sleep-timeInBed']
+#         sl3 = fb.time_series('sleep/minutesAsleep', period='max')['sleep-minutesAsleep']
+#         sl4 = fb.time_series('sleep/minutesAwake', period='max')['sleep-minutesAwake']
+#         sl5 = fb.time_series('sleep/minutesToFallAsleep', period='max')['sleep-minutesToFallAsleep']
+#         sl6 = fb.time_series('sleep/minutesAfterWakeup', period='max')['sleep-minutesAfterWakeup']
+#         sl7 = fb.time_series('sleep/efficiency', period='max')['sleep-efficiency']
         
-        for sl in range(len(sl1)-1):            
-            if sl1[sl]['value'] != '':                
-                tempdate = datetime.datetime.strptime(sl1[sl]['dateTime'], '%Y-%m-%d').timetuple()
-                sleepData['date'] = time.mktime(tempdate)
-                temptime = time.strptime((sl1[sl]['dateTime'] + '-' + sl1[sl]['value']), '%Y-%m-%d-%H:%M')
-                sleepData['startTime'] = time.mktime(temptime)
-                sleepData['timeInBed'] = sl2[sl]['value']
-                sleepData['minutesAsleep'] = sl3[sl]['value']
-                sleepData['minutesAwake'] = sl4[sl]['value']
-                sleepData['minutesToFallAsleep'] = sl5[sl]['value']
-                sleepData['minutesAfterWakeup'] = sl6[sl]['value']
-                sleepData['efficiency'] = sl7[sl]['value']
-                s = json.dumps(sleepData)
-                redis.sadd('fitbit', s)
-                print s
+#         for sl in range(len(sl1)-1):            
+#             if sl1[sl]['value'] != '':                
+#                 tempdate = datetime.datetime.strptime(sl1[sl]['dateTime'], '%Y-%m-%d').timetuple()
+#                 sleepData['date'] = time.mktime(tempdate)
+#                 temptime = time.strptime((sl1[sl]['dateTime'] + '-' + sl1[sl]['value']), '%Y-%m-%d-%H:%M')
+#                 sleepData['startTime'] = time.mktime(temptime)
+#                 sleepData['timeInBed'] = sl2[sl]['value']
+#                 sleepData['minutesAsleep'] = sl3[sl]['value']
+#                 sleepData['minutesAwake'] = sl4[sl]['value']
+#                 sleepData['minutesToFallAsleep'] = sl5[sl]['value']
+#                 sleepData['minutesAfterWakeup'] = sl6[sl]['value']
+#                 sleepData['efficiency'] = sl7[sl]['value']
+#                 s = json.dumps(sleepData)
+#                 redis.sadd('fitbit', s)
+#                 print s
 
 
 def server():
@@ -96,7 +96,7 @@ if __name__ == "__main__":
     # Set up the development server on port 8000.
     if args.command == 'loadBB':
         loadBB()
-    if args.command == 'load' or 'loadFB':
-        loadFB()
     if args.command == 'server':
         server()
+    if args.command == 'load' or 'loadFB':
+        loadFB()
