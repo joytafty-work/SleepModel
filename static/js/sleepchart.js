@@ -32,6 +32,11 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
       // return day+"."+name[day];
   	});
 
+  var awakenDimension = ups.dimension(function (d) {
+    console.log(d);
+    return +d.s_awakenings;
+  })
+
   // Counts of data types by weekdays
   var weekdayGroup = weekdayDimension.group();
   var counts = weekdayGroup.reduceCount().all()
@@ -73,7 +78,12 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
     return +d.s_quality;
   })
 
-  var sleepColors = colorbrewer.BuPu[9]
+  var sleepQualAwakening = awakenDimension.group().reduceCount(function (d, i){
+    return +i;
+  })
+
+  // Define plot color
+  var sleepColors = colorbrewer.BuPu[5]
 
   // Sleep quality Chart
   sleepbarChart
@@ -97,9 +107,9 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
 		.height(280)
 		.radius(80)
 		.renderLabel(false)
-    	.dimension(monthlyDimension)
-    	.group(upSleepQualMonth)
-    	.innerRadius(30)
+    	.dimension(awakenDimension)
+    	.group(sleepQualAwakening)
+    	.innerRadius(20)
     	.transitionDuration(500)
     	.colors(sleepColors);
 
