@@ -185,7 +185,7 @@ physbarChart
     // .xUnits(d3.time.months)
  	.brushOn(false)
     .xAxisLabel("Months")
-    .yAxisLabel("Longest Active Time")
+    .yAxisLabel("Longest Activity Time (mins)")
     .dimension(monthNameDimension, "Monthly Value Group")
     .group(upLcitMM, "Longest Idle")	
     .stack(upLcatMM, "Longest Active")

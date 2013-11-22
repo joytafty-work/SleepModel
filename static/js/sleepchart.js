@@ -1,6 +1,8 @@
 var sleeppieChart = dc.pieChart("#sleep-pie", "sleepchart");
 var sleepqualChart = dc.barChart("#sleep-qual-bar", "sleepchart");
 var sleepdurChart = dc.barChart("#sleep-dur-bar", "sleepchart");
+var lightDeepChart = dc.bubbleChart("#sleep-light-deep-chart", "sleepchart");
+var asleepAwakeChart = dc.bubbleChart("#sleep-asleep-awake-chart", "sleepchart");
 
 var g;
 
@@ -72,6 +74,46 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
         };
     });
 
+  var sleepDetailBubbleGroup = monthlyDimension.group().reduce(
+      function (p, v) {
+        ++p.nights; 
+        // Duration in mins
+        p.s_deep += Number(v.s_deep/60);
+        p.avg_deep = Math.round(p.s_deep / p.nights);
+        p.s_light += Number(v.s_light/60);
+        p.avg_light = Math.round(p.s_light / p.nights);        
+        p.s_asleep_time += Number(v.s_asleep_time/60);
+        p.avg_asleep_time = Math.round(p.s_asleep_time / p.nights);
+        p.s_awake_time += Number(v.s_awake_time/60);
+        p.avg_awake_time = Math.round(p.s_awake_time / p.nights);
+        p.s_duration += Number(v.s_duration/60); 
+        p.avg_duration = Math.round(p.s_duration / p.nights);
+        return p;
+      }, 
+      function (p, v) {
+        --p.nights; 
+        // Duration in mins
+        p.s_deep -= Number(v.s_deep/60);
+        p.avg_deep = p.nights ? Math.round(p.s_deep / p.nights) : 0;
+        p.s_light -= Number(v.s_light/60);
+        p.avg_light = p.nights ? Math.round(p.s_light / p.nights) : 0;        
+        p.s_asleep_time -= Number(v.s_asleep_time/60);
+        p.avg_asleep_time = p.nights ? Math.round(p.s_asleep_time / p.nights) : 0;
+        p.s_awake_time -= Number(v.s_awake_time/60);
+        p.avg_awake_time = p.nights ? Math.round(p.s_awake_time / p.nights) : 0;
+        p.s_duration -= Number(v.s_duration/60); 
+        p.avg_duration = p.nights ? Math.round(p.s_duration / p.nights) : 0;        
+        return p;
+      }, 
+      function () {
+        return {nights:0, 
+          s_deep:0, avg_deep:0, s_light:0, avg_light:0, 
+          s_asleep_time:0, avg_asleep_time:0, 
+          s_awake_time:0, avg_awake_time:0, 
+          s_duration:0, avg_duration:0
+        };
+      });
+
 	// Define group
 	var upSleepQualWeek = weekdayDimension.group().reduceSum(function (d, i) {
     // console.log(d.s_quality, countByWeekday[d.wkday+1]);
@@ -91,7 +133,8 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
   })
 
   // Define plot color
-  var sleepColors = colorbrewer.BuPu[5]
+  var sleepColors2 = colorbrewer.RdPu[9];
+  var sleepColors = ["#fde0dd","#fa9fb5","#e7e1ef","#d4b9da","#c994c7","#fcc5c0","#df65b0","#e7298a","#ce1256", "#f768a1","#dd3497","#e78ac3","#f1b6da","#c51b7d"];
 
   sleeppieChart
     .width(280)
@@ -106,7 +149,7 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
 
   // Sleep quality Chart
   sleepqualChart
-    .width(320)
+    .width(280)
     .height(240)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
     .x(d3.scale.linear().domain([0, 7.5]))
@@ -125,7 +168,7 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
     .gap(5)
 
 sleepdurChart
-    .width(320)
+    .width(280)
     .height(240)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
     .x(d3.scale.linear().domain([0, 7.5]))
@@ -133,7 +176,6 @@ sleepdurChart
     .dimension(weekdayDimension, "Weekday dimension")
     .group(avgByDayOfWeekGroup , "Sleep quality over weekdays")
     .valueAccessor(function (p) {
-      console.log(p.value);
       return p.value.avg_duration;
     })
     .yAxisLabel('Sleep Duration (hr)')
@@ -143,6 +185,66 @@ sleepdurChart
     .elasticY(true)
     .centerBar(true)
     .gap(5)    
+
+lightDeepChart
+    .width(420)
+    .height(270)
+    .transitionDuration(800)
+    .margins({top: 50, right: 50, bottom: 30, left: 50})
+    .mouseZoomable(true)
+    .dimension(monthlyDimension)
+    .group(sleepDetailBubbleGroup)
+    .colors(sleepColors) // (optional) define color function or array for bubbles
+    // .colorDomain([0, 50]) 
+    .xAxisLabel("Average Deep Time (mins)")
+    .yAxisLabel("Average Light Sleep (mins)")
+    .keyAccessor(function (p) {
+      return p.value.avg_deep;
+    })
+    .valueAccessor(function (p) {
+        return p.value.avg_light;
+    })
+    .radiusValueAccessor(function (p) {
+        return p.value.avg_duration;
+    })
+    .maxBubbleRelativeSize(0.4)
+    .x(d3.scale.linear().domain([0, 500]))
+    .y(d3.scale.linear().domain([0, 1000]))
+    .r(d3.scale.linear().domain([0, 7000]))  
+    .renderHorizontalGridLines(true)
+    .renderVerticalGridLines(true)
+    .elasticX(true)
+    .elasticY(true);
+
+asleepAwakeChart
+    .width(420)
+    .height(270)
+    .transitionDuration(800)
+    .margins({top: 50, right: 50, bottom: 30, left: 50})
+    .mouseZoomable(true)
+    .dimension(monthlyDimension)
+    .group(sleepDetailBubbleGroup)
+    .colors(sleepColors2) // (optional) define color function or array for bubbles
+    // .colorDomain([0, 50]) 
+    .xAxisLabel("Average total asleep Time (mins)")
+    .yAxisLabel("Average total awake Time (mins)")
+    .keyAccessor(function (p) {
+      return p.value.avg_asleep_time;
+    })
+    .valueAccessor(function (p) {
+        return p.value.avg_awake_time;
+    })
+    .radiusValueAccessor(function (p) {
+        return p.value.avg_deep;
+    })
+    .maxBubbleRelativeSize(0.5)
+    .x(d3.scale.linear().domain([0, 500]))
+    .y(d3.scale.linear().domain([0, 1000]))
+    .r(d3.scale.linear().domain([0, 10000]))  
+    .renderHorizontalGridLines(true)
+    .renderVerticalGridLines(true)
+    .elasticX(true)
+    .elasticY(true);
 
   // 6. Data-Count
   dc.dataCount("#sleep-data-count", "sleepchart")

@@ -162,10 +162,11 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.chartModal -->
 
+<!-- ================================================================== -->
 <!-- Physical Activity -->
 <div class="container" id="physical-container">
   <!-- Row 1 -->
-  <div class="row">
+  <div class="row-fluid">
     <!-- Physical Activity by Week -->
     <div id="phys-week-bar" class="col-md-4">
       <span class="chart-title">
@@ -204,7 +205,7 @@
   </div> <!-- Close row 1 -->
 
   <!-- Row 2 -->
-  <div class="row">
+  <div class="row-fluid">
     <!-- Physical Activity by Week -->
     <div id="phys-move-chart" class="dc-chart">
       <span class="chart-title">
@@ -226,18 +227,19 @@
     </div>
   </div> 
   <!-- Close row 2 -->
+
   <div class="dc-data-count" id="phys-data-count">
     Displaying <span class="filter-count"></span> out of <span class="total-count"></span> measurements.
   </div>
 </div>
 
+<!-- ================================================================== -->
 <!-- Sleep -->
 <div class="container" id="sleep-container" style="display: none;">
   <!-- Row 1 -->
   <div class="row">
-
     <!-- Sleep by weekday (Pie) -->
-  <div id="sleep-pie" class="col-md-4">
+  <div id="sleep-pie" class="dc-chart">
     <span class="chart-title">
       &nbsp;&nbsp;Sleep interruptions
       <br>
@@ -249,9 +251,9 @@
   </div>
 
     <!-- Sleep Duration by weekday (Bar) -->
-  <div id="sleep-dur-bar" class="col-md-4">
+  <div id="sleep-dur-bar" class="dc-chart">
     <span class="chart-title">
-      &nbsp;&nbsp;Sleep Duration (%)
+      &nbsp;&nbsp;Sleep Duration (hr)
       <br>
       &nbsp;(Day of week of 2013) 
     </span>
@@ -260,8 +262,8 @@
     <div class="clearfix"></div>      
   </div>
 
-      <!-- Sleep Quality by weekday (Bar) -->
-    <div id="sleep-qual-bar" class="col-md-4">
+  <!-- Sleep Quality by weekday (Bar) -->
+    <div id="sleep-qual-bar" class="dc-chart">
       <span class="chart-title">
         &nbsp;&nbsp;Sleep Quality (%)
         <br>
@@ -272,13 +274,38 @@
       <div class="clearfix"></div>      
     </div>
 
-  </div>
+  </div> <!-- Close Row 1 -->
 
+  <!-- Row2 -->
+  <div class="row">
+  <!-- Deep vs. Light sleep by Month (Bubble) -->
+    <div id="sleep-light-deep-chart" class="dc-chart">
+      <span class="chart-title">
+        &nbsp;&nbsp;Deep vs. Light Sleep Duration
+      </span>
+      <a class="reset" href="javascript:lightDeepChart.filterAll('sleepchart');
+      dc.redrawAll('sleepchart');" style="display: none;">refresh</a>
+      <div class="clearfix"></div>      
+    </div>      
+
+  <!-- Time asleep vs. Time awak by Month (Bubble) -->
+    <div id="sleep-asleep-awake-chart" class="dc-chart">
+      <span class="chart-title">
+        &nbsp;&nbsp;Awake vs. Asleep Duration in Bed
+      </span>
+      <a class="reset" href="javascript:asleepAwakeChart.filterAll('sleepchart');
+      dc.redrawAll('sleepchart');" style="display: none;">refresh</a>
+      <div class="clearfix"></div>      
+    </div>      
+
+  <!-- Row3 -->
   <div class="dc-data-count" id="sleep-data-count">
-    Displaying <span class="filter-count"></span> out of <span class="total-count"></span> measurements.
+      Displaying <span class="filter-count"></span> out of <span class="total-count"></span> measurements.
   </div>
-</div>
+</div><!-- Close Row 2 -->
+</div><!-- Close Sleep container -->
 
+<!-- ================================================================== -->
 <!-- Nutrition -->
 <div class="container" id="nutrition-container" style="display: none;">
   <!-- Row 1 -->
