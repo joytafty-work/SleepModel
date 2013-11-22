@@ -132,11 +132,39 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
     return +i;
   })
 
+// Define tooltips
+var slpieTip = d3.tip()
+  .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function (d) { return "<span style='color: yellow'>" +  d.key + " interruptions </span> : "  + numberFormat(d.value) + " nights"; });
+
+// tooltips for pie chart
+var sldurTip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function (d) { return "<span style='color: yellow'>" +  d.data.key + "</span> : "  + numberFormat(d.value) + " mins"; });
+
+var slqualTip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function (d) { 
+    return "<span style='color: yellow'>" + d.data.key + "</span> : " + numberFormat(d.y) + " mins";
+  });
+
+var bubTip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function (d) { 
+    return "<span style='color: yellow'> (" + numberFormat(d.value.tact) + "</span>, " + numberFormat(d.value.lcat) + ") mins";
+  });
+
+
   // Define plot color
   var sleepColors2 = colorbrewer.RdPu[9];
   var sleepColors = ["#fde0dd","#fa9fb5","#e7e1ef","#d4b9da","#c994c7","#fcc5c0","#df65b0","#e7298a","#ce1256", "#f768a1","#dd3497","#e78ac3","#f1b6da","#c51b7d"];
 
   sleeppieChart
+    .name("sleeppie")
     .width(280)
     .height(280)
     .radius(80)
@@ -196,7 +224,7 @@ lightDeepChart
     .group(sleepDetailBubbleGroup)
     .colors(sleepColors) // (optional) define color function or array for bubbles
     // .colorDomain([0, 50]) 
-    .xAxisLabel("Average Deep Time (mins)")
+    .xAxisLabel("Average Deep Sleep (mins)")
     .yAxisLabel("Average Light Sleep (mins)")
     .keyAccessor(function (p) {
       return p.value.avg_deep;
@@ -226,8 +254,8 @@ asleepAwakeChart
     .group(sleepDetailBubbleGroup)
     .colors(sleepColors2) // (optional) define color function or array for bubbles
     // .colorDomain([0, 50]) 
-    .xAxisLabel("Average total asleep Time (mins)")
-    .yAxisLabel("Average total awake Time (mins)")
+    .xAxisLabel("Average total asleep time (mins)")
+    .yAxisLabel("Average total awake time (mins)")
     .keyAccessor(function (p) {
       return p.value.avg_asleep_time;
     })
@@ -257,6 +285,29 @@ d3.selectAll("g.x text")
 	.attr("class", "campusLabel")
     .style("text-anchor", "end") 
     .attr("transform", "translate(-10,0)rotate(315)");
+
+// Add tooltips
+d3.selectAll("g.row").call(tip);
+d3.selectAll("g.row")
+  .on('mouseover', tip.show)
+  .on('mouseout', tip.hide);
+
+d3.select("sleeppie").call(slpieTip);
+d3.select("sleeppie")
+  .on('mouseover', slpieTip.show)
+  .on('mouseout', slpieTip.hide);
+
+d3.selectAll(".bar").call(barTip);
+d3.selectAll(".bar")
+  .on('mouseover', barTip.show)
+  .on('mouseout', barTip.hide); 
+
+d3.selectAll(".node").call(bubTip);
+d3.selectAll(".node")
+  .on('mouseover', bubTip.show)
+  .on('mouseout', bubTip.hide);
+});
+
 
 });
 

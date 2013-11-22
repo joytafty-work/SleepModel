@@ -25,6 +25,11 @@ var bubTip = d3.tip()
     return "<span style='color: yellow'> (" + numberFormat(d.value.tact) + "</span>, " + numberFormat(d.value.lcat) + ") mins";
   });
 
+var slpietip = d3.tip()
+  .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function (d) { return "<span style='color: yellow'>" +  d.key + " interruptions </span> : "  + numberFormat(d.value) + " nights"; });
+
 d3.select("#btnPhysical")
   .on("click", function() {  
     d3.select("#physical-container").style("display", "block");
