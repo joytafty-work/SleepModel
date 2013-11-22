@@ -138,18 +138,19 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
   })
 
 // Define tooltips
-var slpieTip = d3.tip()
+var tip = d3.tip()
   .attr('class', 'd3-tip')
     .offset([-10, 0])
-    .html(function (d) { return "<span style='color: yellow'>" +  d.key + " interruptions </span> : "  + numberFormat(d.value) + " nights"; });
+    .html(function (d) { return "<span style='color: yellow'>" +  d.key + "</span> : "  + numberFormat(d.value) + " steps"; });
 
 // tooltips for pie chart
-var tip = d3.tip()
+var pieTip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
   .html(function (d) { return "<span style='color: yellow'>" +  d.data.key + "</span> : "  + numberFormat(d.value) + " mins"; });
 
-var slqualTip = d3.tip()
+
+var barTip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
   .html(function (d) { 
@@ -162,7 +163,6 @@ var bubTip = d3.tip()
   .html(function (d) { 
     return "<span style='color: yellow'> (" + numberFormat(d.value.tact) + "</span>, " + numberFormat(d.value.lcat) + ") mins";
   });
-
 
   // Define plot color
   var sleepColors2 = colorbrewer.RdPu[9];
@@ -296,10 +296,10 @@ d3.selectAll("g.row")
   .on('mouseover', tip.show)
   .on('mouseout', tip.hide);
 
-d3.selectAll(".pie-slice").call(slpieTip);
+d3.selectAll(".pie-slice").call(pieTip);
 d3.selectAll(".pie-slice")
-  .on('mouseover', slpieTip.show)
-  .on('mouseout', slpieTip.hide);
+  .on('mouseover', pieTip.show)
+  .on('mouseout', pieTip.hide);
 
 d3.selectAll(".bar").call(barTip);
 d3.selectAll(".bar")
@@ -310,5 +310,6 @@ d3.selectAll(".node").call(bubTip);
 d3.selectAll(".node")
   .on('mouseover', bubTip.show)
   .on('mouseout', bubTip.hide);
+
 });
 
