@@ -1,5 +1,4 @@
-d3.select('#divPlot').style('width', "500px").style('height', "500px")
-scatterPlot3d( d3.select('#divPlot'));
+
 
 // scene.append("orthoviewpoint")
 //   .attr("centerOfRotation", [5, 5, 5])

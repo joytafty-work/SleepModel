@@ -13,7 +13,8 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
 
  	var dateFormat = d3.time.format("%m/%d/%Y");
   	var numberFormat = d3.format(".2f");
-  
+
+// ===============================================  
   	// Parse date
   	data.forEach(function (d) {
     	d.month = parseInt((d.date).substring(4,6));
@@ -21,9 +22,12 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
     	d.monthName = moment(d.date, 'YYYYMMDD').month(d.date).format("MMM");
   	});
 
+// ===============================================
 	// Load data
 	var ups = crossfilter(data);
 
+// ===============================================
+// Define dimension
 	// Monthly dimension
   var monthlyDimension = ups.dimension(function (d) {
       return +d.month; 
@@ -39,6 +43,8 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
     return +d.s_awakenings;
   })
 
+// ===============================================
+  // Define group
   // Counts of data types by weekdays
   var weekdayGroup = weekdayDimension.group();
   var counts = weekdayGroup.reduceCount().all()
@@ -119,7 +125,6 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
         };
       });
 
-	// Define group
 	var upSleepQualWeek = weekdayDimension.group().reduceSum(function (d, i) {
     // console.log(d.s_quality, countByWeekday[d.wkday+1]);
 		return +d.s_quality/countByWeekday[d.wkday+1];
