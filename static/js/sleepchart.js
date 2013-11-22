@@ -144,7 +144,7 @@ var slpieTip = d3.tip()
     .html(function (d) { return "<span style='color: yellow'>" +  d.key + " interruptions </span> : "  + numberFormat(d.value) + " nights"; });
 
 // tooltips for pie chart
-var sldurTip = d3.tip()
+var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
   .html(function (d) { return "<span style='color: yellow'>" +  d.data.key + "</span> : "  + numberFormat(d.value) + " mins"; });
