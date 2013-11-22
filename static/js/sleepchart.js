@@ -149,7 +149,6 @@ var pieTip = d3.tip()
   .offset([-10, 0])
   .html(function (d) { return "<span style='color: yellow'>" +  d.data.key + "</span> : "  + numberFormat(d.value) + " mins"; });
 
-
 var barTip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
@@ -291,6 +290,11 @@ d3.selectAll("g.x text")
     .attr("transform", "translate(-10,0)rotate(315)");
 
 // Add tooltips
+d3.selectAll("g.row").call(tip);
+d3.selectAll("g.row")
+  .on('mouseover', tip.show)
+  .on('mouseout', tip.hide);
+
 d3.selectAll(".pie-slice").call(pieTip);
 d3.selectAll(".pie-slice")
   .on('mouseover', pieTip.show)

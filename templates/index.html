@@ -315,31 +315,33 @@
   </div>
 </div>
 
+<!-- ================================================================== -->
 <!-- Explore -->
 <div class="container" id="explore-container" style="display: none;">
   <!-- Row 1 -->
-  <div clas="row">
+  <div class="row">
   <!-- Explore by Week -->
-    <div id="sleep-bubble" class="dc-chart">
+    <div id="divPlot">
       <span class="chart-title">
-        &nbsp;&nbsp;Data as Bubbles
+        &nbsp;&nbsp;A Template for 3D Visualization of Data
+        <br>
+        &nbsp;(esp. for finding embedding) 
       </span>
-      <a class="reset" href="javascript:slBubble.filterAll('explores');
-      dc.redrawAll('explores');" style="display: none;">refresh</a>
-      <div class="clearfix"></div>      
     </div>
   </div>   <!-- Close row 1 -->
   </div>
-</div>
 
 <div class="container" id="pre-container">
   <div class="row">
   </div>
 </div>
-
 <script type="text/javascript" src="../static/js/physical.js"></script>
 <script type="text/javascript" src="../static/js/sleepchart.js"></script>
-<script type="text/javascript" src="../static/js/explore.js"></script>
 <script type="text/javascript" src="../static/js/ups_all.js"></script>
+<script type="text/javascript" src="http://x3dom.org/x3dom/dist/x3dom-full.js"></script>
+<script type="text/javascript" src="../static/js/scatter_plot_3d_demo.js"></script>
+<script type="text/javascript" src="../static/js/explore.js"></script>
+<link rel="stylesheet" type="text/css" href="http://www.x3dom.org/download/dev/x3dom.css"/>
+
 </body>
 </html>

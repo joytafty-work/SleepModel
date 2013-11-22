@@ -66,9 +66,9 @@ def server():
     def index():
         return render_template("index.html")
 
-    @app.route("/bar/")
+    @app.route("/explore/")
     def bar():
-        return render_template("bar.html")
+        return render_template("index2.html")
 
     @app.route("/sleep/")
     def sleep():
