@@ -88,6 +88,8 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
         p.avg_awake_time = Math.round(p.s_awake_time / p.nights);
         p.s_duration += Number(v.s_duration/60); 
         p.avg_duration = Math.round(p.s_duration / p.nights);
+        p.s_quality += Number(v.s_quality);
+        p.avg_quality = Math.round(p.s_quality / p.nights);
         return p;
       }, 
       function (p, v) {
@@ -103,6 +105,8 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
         p.avg_awake_time = p.nights ? Math.round(p.s_awake_time / p.nights) : 0;
         p.s_duration -= Number(v.s_duration/60); 
         p.avg_duration = p.nights ? Math.round(p.s_duration / p.nights) : 0;        
+        p.s_quality -= Number(v.s_quality);
+        p.avg_quality = p.nights ? Math.round(p.s_quality / p.nights) : 0; 
         return p;
       }, 
       function () {
@@ -110,7 +114,8 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
           s_deep:0, avg_deep:0, s_light:0, avg_light:0, 
           s_asleep_time:0, avg_asleep_time:0, 
           s_awake_time:0, avg_awake_time:0, 
-          s_duration:0, avg_duration:0
+          s_duration:0, avg_duration:0,
+          s_quality:0, avg_quality:0
         };
       });
 
@@ -164,7 +169,6 @@ var bubTip = d3.tip()
   var sleepColors = ["#fde0dd","#fa9fb5","#e7e1ef","#d4b9da","#c994c7","#fcc5c0","#df65b0","#e7298a","#ce1256", "#f768a1","#dd3497","#e78ac3","#f1b6da","#c51b7d"];
 
   sleeppieChart
-    .name("sleeppie")
     .width(280)
     .height(280)
     .radius(80)
@@ -263,12 +267,12 @@ asleepAwakeChart
         return p.value.avg_awake_time;
     })
     .radiusValueAccessor(function (p) {
-        return p.value.avg_deep;
+        return p.value.avg_quality;
     })
-    .maxBubbleRelativeSize(0.5)
+    .maxBubbleRelativeSize(0.85)
     .x(d3.scale.linear().domain([0, 500]))
     .y(d3.scale.linear().domain([0, 1000]))
-    .r(d3.scale.linear().domain([0, 10000]))  
+    .r(d3.scale.linear().domain([0, 5000]))  
     .renderHorizontalGridLines(true)
     .renderVerticalGridLines(true)
     .elasticX(true)
@@ -292,8 +296,8 @@ d3.selectAll("g.row")
   .on('mouseover', tip.show)
   .on('mouseout', tip.hide);
 
-d3.select("sleeppie").call(slpieTip);
-d3.select("sleeppie")
+d3.selectAll(".pie-slice").call(slpieTip);
+d3.selectAll(".pie-slice")
   .on('mouseover', slpieTip.show)
   .on('mouseout', slpieTip.hide);
 
@@ -306,8 +310,5 @@ d3.selectAll(".node").call(bubTip);
 d3.selectAll(".node")
   .on('mouseover', bubTip.show)
   .on('mouseout', bubTip.hide);
-});
-
-
 });
 
