@@ -291,10 +291,10 @@ d3.selectAll("g.x text")
     .attr("transform", "translate(-10,0)rotate(315)");
 
 // Add tooltips
-d3.selectAll("g.row").call(tip);
-d3.selectAll("g.row")
-  .on('mouseover', tip.show)
-  .on('mouseout', tip.hide);
+// d3.selectAll("g.row").call(tip);
+// d3.selectAll("g.row")
+//   .on('mouseover', tip.show)
+//   .on('mouseout', tip.hide);
 
 d3.selectAll(".pie-slice").call(pieTip);
 d3.selectAll(".pie-slice")

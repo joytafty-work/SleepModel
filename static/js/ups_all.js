@@ -59,6 +59,17 @@ d3.select("#btnSleep")
     d3.select("#nutrition-container").style("display", "none");
     d3.select("#explore-container").style("display", "none");
 
+      if ((sleeppieChart.filters().length | 
+        sleepqualChart.filters().length | 
+        sleepdurChart.filters().length | 
+        lightDeepChart.filters().length | 
+        asleepAwakeChart.filters().length) > 0) {
+          dc.redrawAll("sleepchart");
+        }
+        else {
+          dc.renderAll("sleepchart");
+        }
+
     formatXAxis();
     setUpToolTips();
 });
