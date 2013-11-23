@@ -137,26 +137,63 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
         };
       });
 
+var dowmonthGroup = monthlyDimension.group().reduce(
+    function (p, v) {
+        p.n0 += Number(v.wkday == 0);
+        p.sq0 += v.s_quality*p.n0;
+        return p; 
+      }, 
+    function (p, v) {
+        p.n0 -= Number(v.wkday == 0);
+        p.sq0 -= v.s_quality*p.n0;
+        return p; 
+      }, 
+    function () {
+      return {n0:0, sq0:0
+      };
+    });
+
 monCount = monthlyDimension.group().reduceSum(
   function (d) {return +d.wkday==1;
+  });
+monSum = monthlyDimension.group().reduceSum(
+  function (d) {return +d.s_quality*Number(d.wkday==1);
   });
 tueCount = monthlyDimension.group().reduceSum(
   function (d) {return +d.wkday==2;
   });
+tueSum = monthlyDimension.group().reduceSum(
+  function (d) {return +d.s_quality*Number(d.wkday==2);
+  });
 wedCount = monthlyDimension.group().reduceSum(
   function (d) {return +d.wkday==3;
+  });
+wedSum = monthlyDimension.group().reduceSum(
+  function (d) {return +d.s_quality*Number(d.wkday==3);
   });
 thuCount = monthlyDimension.group().reduceSum(
   function (d) {return +d.wkday==4; 
   });
+thuSum = monthlyDimension.group().reduceSum(
+  function (d) {return +d.s_quality*Number(d.wkday==4);
+  });
 friCount = monthlyDimension.group().reduceSum(
   function (d) {return +d.wkday==5; 
+  });
+friSum = monthlyDimension.group().reduceSum(
+  function (d) {return +d.s_quality*Number(d.wkday==5);
   });
 satCount = monthlyDimension.group().reduceSum(
   function (d) {return +d.wkday==6;
   });
+satSum = monthlyDimension.group().reduceSum(
+  function (d) {return +d.s_quality*Number(d.wkday==6);
+  });
 sunCount = monthlyDimension.group().reduceSum(
   function (d) {return +d.wkday==0; 
+  });
+sunSum = monthlyDimension.group().reduceSum(
+  function (d) {return +d.s_quality*Number(d.wkday==0);
   });
 
 // Define tooltips
@@ -307,14 +344,14 @@ sleepDOWstackChart
     .brushOn(false)
     .colors(sleepColors)
     .dimension(weekdayDimension, "Weekday dimension")
-    .group(monCount, "M")
-    .stack(tueCount, "Tu")
-    .stack(wedCount, "W")
-    .stack(thuCount, "Th")
-    .stack(friCount, "F")
-    .stack(satCount, "Sa")
-    .stack(sunCount, "Su")
-    .yAxisLabel('Total Day Recorded (days)')
+    .group(monSum, "M")
+    .stack(tueSum, "Tu")
+    .stack(wedSum, "W")
+    .stack(thuSum, "Th")
+    .stack(friSum, "F")
+    .stack(satSum, "Sa")
+    .stack(sunSum, "Su")
+    .yAxisLabel('Total Day Recorded (hr)')
     .xAxisLabel('Months')
     .renderHorizontalGridLines(true)
     .renderLabel(true)
