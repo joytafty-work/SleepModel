@@ -395,7 +395,7 @@ asleepAwakeChart
     .elasticY(true);
 
 sleepDOWstackChart
-    .width(280)
+    .width(400)
     .height(240)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
     .x(d3.scale.linear().domain([0, 12]))
@@ -413,10 +413,10 @@ sleepDOWstackChart
     .xAxisLabel('Months')
     .renderHorizontalGridLines(true)
     .renderLabel(true)
-    .legend(dc.legend().x(240).y(10))
+    .legend(dc.legend().x(350).y(10))
     .elasticY(true)
     .centerBar(true)
-    .gap(3);     
+    .gap(7);     
 
   // 6. Data-Count
   dc.dataCount("#sleep-data-count", "sleepchart")
