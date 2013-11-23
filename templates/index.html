@@ -298,12 +298,26 @@
       dc.redrawAll('sleepchart');" style="display: none;">refresh</a>
       <div class="clearfix"></div>      
     </div>      
+  </div>
 
   <!-- Row3 -->
-  <div class="dc-data-count" id="sleep-data-count">
+  <div class="row">
+    <div id="sleep-stack-chart" class="dc-chart">
+      <span class="chart-title">
+        &nbsp;&nbsp;Sleep stack chart
+      </span>
+      <a class="reset" href="javascript:asleepAwakeChart.filterAll('sleepchart');
+      dc.redrawAll('sleepchart');" style="display: none;">refresh</a>
+      <div class="clearfix"></div>      
+    </div>
+  </div>    
+  
+  <!-- Row3 -->
+    <div class="dc-data-count" id="sleep-data-count">
       Displaying <span class="filter-count"></span> out of <span class="total-count"></span> measurements.
-  </div>
-</div><!-- Close Row 2 -->
+    </div>
+  <!-- </div>Close Row 2 -->
+
 </div><!-- Close Sleep container -->
 
 <!-- ================================================================== -->
