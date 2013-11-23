@@ -140,16 +140,74 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
 var dowmonthGroup = monthlyDimension.group().reduce(
     function (p, v) {
         p.n0 += Number(v.wkday == 0);
-        p.sq0 += v.s_quality*p.n0;
+        p.squal0 += v.s_quality*Number(v.wkday == 0);
+        p.sdur0 += v.s_duration*Number(v.wkday == 0)/3600;
+
+        p.n1 += Number(v.wkday == 1);
+        p.squal1 += v.s_quality*Number(v.wkday == 1);
+        p.sdur1 += v.s_duration*Number(v.wkday == 1)/3600;
+
+        p.n2 += Number(v.wkday == 2);
+        p.squal2 += v.s_quality*Number(v.wkday == 2);
+        p.sdur2 += v.s_duration*Number(v.wkday == 2)/3600;
+
+        p.n3 += Number(v.wkday == 3);
+        p.squal3 += v.s_quality*Number(v.wkday == 3);
+        p.sdur3 += v.s_duration*Number(v.wkday == 3)/3600;
+
+        p.n4 += Number(v.wkday == 4);
+        p.squal4 += v.s_quality*Number(v.wkday == 4);
+        p.sdur4 += v.s_duration*Number(v.wkday == 4)/3600;
+
+        p.n5 += Number(v.wkday == 5);
+        p.squal5 += v.s_quality*Number(v.wkday == 5);
+        p.sdur5 += v.s_duration*Number(v.wkday == 5)/3600;
+
+        p.n6 += Number(v.wkday == 6);
+        p.squal6 += v.s_quality*Number(v.wkday == 6);
+        p.sdur6 += v.s_duration*Number(v.wkday == 6)/3600;
         return p; 
       }, 
     function (p, v) {
-        p.n0 -= Number(v.wkday == 0);
-        p.sq0 -= v.s_quality*p.n0;
+      p.n0 -= Number(v.wkday == 0);
+      p.squal0 -= v.s_quality*Number(v.wkday == 0);
+      p.sdur0 -= v.s_duration*Number(v.wkday == 0)/3600;
+
+      p.n1 -= Number(v.wkday == 1);
+      p.squal1 -= v.s_quality*Number(v.wkday == 1);
+      p.sdur1 -= v.s_duration*Number(v.wkday == 1)/3600;
+
+      p.n2 -= Number(v.wkday == 2);
+      p.squal2 -= v.s_quality*Number(v.wkday == 2);
+      p.sdur2 -= v.s_duration*Number(v.wkday == 2)/3600;
+
+      p.n3 -= Number(v.wkday == 3);
+      p.squal3 -= v.s_quality*Number(v.wkday == 3);
+      p.sdur3 -= v.s_duration*Number(v.wkday == 3)/3600;
+
+      p.n4 -= Number(v.wkday == 4);
+      p.squal4 -= v.s_quality*Number(v.wkday == 4);
+      p.sdur4 -= v.s_duration*Number(v.wkday == 4)/3600;
+
+      p.n5 -= Number(v.wkday == 5);
+      p.squal5 -= v.s_quality*Number(v.wkday == 5);
+      p.sdur5 -= v.s_duration*Number(v.wkday == 5)/3600;
+
+      p.n6 -= Number(v.wkday == 6);
+      p.squal6 -= v.s_quality*Number(v.wkday == 6);
+      p.sdur6 -= v.s_duration*Number(v.wkday == 6)/3600;
         return p; 
-      }, 
+      },
+
     function () {
-      return {n0:0, sq0:0
+      return {
+          n0:0, squal0:0, sdur0:0, 
+          n1:0, squal1:0, sdur1:0,
+          n2:0, squal2:0, sdur2:0, 
+          n3:0, squal3:0, sdur3:0,
+          n4:0, squal4:0, sdur4:0, 
+          n5:0, squal5:0, sdur5:0, 
+          n6:0, squal6:0, sdur6:0
       };
     });
 
@@ -343,22 +401,22 @@ sleepDOWstackChart
     .x(d3.scale.linear().domain([0, 12]))
     .brushOn(false)
     .colors(sleepColors)
-    .dimension(weekdayDimension, "Weekday dimension")
-    .group(monSum, "M")
-    .stack(tueSum, "Tu")
-    .stack(wedSum, "W")
-    .stack(thuSum, "Th")
-    .stack(friSum, "F")
-    .stack(satSum, "Sa")
-    .stack(sunSum, "Su")
+    .dimension(monthlyDimension, "Weekday dimension")
+    .group(dowmonthGroup, "Su").valueAccessor(function (p) {return p.value.sdur0/p.value.n0;})
+    .stack(dowmonthGroup, "Mo").valueAccessor(function (p) {return p.value.sdur1/p.value.n1;})
+    .stack(dowmonthGroup, "Tu").valueAccessor(function (p) {return p.value.sdur2/p.value.n2;})
+    .stack(dowmonthGroup, "We").valueAccessor(function (p) {return p.value.sdur3/p.value.n3;})
+    .stack(dowmonthGroup, "Th").valueAccessor(function (p) {return p.value.sdur4/p.value.n4;})
+    .stack(dowmonthGroup, "Fr").valueAccessor(function (p) {return p.value.sdur5/p.value.n5;})
+    .stack(dowmonthGroup, "Sa").valueAccessor(function (p) {return p.value.sdur6/p.value.n6;})
     .yAxisLabel('Total Day Recorded (hr)')
     .xAxisLabel('Months')
     .renderHorizontalGridLines(true)
     .renderLabel(true)
-    .legend(dc.legend().x(235).y(10))
+    .legend(dc.legend().x(240).y(10))
     .elasticY(true)
     .centerBar(true)
-    .gap(5)     
+    .gap(3);     
 
   // 6. Data-Count
   dc.dataCount("#sleep-data-count", "sleepchart")
