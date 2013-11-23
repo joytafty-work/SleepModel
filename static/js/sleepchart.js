@@ -22,7 +22,8 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
     	d.wkday = moment(d.date, 'YYYYMMDD').weekday();
     	d.monthName = moment(d.date, 'YYYYMMDD').month(d.date).format("MMM");
       var wokname=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-      d.dowmonth = wokname[d.wkday] + "-" + d.monthName;
+      // d.dowmonth = wokname[d.wkday] + "-" + d.monthName;
+      // console.log(d.dowmonth);
   	});
 
 // ===============================================
@@ -43,12 +44,11 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
   // Dimension based on number of sleep interruption
   var awakenDimension = ups.dimension(function (d) {
     return +d.s_awakenings;
-  })
-  // Day of week in month dimension
-  var dowmonthDimension = ups.dimension(function (d) {
-    return +d.dowmonth;
-  })
-
+  });
+  // // Day of week in month dimension
+  // var dowmonthDimension = ups.dimension(function (d) {
+  //   return +d.dowmonth;
+  // });
 
 // ===============================================
   // Define group
@@ -137,38 +137,27 @@ d3.csv("../static/data/UP/UPSleepHeader_noempty.csv", function(error, data) {
         };
       });
 
-// Define groups for stack bars 
-sunFilt = weekdayDimension.filter(1)
-sunCount = sunFilt.reduceCount(
-  function (d, i) {
-    console.log(i);
-    return +d.i;
+monCount = monthlyDimension.group().reduceSum(
+  function (d) {return +d.wkday==1;
   });
-
-// monFilt = weekdayDimension.filter(1)
-// monCount = monFilt.group().reduceCount(
-//   function (d, i) {return +d.i;
-//   });
-// tueFilt = weekdayDimension.filter(2)
-// tueCount = tueFilt.group().reduceCount(
-//   function (d, i) {return +d.i;
-//   });
-// wedFilt = weekdayDimension.filter(3)
-// wedCount = wedFilt.group().reduceCount(
-//   function (d, i) {return +d.i; 
-//   });
-// thuFilt = weekdayDimension.filter(4)
-// thuCount = thuFilt.group().reduceCount(
-//   function (d, i) {return +d.i; 
-//   });
-// friFilt = weekdayDimension.filter(5)
-// friCount = friFilt.group().reduceCount(
-//   function (d, i) {return +d.i; 
-//   });
-// satFilt = weekdayDimension.filter(6)
-// satCount = satFilt.group().reduceCount(
-//   function (d, i) {return +d.i; 
-//   });
+tueCount = monthlyDimension.group().reduceSum(
+  function (d) {return +d.wkday==2;
+  });
+wedCount = monthlyDimension.group().reduceSum(
+  function (d) {return +d.wkday==3;
+  });
+thuCount = monthlyDimension.group().reduceSum(
+  function (d) {return +d.wkday==4; 
+  });
+friCount = monthlyDimension.group().reduceSum(
+  function (d) {return +d.wkday==5; 
+  });
+satCount = monthlyDimension.group().reduceSum(
+  function (d) {return +d.wkday==6;
+  });
+sunCount = monthlyDimension.group().reduceSum(
+  function (d) {return +d.wkday==0; 
+  });
 
 // Define tooltips
 var tip = d3.tip()
@@ -316,22 +305,23 @@ sleepDOWstackChart
     .margins({top: 10, right: 50, bottom: 30, left: 50})
     .x(d3.scale.linear().domain([0, 12]))
     .brushOn(false)
+    .colors(sleepColors)
     .dimension(weekdayDimension, "Weekday dimension")
-    .group(sunCount, "Sun")
-    // .stack(monCount, "Mon")
-    // .stack(tueCount, "Tue")
-    // .stack(wedCount, "Wed")
-    // .stack(thuCount, "Thu")
-    // .stack(friCount, "Fri")
-    // .stack(satCount, "Sat")
-    .yAxisLabel('Sleep Counts (hr)')
+    .group(monCount, "M")
+    .stack(tueCount, "Tu")
+    .stack(wedCount, "W")
+    .stack(thuCount, "Th")
+    .stack(friCount, "F")
+    .stack(satCount, "Sa")
+    .stack(sunCount, "Su")
+    .yAxisLabel('Total Day Recorded (days)')
     .xAxisLabel('Months')
     .renderHorizontalGridLines(true)
     .renderLabel(true)
     .legend(dc.legend().x(235).y(10))
     .elasticY(true)
     .centerBar(true)
-    .gap(5);
+    .gap(5)     
 
   // 6. Data-Count
   dc.dataCount("#sleep-data-count", "sleepchart")
