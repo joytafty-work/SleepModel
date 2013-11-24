@@ -154,7 +154,7 @@ physpieChart
 	.renderLabel(false)
     .dimension(monthNameDimension)
     .group(upWorkoutMonth)
-    .innerRadius(30)
+    .innerRadius(0)
     .transitionDuration(500)
     .colors(physColors);
 

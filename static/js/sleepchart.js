@@ -291,7 +291,7 @@ var bubTip = d3.tip()
     .renderLabel(false)
       .dimension(awakenDimension)
       .group(sleepQualAwakening)
-      .innerRadius(20)
+      .innerRadius(0)
       .transitionDuration(500)
       .colors(sleepColors);
 
