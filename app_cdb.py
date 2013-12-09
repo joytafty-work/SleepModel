@@ -124,6 +124,7 @@ def loadFB():
                 print s
 
 def authenticateUP():
+    print "authenticateUP inside"
     import oauth2 as oauth
     import urllib2
     import urlparse
@@ -182,13 +183,17 @@ def server():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Do stuff")
-    parser.add_argument('command', action="store", choices=['load', 'loadBB', 'loadFB','server', 'authenticateUP'])
+    parser.add_argument('command', action="store", choices=['authenticateUP', 'load', 'loadBB', 'loadFB','server'])
     parser.add_argument('startdate', nargs='?', type=str, default="2013-08-01")
     parser.add_argument('enddate', nargs='?', type=str, default="2013-08-31")
     args = parser.parse_args()
 
     # Set up the development server on port 8000.
-    if args.command == 'load' or 'loadBB':
+    if args.command == 'authenticateUP':
+        print "authenticateUP outside"
+        authenticateUP()
+
+    if args.command == 'loadBB':
         # Check that startdate comes before enddate
         startdate = datetime.datetime.strptime(args.startdate, '%Y-%m-%d').date()
         enddate = datetime.datetime.strptime(args.enddate, '%Y-%m-%d').date()
@@ -196,7 +201,5 @@ if __name__ == "__main__":
 
     if args.command == 'loadFB':
         loadFB()
-    if args.command == 'authenticateUP':
-        authenticateUP()
     if args.command == 'server':
         server()
