@@ -127,6 +127,7 @@ def authenticate():
     import oauth2 as oauth
     import urllib2
     import urlparse
+
     consumer = oauth.Consumer(
         key    = 'RxOzz6tE38w',
         secret = '094c3ff0fcfc767e7a8789d5242fa56a48ae78bc', 
@@ -134,11 +135,20 @@ def authenticate():
         scope = "basic_read", 
         redirect_uri = "https://sleepmodel.herokuapp.com/")
 
-    auth_url1 = 'https://jawbone.com/auth/oauth2/auth'
-    auth_url2 = 'https://jawbone.com/nudge/api/v.1.0/users/@me'
+    # CLIENT_ID = "RxOzz6tE38w"
+    CLIENT_ID = os.getenv("UP_client_id")
+    CLIENT_SECRET = os.getenv("UP_client_secret")
+    REDIRECT_URI = "https://sleepmodel.herokuapp.com/"
+    base_auth_url = 'https://jawbone.com/auth/oauth2/auth'
+    auth_params = "response_type=code&client_id=" + CLIENT_ID + "&scope=basic_read&redirect_uri=" + REDIRECT_URI
     client = oauth.Client(consumer)
-    resp, content = client.request(auth_url1)
-    resp, content = client.request(auth_url2)
+    # Get authentication url for request token
+    auth_url1 = base_auth_url + "?" + auth_params
+
+    auth_url2 = 'https://jawbone.com/nudge/api/v.1.0/users/@me'
+
+    resp, content = client.request(auth_url1, headers={"Authorization": "<Authorization>"})
+
 
 def server():
     from cherrypy import wsgiserver
