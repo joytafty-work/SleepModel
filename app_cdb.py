@@ -123,7 +123,7 @@ def loadFB():
                 redis.sadd('fitbit', s)
                 print s
 
-def authenticate():
+def authenticateUP():
     import oauth2 as oauth
     import urllib2
     import urlparse
@@ -148,7 +148,7 @@ def authenticate():
     auth_url2 = 'https://jawbone.com/nudge/api/v.1.0/users/@me'
 
     resp, content = client.request(auth_url1, headers={"Authorization": "<Authorization>"})
-
+    print resp
 
 def server():
     from cherrypy import wsgiserver
@@ -183,7 +183,7 @@ def server():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Do stuff")
-    parser.add_argument('command', action="store", choices=['load', 'loadBB', 'loadFB','server'])
+    parser.add_argument('command', action="store", choices=['load', 'loadBB', 'loadFB','server', 'authenticateUP'])
     parser.add_argument('startdate', nargs='?', type=str, default="2013-08-01")
     parser.add_argument('enddate', nargs='?', type=str, default="2013-08-31")
     args = parser.parse_args()
@@ -197,5 +197,7 @@ if __name__ == "__main__":
 
     if args.command == 'loadFB':
         loadFB()
+    if args.command == 'authenticateUP':
+        authenticateUP()
     if args.command == 'server':
         server()
