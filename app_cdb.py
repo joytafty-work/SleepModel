@@ -128,12 +128,11 @@ def authenticateUP():
     import urllib2
     import urlparse
 
-    consumer = oauth.Consumer(
-        key    = 'RxOzz6tE38w',
-        secret = '094c3ff0fcfc767e7a8789d5242fa56a48ae78bc', 
-        response_type = "code", 
-        scope = "basic_read", 
-        redirect_uri = "https://sleepmodel.herokuapp.com/")
+    # consumer = oauth.Consumer(
+    #     key    = 'RxOzz6tE38w',
+    #     secret = '094c3ff0fcfc767e7a8789d5242fa56a48ae78bc')
+
+    consumer = oauth.Consumer()
 
     # CLIENT_ID = "RxOzz6tE38w"
     CLIENT_ID = os.getenv("UP_client_id")
