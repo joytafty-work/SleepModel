@@ -60,27 +60,33 @@ def server():
 
     @app.route("/login")
     def login():
-        import urllib2
-        import oauth2 as oauth
+        # import urllib2
+        # import oauth2 as oauth
 
-        consumer = oauth.Consumer(os.getenv("UP_client_id"), os.getenv("UP_client_secret"))
-        client = oauth.Client(consumer)
-
-        CLIENT_ID = os.getenv("UP_client_id")
-        CLIENT_SECRET = os.getenv("UP_client_secret")
-        REDIRECT_URI = "https://sleepmodel.herokuapp.com/"
+        # consumer = oauth.Consumer(os.getenv("UP_client_id"), os.getenv("UP_client_secret"))
+        # client = oauth.Client(consumer)
+        # CLIENT_ID = os.getenv("UP_client_id")
+        # CLIENT_SECRET = os.getenv("UP_client_secret")
+        # REDIRECT_URI = "https://sleepmodel.herokuapp.com/"
         base_auth_url = 'https://jawbone.com/auth/oauth2/auth'
         auth_params = "response_type=code&client_id=" + CLIENT_ID + "&scope=basic_read&redirect_uri=" + REDIRECT_URI
+        base_token_url = 'https://jawbone.com/auth/oauth2/token'
+        token_params = "client_id=" + CLIENT_ID + "&client_secret=" + CLIENT_SECRET + "&grant_type=authorization_code"
+        # # Get authentication url for request token
+        auth_url = base_auth_url + "?" + auth_params
+        # resp, content = client.request(base_auth_url)
+        token_url = base_token_url + "?" + token_params
 
-        # Get authentication url for request token
-        auth_url1 = base_auth_url + "?" + auth_params
-
-        resp, content = client.request(auth_url1)
-        print resp
-        request_token = dict(urlparse.parse_qsl(content))
-        url = REDIRECT_URI + request_token['oauth_signature']
-        print url
-        return flask.redirect(url)
+        from flask-oauth import OAuth 
+        oauth = OAuth()
+        sleepUP = oauth.remote_app('sleepmodel', 
+            base_url='https://jawbone.com/auth/oauth2/auth',
+            request_token_url=base_auth_url,
+            access_token_url=base_token_url,
+            CONSUMER_KEY=os.getenv("UP_client_id"),
+            CONSUMER_SECRET=os.getenv("UP_client_secret"), 
+            )
+        
 
 
     @app.route("/bar/")
