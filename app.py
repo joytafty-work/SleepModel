@@ -58,6 +58,30 @@ def server():
     def index():
         return render_template("index.html")
 
+    @app.route("/login")
+    def login():
+        import urllib2
+
+        consumer = oauth.Consumer(os.getenv("UP_client_id"), os.getenv("UP_client_secret"))
+        client = oauth.Client(consumer)
+
+        CLIENT_ID = os.getenv("UP_client_id")
+        CLIENT_SECRET = os.getenv("UP_client_secret")
+        REDIRECT_URI = "https://sleepmodel.herokuapp.com/"
+        base_auth_url = 'https://jawbone.com/auth/oauth2/auth'
+        auth_params = "response_type=code&client_id=" + CLIENT_ID + "&scope=basic_read&redirect_uri=" + REDIRECT_URI
+
+        # Get authentication url for request token
+        auth_url1 = base_auth_url + "?" + auth_params
+
+        resp, content = client.request(auth_url1)
+        print resp
+        request_token = dict(urlparse.parse_qsl(content))
+        url = REDIRECT_URI + request_token['oauth_signature']
+        print url
+        return flask.redirect(url)
+
+
     @app.route("/bar/")
     def bar():
         return render_template("bar.html")
