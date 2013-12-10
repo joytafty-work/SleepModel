@@ -65,9 +65,9 @@ def server():
 
         # consumer = oauth.Consumer(os.getenv("UP_client_id"), os.getenv("UP_client_secret"))
         # client = oauth.Client(consumer)
-        # CLIENT_ID = os.getenv("UP_client_id")
-        # CLIENT_SECRET = os.getenv("UP_client_secret")
-        # REDIRECT_URI = "https://sleepmodel.herokuapp.com/"
+        CLIENT_ID = os.getenv("UP_client_id")
+        CLIENT_SECRET = os.getenv("UP_client_secret")
+        REDIRECT_URI = "https://sleepmodel.herokuapp.com/"
         base_auth_url = 'https://jawbone.com/auth/oauth2/auth'
         auth_params = "response_type=code&client_id=" + CLIENT_ID + "&scope=basic_read&redirect_uri=" + REDIRECT_URI
         base_token_url = 'https://jawbone.com/auth/oauth2/token'
