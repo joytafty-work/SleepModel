@@ -150,7 +150,8 @@ def authenticateUP():
     auth_url2 = 'https://jawbone.com/nudge/api/v.1.0/users/@me'
 
     print auth_url1
-    resp, content = client.request(auth_url1, headers={"Authorization": "<Authorization>"})
+    # resp, content = client.request(auth_url1, headers={"Authorization": "<Authorization>"})
+    resp, content = client.request(auth_url1, "POST")
     print resp
 
 def server():
