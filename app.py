@@ -84,7 +84,7 @@ def server():
             request_token_url=base_auth_url,
             access_token_url=base_token_url,
             CONSUMER_KEY=os.getenv("UP_client_id"),
-            CONSUMER_SECRET=os.getenv("UP_client_secret"), 
+            CONSUMER_SECRET=os.getenv("UP_client_secret")
             )
 
 
