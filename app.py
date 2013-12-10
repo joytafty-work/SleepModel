@@ -61,6 +61,7 @@ def server():
     @app.route("/login")
     def login():
         import urllib2
+        import oauth2 as oauth
 
         consumer = oauth.Consumer(os.getenv("UP_client_id"), os.getenv("UP_client_secret"))
         client = oauth.Client(consumer)
