@@ -78,8 +78,8 @@ def server():
         token_url = base_token_url + "?" + token_params
 
         from flask_oauth import OAuth 
-        oauth = OAuth()
-        sleepUP = oauth.remote_app('sleepmodel', 
+        oa = OAuth()
+        sleepUP = oa.remote_app('sleepmodel', 
             base_url='https://jawbone.com/auth/oauth2/auth',
             request_token_url=base_auth_url,
             access_token_url=base_token_url,
