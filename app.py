@@ -83,8 +83,8 @@ def server():
             base_url='https://jawbone.com/auth/oauth2/auth',
             request_token_url=base_auth_url,
             access_token_url=base_token_url,
-            # CONSUMER_KEY=os.getenv("UP_client_id"),
-            # CONSUMER_SECRET=os.getenv("UP_client_secret")
+            consumer_key=os.getenv("UP_client_id"),
+            consumer_secret=os.getenv("UP_client_secret")
             )
 
     @app.route("/bar/")
