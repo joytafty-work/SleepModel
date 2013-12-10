@@ -46,7 +46,7 @@ def authenticateUP():
     #           'state': request.get.args.get('next'),
               }
     logger = logging.getLogger(__name__)
-    logger.debug('GET: %s' % request.args)
+    # logger.debug('GET: %s' % request.args)
     print "logger"
     print "params : " + urllib.urlencode(params)
     url1 = base_auth_url + "?" + urllib.urlencode(params)
