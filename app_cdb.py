@@ -129,12 +129,13 @@ def authenticateUP():
     import urllib2
     import urlparse
 
-    consumer = oauth.Consumer(
-        key    = 'RxOzz6tE38w',
-        secret = '094c3ff0fcfc767e7a8789d5242fa56a48ae78bc',
-        )
+    # consumer = oauth.Consumer(
+    #     key    = 'RxOzz6tE38w',
+    #     secret = '094c3ff0fcfc767e7a8789d5242fa56a48ae78bc',
+    #     )
 
     # consumer = oauth.Consumer(key=os.getenv("UP_client_id"), secret=os.getenv("UP_client_secret"))
+    consumer = oauth.Consumer(key=os.getenv("UP_client_id"), secret=os.getenv("UP_client_secret"))
 
     # CLIENT_ID = "RxOzz6tE38w"
     CLIENT_ID = os.getenv("UP_client_id")
@@ -148,6 +149,7 @@ def authenticateUP():
 
     auth_url2 = 'https://jawbone.com/nudge/api/v.1.0/users/@me'
 
+    print auth_url1
     resp, content = client.request(auth_url1, headers={"Authorization": "<Authorization>"})
     print resp
 
