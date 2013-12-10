@@ -4,7 +4,6 @@ from flask import Flask, url_for, render_template
 from functools import update_wrapper
 from cherrypy import wsgiserver
 import argparse
-import fitbit
 import datetime
 import os
 from store import redis
@@ -15,6 +14,7 @@ import urlparse
 # Load data from local redis
 def load():
     # see: http://python-fitbit.readthedocs.org/en/latest/#fitbit-api
+    import fitbit
     fb = fitbit.Fitbit(
         os.getenv('CONSUMER_KEY'),
         os.getenv('CONSUMER_SECRET'), 
