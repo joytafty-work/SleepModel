@@ -77,7 +77,7 @@ def server():
         # resp, content = client.request(base_auth_url)
         token_url = base_token_url + "?" + token_params
 
-        from flask-oauth import OAuth 
+        from flask_oauth import OAuth 
         oauth = OAuth()
         sleepUP = oauth.remote_app('sleepmodel', 
             base_url='https://jawbone.com/auth/oauth2/auth',
@@ -86,7 +86,6 @@ def server():
             CONSUMER_KEY=os.getenv("UP_client_id"),
             CONSUMER_SECRET=os.getenv("UP_client_secret"), 
             )
-        
 
 
     @app.route("/bar/")
