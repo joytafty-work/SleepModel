@@ -79,6 +79,7 @@ def server():
 
         from flask_oauth import OAuth 
         oa = OAuth()
+        print oa
         sleepUP = OAuth().remote_app('sleepmodel', 
             base_url='https://jawbone.com/auth/oauth2/auth',
             request_token_url=base_auth_url,
