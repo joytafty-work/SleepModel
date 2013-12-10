@@ -1,16 +1,19 @@
 import os
 import flask
-from flask import Flask, url_for, render_template
+from flask import Flask, url_for, render_template, request, redirect
 from functools import update_wrapper
 from cherrypy import wsgiserver
 import argparse
 import urlparse
+import logging
+import urllib, urllib2, json
 
 def authenticateUP():
     print "authenticateUP inside"
     import oauth2 as oauth
     import urllib2
     import urlparse
+    import logging
 
     # consumer = oauth.Consumer(
     #     key    = 'RxOzz6tE38w',
@@ -34,9 +37,20 @@ def authenticateUP():
 
     print auth_url1
     # resp, content = client.request(auth_url1, headers={"Authorization": "<Authorization>"})
-    print "almost done!"
-    resp, content = client.request(auth_url1, "POST")
-    print resp
+    # resp, content = client.request(auth_url1, "POST")
+
+    params = {
+              'response_type': 'code',
+              'client_id': os.getenv('UP_client_id'), 
+              'redirect_url': REDIRECT_URI, 
+    #           'state': request.get.args.get('next'),
+              }
+    logger = logging.getLogger(__name__)
+    logger.debug('GET: %s' % request.args)
+    print "logger"
+    print "params : " + urllib.urlencode(params)
+    url1 = base_auth_url + "?" + urllib.urlencode(params)
+    print url1
 
 def server():
     from cherrypy import wsgiserver
