@@ -83,9 +83,11 @@ def server():
             base_url='https://jawbone.com/auth/oauth2/auth',
             request_token_url=base_auth_url,
             access_token_url=base_token_url,
+            authorize_url=base_token_url,
             consumer_key=os.getenv("UP_client_id"),
             consumer_secret=os.getenv("UP_client_secret")
             )
+        print sleepUP
 
     @app.route("/bar/")
     def bar():
