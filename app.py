@@ -111,17 +111,17 @@ def server():
     def get_UP_token(token=None):
         return session.get('UP_auth_token')
 
-    @app.route("/oauth-authorized")
-    @sleepUP.authorized_handler
-    def oauth_authorized(resp):
-        next_url = rex.args.get('next') or url_for('index')
-        if resp is None:
-            flask("Your credential is unrecognized!")
-            return redirect(next_url)
+    # @app.route("/oauth-authorized")
+    # @sleepUP.authorized_handler
+    # def oauth_authorized(resp):
+    #     next_url = rex.args.get('next') or url_for('index')
+    #     if resp is None:
+    #         flask("Your credential is unrecognized!")
+    #         return redirect(next_url)
         
-        session['UP_token'] = (
-            resp["oauth_token"], resp["oauth_token_secret"]
-            )
+    #     session['UP_token'] = (
+    #         resp["oauth_token"], resp["oauth_token_secret"]
+    #         )
 
     @app.route("/bar/")
     def bar():
