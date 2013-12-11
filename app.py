@@ -103,8 +103,8 @@ def server():
         print sleepUP
 
         return render_template("index.html")
-        # return sleepUP.authorize(callback=url_for('oauth_authorized', 
-        #     next=request.args.get('next') or request.referrere or None))
+        return sleepUP.authorize(callback=url_for('oauth_authorized', 
+            next=request.args.get('next') or request.referrere or None))
 
     def get_UP_token(token=None):
         return session.get('UP_auth_token')
