@@ -82,7 +82,8 @@ def server():
         import oauth2 as oa2
         import logging
         consumer = oa2.Consumer(key=os.getenv("UP_client_id"), secret=os.getenv("UP_client_secret"))
-        client = oa2.Client(consumer)
+        token = oauth.Token(flask.request.args.get('oauth_token'), flask.request.args.get('oauth_verifier'))
+        client = oa2.Client(consumer, token)
         print consumer
         print client
         resp, content = client.request(auth_url)
