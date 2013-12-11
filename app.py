@@ -80,9 +80,9 @@ def server():
 
         # Basic version
         import oauth2 as oa2
-        consumer = oa2.Consumer(os.getenv("UP_client_id"), os.getenv("UP_client_secret"))
+        consumer = oa2.Consumer(key=os.getenv("UP_client_id"), secret=os.getenv("UP_client_secret"))
         client = oa2.Client(consumer)
-        resp, content = client.request(auth_url)
+        resp, content = client.request(auth_url, force_auth_header=True)
         print resp
         print content
 
