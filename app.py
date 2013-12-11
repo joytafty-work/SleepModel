@@ -79,27 +79,25 @@ def server():
         print "Finish setting oAuth parameters"
 
         # Basic version
-        import oauth2 as oa2
-        consumer = oa2.Consumer(key=os.getenv("UP_client_id"), secret=os.getenv("UP_client_secret"))
-        client = oa2.Client(consumer)
-        resp, content = client.request(auth_url)
-        print resp
-        print content
+        # import oauth2 as oa2
+        # consumer = oa2.Consumer(key=os.getenv("UP_client_id"), secret=os.getenv("UP_client_secret"))
+        # client = oa2.Client(consumer)
+        # resp, content = client.request(auth_url)
 
-        return flask.redirect(REDIRECT_URI)
+        # return flask.redirect(REDIRECT_URI)
 
-        # from flask_oauth import OAuth 
+        from flask_oauth import OAuth 
         # oa = OAuth()
         # print oa
-        # sleepUP = OAuth().remote_app('sleepmodel', 
-        #     base_url='https://jawbone.com/auth/oauth2/auth',
-        #     request_token_url=base_auth_url,
-        #     access_token_url=base_token_url,
-        #     authorize_url=base_token_url,
-        #     consumer_key=os.getenv("UP_client_id"),
-        #     consumer_secret=os.getenv("UP_client_secret")
-        #     )
-        # print sleepUP
+        sleepUP = OAuth().remote_app('sleepmodel', 
+            base_url='https://jawbone.com/auth/oauth2/auth',
+            request_token_url=base_auth_url,
+            access_token_url=base_token_url,
+            authorize_url=base_token_url,
+            consumer_key=os.getenv("UP_client_id"),
+            consumer_secret=os.getenv("UP_client_secret")
+            )
+        print sleepUP
 
         # return sleepUP.authorize(callback=url_for('oauth_authorized', 
         #     next=request.args.get('next') or request.referrere or None))
