@@ -79,9 +79,12 @@ def server():
         print "Finish setting oAuth parameters"
 
         # Basic version
-        # import oauth2 as oa2
-        # consumer = oa2.Consumer(key=os.getenv("UP_client_id"), secret=os.getenv("UP_client_secret"))
-        # client = oa2.Client(consumer)
+        import oauth2 as oa2
+        import logging
+        consumer = oa2.Consumer(key=os.getenv("UP_client_id"), secret=os.getenv("UP_client_secret"))
+        client = oa2.Client(consumer)
+        print consumer
+        print client
         # resp, content = client.request(auth_url)
 
         # return flask.redirect(REDIRECT_URI)
