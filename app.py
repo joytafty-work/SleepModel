@@ -87,7 +87,7 @@ def server():
         print consumer
         print client
         # resp, content = client.request(auth_url)
-        print resp
+        # print resp
 
         # return flask.redirect(REDIRECT_URI)
 
@@ -106,8 +106,11 @@ def server():
         print sleepUP
 
         # return render_template("index.html")
-        return sleepUP.authorize(callback=url_for('oauth_authorized', 
+        out = sleepUP.authorize(callback=url_for('oauth_authorized', 
             next=flask.request.args.get('next') or flask.request.referrence or None))
+        print out
+        return out
+
 
     def get_UP_token(token=None):
         return session.get('UP_auth_token')
