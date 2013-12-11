@@ -1,6 +1,6 @@
 import json
 import flask
-from flask import Flask, url_for, render_template
+from flask import Flask, url_for, render_template, session
 from functools import update_wrapper
 from cherrypy import wsgiserver
 import argparse
@@ -10,6 +10,7 @@ from store import redis
 import time
 import numpy as np
 import urlparse
+import request
 
 # Load data from local redis
 def load():
@@ -60,11 +61,10 @@ def server():
 
     @app.route("/login")
     def login():
+        print "Start setting oAuth parameters"
         # import urllib2
         # import oauth2 as oauth
 
-        # consumer = oauth.Consumer(os.getenv("UP_client_id"), os.getenv("UP_client_secret"))
-        # client = oauth.Client(consumer)
         CLIENT_ID = os.getenv("UP_client_id")
         CLIENT_SECRET = os.getenv("UP_client_secret")
         REDIRECT_URI = "https://sleepmodel.herokuapp.com/"
@@ -79,18 +79,34 @@ def server():
 
         print "Finish setting oAuth parameters"
 
-        from flask_oauth import OAuth 
-        oa = OAuth()
-        print oa
-        sleepUP = OAuth().remote_app('sleepmodel', 
-            base_url='https://jawbone.com/auth/oauth2/auth',
-            request_token_url=base_auth_url,
-            access_token_url=base_token_url,
-            authorize_url=base_token_url,
-            consumer_key=os.getenv("UP_client_id"),
-            consumer_secret=os.getenv("UP_client_secret")
-            )
-        print sleepUP
+        # Basic version
+        import oauth2 as oa2
+        consumer = oa2.Consumer(os.getenv("UP_client_id"), os.getenv("UP_client_secret"))
+        client = oa2.Client(consumer)
+        resp, content = client.request(auth_url)
+        print resp
+        print content
+
+        return flask.redirect(REDIRECT_URI)
+
+        # from flask_oauth import OAuth 
+        # oa = OAuth()
+        # print oa
+        # sleepUP = OAuth().remote_app('sleepmodel', 
+        #     base_url='https://jawbone.com/auth/oauth2/auth',
+        #     request_token_url=base_auth_url,
+        #     access_token_url=base_token_url,
+        #     authorize_url=base_token_url,
+        #     consumer_key=os.getenv("UP_client_id"),
+        #     consumer_secret=os.getenv("UP_client_secret")
+        #     )
+        # print sleepUP
+
+        # return sleepUP.authorize(callback=url_for('oauth_authorized', 
+        #     next=request.args.get('next') or request.referrere or None))
+
+    def get_UP_token(token=None):
+        return session.get('UP_auth_token')
 
     @app.route("/bar/")
     def bar():
