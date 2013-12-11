@@ -77,6 +77,8 @@ def server():
         # resp, content = client.request(base_auth_url)
         token_url = base_token_url + "?" + token_params
 
+        print "Finish setting oAuth parameters"
+
         from flask_oauth import OAuth 
         oa = OAuth()
         print oa
