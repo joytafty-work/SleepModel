@@ -82,32 +82,32 @@ def server():
         import oauth2 as oa2
         import logging
         consumer = oa2.Consumer(key=os.getenv("UP_client_id"), secret=os.getenv("UP_client_secret"))
-        token = oa2.Token(flask.request.args.get('oauth_token'), flask.request.args.get('oauth_verifier'))
-        client = oa2.Client(consumer, token)
+        # token = oa2.Token(flask.request.args.get('oauth_token'), flask.request.args.get('oauth_verifier'))
+        client = oa2.Client(consumer)
         print consumer
         print client
-        resp, content = client.request(auth_url)
+        # resp, content = client.request(auth_url)
         print resp
 
         # return flask.redirect(REDIRECT_URI)
 
-        # from flask_oauth import OAuth 
-        # from flask_oauth import request as rex
-        # # oa = OAuth()
-        # # print oa
-        # sleepUP = OAuth().remote_app('sleepmodel', 
-        #     base_url='https://jawbone.com/auth/oauth2/auth',
-        #     request_token_url=base_auth_url,
-        #     access_token_url=base_token_url,
-        #     authorize_url=base_token_url,
-        #     consumer_key=os.getenv("UP_client_id"),
-        #     consumer_secret=os.getenv("UP_client_secret")
-        #     )
-        # print sleepUP
+        from flask_oauth import OAuth 
+        from flask_oauth import request as rex
+        # oa = OAuth()
+        # print oa
+        sleepUP = OAuth().remote_app('sleepmodel', 
+            base_url='https://jawbone.com/auth/oauth2/auth',
+            request_token_url=base_auth_url,
+            access_token_url=base_token_url,
+            authorize_url=base_token_url,
+            consumer_key=os.getenv("UP_client_id"),
+            consumer_secret=os.getenv("UP_client_secret")
+            )
+        print sleepUP
 
-        return render_template("index.html")
-        # return sleepUP.authorize(callback=url_for('oauth_authorized', 
-        #     next=rex.args.get('next') or rex.referrence or None))
+        # return render_template("index.html")
+        return sleepUP.authorize(callback=url_for('oauth_authorized', 
+            next=flask.request.args.get('next') or flask.request.referrence or None))
 
     def get_UP_token(token=None):
         return session.get('UP_auth_token')
