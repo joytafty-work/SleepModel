@@ -10,7 +10,6 @@ from store import redis
 import time
 import numpy as np
 import urlparse
-import request
 
 # Load data from local redis
 def load():
