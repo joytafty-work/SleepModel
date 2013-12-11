@@ -107,10 +107,9 @@ def server():
 
         # return render_template("index.html")
         out = sleepUP.authorize(callback=url_for('oauth_authorized', 
-            next=flask.request.args.get('next') or flask.request.referrence or None))
+            next=flask.request.args.get('next') or None))
         print out
         return out
-
 
     def get_UP_token(token=None):
         return session.get('UP_auth_token')
