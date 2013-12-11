@@ -114,7 +114,6 @@ def server():
     @app.route("/oauth-authorized")
     @sleepUP.authorized_handler
     def oauth_authorized(resp):
-        from 
         next_url = rex.args.get('next') or url_for('index')
         if resp is None:
             flask("Your credential is unrecognized!")
