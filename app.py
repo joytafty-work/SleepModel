@@ -99,6 +99,7 @@ def server():
             )
         print sleepUP
 
+        return render_template("index.html")
         # return sleepUP.authorize(callback=url_for('oauth_authorized', 
         #     next=request.args.get('next') or request.referrere or None))
 
