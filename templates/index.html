@@ -326,6 +326,17 @@
 <!-- Nutrition -->
 <div class="container" id="nutrition-container" style="display: none;">
   <!-- Row 1 -->
+  <div id="nutrition-paralell-chart" class="dc-chart">
+      <span class="chart-title">
+        &nbsp;&nbsp;Nutrient DJ by recipe
+        <br>
+      </span>
+      <a class="reset" href="javascript:nutritionParallel.filterAll('nutrichart');
+      dc.redrawAll('nutrichart');" style="display: none;">refresh</a>
+      <div class="clearfix"></div>      
+    </div>
+
+
   <div clas="row">
   <p>Nutritional analysis based on Food Logging and Food journal coming! Stay tune for updates.</p>  
   </div>
@@ -354,6 +365,7 @@
 </div>
 <script type="text/javascript" src="../static/js/physical.js"></script>
 <script type="text/javascript" src="../static/js/sleepchart.js"></script>
+<script type="text/javascript" src="../static/js/nutrition.js"></script>
 <script type="text/javascript" src="../static/js/ups_all.js"></script>
 <script type="text/javascript" src="http://x3dom.org/x3dom/dist/x3dom-full.js"></script>
 <script type="text/javascript" src="../static/js/scatter_plot_3d_demo.js"></script>
