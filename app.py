@@ -54,9 +54,13 @@ def server():
     from cherrypy import wsgiserver
     app = Flask(__name__)
 
+    # @app.route("/")
+    # def index():
+    #     return render_template("index.html")
+
     @app.route("/")
-    def index():
-        return render_template("index.html")
+    def index3():
+        return render_template("index3.html")
 
     @app.route("/login")
     def login():

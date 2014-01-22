@@ -2,7 +2,7 @@ import json
 import flask
 from flask import Flask, url_for, render_template
 import argparse
-import fitbit
+# import fitbit
 import datetime
 import os
 import redis
@@ -62,13 +62,22 @@ def server():
     from cherrypy import wsgiserver
     app = Flask(__name__)
 
-    @app.route("/")
-    def index():
-        return render_template("index.html")
+    # @app.route("/")
+    # def index():
+    #     return render_template("index.html")
 
     @app.route("/explore/")
     def bar():
-        return render_template("index2.html")
+        return render_template("chloropleth.html")
+
+    @app.route("/")
+    def index3():
+        return render_template("index3.html")
+
+    @app.route("/index4/")
+    def index4():
+        return render_template("index4.html")
+
 
     @app.route("/sleep/")
     def sleep():
@@ -98,5 +107,5 @@ if __name__ == "__main__":
         loadBB()
     if args.command == 'server':
         server()
-    if args.command == 'load' or 'loadFB':
-        loadFB()
+    # if args.command == 'load' or 'loadFB':
+    #     loadFB()
