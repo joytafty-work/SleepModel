@@ -3,6 +3,7 @@
 <head>
 <title>Invest&thinsp;Wiser – Smarter Investment</title>
 <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/dc.css') }}"/>
 <meta charset="utf-8"> 
 </head>
 <!--<body style="background-color: f8ffff; max-height: 1800px"> -->
@@ -107,7 +108,7 @@
   </div>
   
   <div id="ticker" class="page" style="min-height: 800px">
-    <div class="container" style="position: fixed; top: 120px" data-anchor-target="#ticker" data-300-top="opacity: 0;" data-100-top="opacity: 1" data--200-top="opacity[swing]: 1" data--700-top="opacity[swing]: 0;">
+    <div class="container" style="position: fixed; top: 0px" data-anchor-target="#ticker" data-300-top="opacity: 0;" data-100-top="opacity: 1" data--200-top="opacity[swing]: 1" data--700-top="opacity[swing]: 0;">
       <div class="row">
 
         <div class="facts col-offset-3 col-12 center" style="min-height: 240px; padding: 16 48 64 48">
@@ -126,18 +127,19 @@
           }
 
           </style>
-
-            <body>
             <script src="http://d3js.org/d3.v3.min.js"></script>
             <script src="http://d3js.org/topojson.v1.min.js"></script>
+            <script src="http://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.1/crossfilter.js"></script>
+            <script type="text/javascript" src="{{ url_for('static', filename='js/queue.min.js') }}"></script>
+            <script type="text/javascript" src="{{ url_for('static', filename='js/datamaps.all.min.js') }}"></script>
+            <script src="http://datamaps.github.io/scripts/datamaps.world.min.js?v=1"></script>            
             <script>
-
             var width = 960,
               height = 500;
 
             var path = d3.geo.path();
 
-            var svg = d3.select("body").append("svg")
+            var svg = d3.select("#ticker").append("svg")
               .attr("width", width)
               .attr("height", height);
 
@@ -213,8 +215,8 @@
       </div>
   </div>
 
-  <div class="footer" style="margin-bottom: 0px; position: relative"> © 2014 Invest<i>Wiser</i>™. &nbsp;All Rights Reserved.  &nbsp; Terms and Conditions apply.</div>
-  
+<!--   <div class="footer" style="margin-bottom: 0px; position: relative"> © 2014 Invest<i>Wiser</i>™. &nbsp;All Rights Reserved.  &nbsp; Terms and Conditions apply.</div>
+ -->  
   <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
   <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/skrollr/0.6.11/skrollr.min.js"></script>
