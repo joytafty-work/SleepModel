@@ -256,15 +256,48 @@
       </div>         
   </div> -->
 
-  <div id="ticker" class="page" style="min-height: 1000px">
-  <div class="container" style="position: fixed; top: 0px" data-anchor-target="#ticker" data-300-top="opacity: 0;" data-100-top="opacity: 1" data--200-top="opacity[swing]: 1" data--700-top="opacity[swing]: 0;">
-    <div class="row">
+  <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>   
+  <script type="text/javascript" src="http://leafletjs.com/examples/us-states.js"></script>
+  <script type="text/javascript" src="{{ url_for('static',filename='js/jquery.js')}}"></script>
+  <script type="text/javascript" src="{{ url_for('static',filename='js/d3.js')}}"></script>
+  <script type="text/javascript" src="{{ url_for('static',filename='js/d3.tip2.js')}}"></script>
+  <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="{{ url_for('static',filename='js/crossfilter.js')}}"></script>
+  <!-- <script type="text/javascript" src="{{ url_for('static',filename='js/dc-1.6.0.js')}}"></script> -->
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/dc/1.6.0/dc.js"></script>
+  <script type="text/javascript" src="{{ url_for('static',filename='js/colorbrewer.js')}}"></script>
+  <script type="text/javascript" src="{{ url_for('static',filename='js/moment.js')}}"></script>    
+
+  <div id="ticker"  class="page" data-0-bottom="opacity: 0" data--400-bottom="opacity: 1">
+  <div class="container" id="physical-container" style="position: fixed; top: 0px" data-anchor-target="#ticker" data-300-top="opacity: 0;" data-100-top="opacity: 1" data--200-top="opacity[swing]: 1" data--700-top="opacity[swing]: 0;">
+    <div class="row-fluid">
+      <!-- Physical Activity by month (Pie) -->
+      <div id="phys-month-pie" class="col-md-4">
+        <span class="chart-title">
+          &nbsp;&nbsp; Funding Rounds (mins)
+          <br>
+          &nbsp;(by Month of 2013) 
+        </span>
+        <a class="reset" href="javascript:physpieChart.filterAll('physchart');
+        dc.redrawAll('physchart');" style="display: none;">refresh</a>
+        <div class="clearfix"></div>      
+      </div>
+
+      <!-- Physical Activity by Week -->
+      <div id="phys-move-chart" class="col-md-4">
+        <span class="chart-title">
+          &nbsp;&nbsp;Total distance Travel
+        </span>
+        <a class="reset" href="javascript:physmoveChart.filterAll('physchart');
+        dc.redrawAll('physchart');" style="display: none;">refresh</a>
+        <div class="clearfix"></div>      
+      </div>
 
       <div class="facts col-offset-3 col-12 center" style="min-height: 240px; padding: 16 48 64 48">
           <style>
       #map {
-        width: 1100px;
-        height: 900px;
+        width: 1000px;
+        height: 800px;
       }
    
       .info {
@@ -293,12 +326,8 @@
         opacity: 0.7;
       }
     </style>
-  </head>
-  <body>
     <div id="map"></div>
-   
-    <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>   
-    <script type="text/javascript" src="http://leafletjs.com/examples/us-states.js"></script>
+    
     <script type="text/javascript">
    
       var map = L.map('map').setView([37.8, -96], 4);
@@ -320,21 +349,58 @@
    
       info.update = function (props) {
         this._div.innerHTML = '<h4>Tweets Density</h4>' +  (props ?
-          '<b>' + props.name + '</b><br />' + props.density + ' people / mi<sup>2</sup>'
+          '<b>' + props.name + '</b><br />' + props.density + ' tweets / mi<sup>2</sup>'
           : 'Hover over a state');
       };
       info.addTo(map);
 
       //add popup
-      var marker = L.marker([37.773, -122.399]).addTo(map);
-      marker.bindPopup("<b>Heroku</b><br>Seed A").openPopup();
+      var heroku = L.marker([37.77, -122.402]).addTo(map);
+      heroku.bindPopup("<b>Heroku</b><br>Seed, Series A, B, Acquisition").openPopup();
+
+      var counsyl = L.marker([37.65, -122.392]).addTo(map);
+      counsyl.bindPopup("<b>Counsyl</b><br>Seed, Angel, Debt, Series A, B, C").openPopup();
+
+      var talentspring = L.marker([47.615, -122.34]).addTo(map);
+      talentspring.bindPopup("<b>Talent Spring</b><br>Seed, Acquisition").openPopup();
+
+      var linkcycle = L.marker([44.0, -71.3]).addTo(map);
+      linkcycle.bindPopup("<b>LinkCycle</b><br>Seed").openPopup();
+
+      var swiftIQ = L.marker([41.883, -87.638]).addTo(map);
+      swiftIQ.bindPopup("<b>swiftIQ</b><br>").openPopup();
 
       function onMapClick(e) {
       popup
         .setLatLng(e.latlng)
-        .setContent("You clicked the map at " + e.latlng.toString())
+        .setContent("Location : " + e.latlng.toString())
         .openOn(map);
       }
+
+      var r = 500;
+      var c1 = L.circle([19.44036973, -99.20630118], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map);
+      var c2 = L.circle([37.7930713, -122.42508556], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map);
+      var c3 = L.circle([33.15993899, -117.21536024], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map);
+      var c4 = L.circle([39.78024954, -86.1461306], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map); 
+      var c5 = L.circle([33.67491593, -117.93894757], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map); 
+      var c6 = L.circle([35.18394662, -97.45173052], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map);
+      var c7 = L.circle([28.37088606, -81.51607691], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map);
+      var c8 = L.circle([38.86011044, -77.05508802], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map); 
+      var c9 = L.circle([38.40739775, -82.42528467], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map); 
+      var c10 = L.circle([40.88413579, -74.10812342], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map);
+      var c11 = L.circle([42.3841619, -70.97368412], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map);
+      var c12 = L.circle([44.54860458, -123.30779692], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map); 
+      var c13 = L.circle([40.10927001, -75.05202544], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map); 
+      var c14 = L.circle([39.34211511, -84.33241688], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map);
+      var c15 = L.circle([36.11972402, -115.1358585], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map);
+      var c16 = L.circle([-35.05685052, 138.76085677], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map); 
+      var c17 = L.circle([40.10922387, -85.05200138], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map); 
+      var c18 = L.circle([42.10927001, -75.05202544], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map); 
+      var c19 = L.circle([38.34211511, -84.33241688], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map);
+      var c20 = L.circle([36.11972402, -105.1358585], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map);
+      var c21 = L.circle([-36.05685052, 128.76085677], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map); 
+      var c22 = L.circle([42.10922387, -77.05200138], r, {color: 'green', fillColor: 'green',fillOpacity: 0.8}).addTo(map); 
+
 
 map.on('click', onMapClick);
 
@@ -353,10 +419,10 @@ map.on('click', onMapClick);
       function style(feature) {
         return {
           weight: 2,
-          opacity: 1,
+          opacity: 0.75,
           color: 'white',
           dashArray: '3',
-          fillOpacity: 0.7,
+          fillOpacity: 0.45,
           fillColor: getColor(feature.properties.density)
         };
       }
@@ -425,10 +491,10 @@ map.on('click', onMapClick);
         return div;
       };
    
+      // var svg = d3.select("#map").select("svg"),
+      // g = svg.append("g");
       legend.addTo(map);
     </script>
-
-
   </div>
 
 <!--   <div class="footer" style="margin-bottom: 0px; position: relative"> © 2014 Invest<i>Wiser</i>™. &nbsp;All Rights Reserved.  &nbsp; Terms and Conditions apply.</div>
@@ -458,6 +524,8 @@ map.on('click', onMapClick);
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
   </script>
+  <script type="text/javascript" src="../static/js/tweetsmapchart.js"></script>
+  <script type="text/javascript" src="../static/js/ups_all.js"></script>
 
   <img src="{{ url_for('static', filename='img/city.jpg') }}" width="0" height="0">
   </body>
