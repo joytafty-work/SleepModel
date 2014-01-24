@@ -1,0 +1,210 @@
+
+<html>
+<head>
+<title>Invest&thinsp;Wiser – Smarter Investment</title>
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/dc.css') }}"/>
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+<meta charset="utf-8"> 
+</head>
+<!--<body style="background-color: f8ffff; max-height: 1800px"> -->
+  <body style="background-color: ffffff; max-height: 1800px">
+  <style>
+  .center
+  {
+    margin-left:auto;
+    margin-right:auto;
+    width:70%;
+    background-color:#b0e0e6;
+  }
+/*  h3{
+    text-align: center
+  }*/
+  h1 {
+    color: darkgray;
+    font-family: hevetica;
+    font-size: 64px;
+    margin-bottom: 32px;
+  }
+  .call {
+    color: white;
+    font-family: garamond;
+    font-size: 32px;
+  }
+  .contact {
+    color: purple;
+    font-size: 48px;
+    font-weight: bold;
+  }
+  h1.why {
+    color: orange;
+  }
+  .footer {
+    background-color: black;
+    color: darkgray;
+    font-size: 12px;
+  }
+  .h1-background {
+    background-color: lightgray;
+    filter: blur(20px);
+    opacity: 0.75;
+  }
+  .page {
+    min-height: 720px;
+    padding-bottom: 96px;
+  }
+  a.navbar-brand {
+    font-weight: bold;
+    color: darkorange;
+  }
+  .facts {
+    background-color: white;
+    opacity: 0.9;
+    padding: 24px;
+    border-radius: 3px;
+  }
+  </style>
+  <p style="display: none">
+  Visualize startups visibility -
+  Relevant investment recommendations –
+  Get estimate startup customer acquisition –
+  Estimate addressable market size –
+</p>
+  
+  <div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+
+      <a class="navbar-brand" href="/">Invest&thinsp;<i>Wiser</i></a>
+
+      <div class="navbar-collapse">
+
+      {% block firstslide %}
+      <ul class="nav navbar-nav">
+        <li><a href="#ticker">Visualize</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="/index2">Leaflet</a></li>
+        <li><input type="text" class="form-control" placeholder="startup name"></li>
+      </ul>
+      {% endblock %}
+
+      </div><!-- /.nav-collapse -->
+    </div><!-- /.container -->
+  </div><!-- /.navbar -->
+
+  <div id="why">
+      <div class="page" style="background-image:url('static/city.jpg'); background-size: cover;" data--100-top="opacity: 1.0;" data-top-bottom="opacity: -1.25;">
+      <br>
+
+      {% block secondslide %}
+      Second slide
+      {% endblock %}
+
+    </div>
+  </div>
+  
+  <div id="ticker" class="page" style="min-height: 800px">
+    <div class="container" style="position: fixed; top: 0px" data-anchor-target="#ticker" data-300-top="opacity: 0;" data-100-top="opacity: 1" data--200-top="opacity[swing]: 1" data--700-top="opacity[swing]: 0;">
+  
+      {% block thirdslide %}
+      Third slide
+      {% endblock %}
+
+    </div>
+  </div>
+  
+<!--   <div id="taste" class="page" data-0-bottom="opacity: 0" data--400-bottom="opacity: 1">
+    <div style="height: 80px"></div>
+      <div class="container" style="background-image:url('static/shoes.png'); background-repeat: no-repeat; background-position:center; min-height: 720px">
+        <div class="facts col-6 col-offset-1" style="margin-top: 40px">
+          <center><h3>Respond to Trends with Existing Inventory</h3></center>
+        </div>
+      </div>
+  </div>
+ -->  
+<!--   <div id="manage" class="page">
+      <div class="container" style="position: fixed; top: 120px" data-anchor-target="#manage" data-300-top="opacity: 0;" data-100-top="opacity[swing]: 1" data--400-top="opacity[swing]: 1" data--600-top="opacity[swing]: 0;">
+        <div class="facts col-8 col-offset-2">
+          <center><h3 style="font-size: 60px">Manage Web, Mobile, and Email Campaigns</h3></center>
+        </div>
+      </div>
+      <div id="solutions" style="position: absolute; margin-top: 420px"></div>
+  </div> -->
+
+ <!--  <div class="page" data-300-top="opacity: 1" data-center="opacity: 0">
+    <div style="height: 120px"></div>
+    <div style="background-image:url('static/cars.png'); background-repeat: no-repeat; background-position:center; height: 720px"></div>
+  </div>
+
+  <div id="impact" class="page">
+      <div class="container" style="position: fixed; top: 240px" data-anchor-target="#impact" data-center="opacity: 0" data--200-center="opacity: 1" data-200-top="opacity: 1" data-top="opacity: 0">
+        <div class="facts col-8 col-offset-2">
+          <center><h3 style="font-size: 60px">Visualize Impact on Ecommerce and <br>Retail Strategy</h3></center>
+        </div>
+      </div>
+  </div>
+
+  <div id="optimize" class="page">
+      <div class="container" style="position: fixed; top: 240px" data-anchor-target="#optimize" data-center="opacity: 0" data--200-center="opacity: 1" data-200-top="opacity: 1" data-top="opacity: 0">
+        <div class="facts col-9 col-offset-2">
+          <center><h3 style="font-size: 60px">Optimize Your Inventory to Prevent SKU Proliferation</h3></center>
+        </div>
+      </div>
+  </div> -->
+
+  <!-- <div id="contact" class="page" style="position: relative; width: 800px; height: 800px;">
+  <div id="screenshot" class="container" style="margin-top: 140px;">
+        <div class="facts col-8 col-offset-1" style="position: fixed; top: 10px; border-radius: 12px" data-400-top="opacity: 2" data-bottom="opacity: -4" data-anchor-target="#screenshot">
+            <center>
+          <h3 style="font-size: 60px">Testing<i>Wiser</i></h3>          
+          </center>
+        </div>
+      </div>         
+  </div> -->
+
+  <div id="contact" class="page">
+      <div id="screenshot" class="container" style="margin-top: 140px;">
+        <div class="facts col-8 col-offset-1" style="position: fixed; top: 10px; border-radius: 12px" data-400-top="opacity: 2" data-bottom="opacity: -4" data-anchor-target="#screenshot">
+        <!-- <div id="map"></div> -->
+            <center>
+         <h3>Contact us for more information <a id="mailto" href="#">info@investwiser.com</a></h3>
+
+          <h3 style="font-size: 60px">with Invest<i>Wiser</i></h3>
+          <img src="{{ url_for('static', filename='eco.png') }}">
+          
+          </center>
+        </div>
+      </div>
+  </div>
+
+<!--   <div class="footer" style="margin-bottom: 0px; position: relative"> © 2014 Invest<i>Wiser</i>™. &nbsp;All Rights Reserved.  &nbsp; Terms and Conditions apply.</div>
+ -->  
+  <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/skrollr/0.6.11/skrollr.min.js"></script>
+  <script type="text/javascript">
+  var s = skrollr.init({
+    // forceHeight=false,
+    mobileCheck: function() {
+        //hack - forces mobile version to be off
+        return false;
+    }
+  });
+  $('#mailto').attr('href', 'mailto:' + 'info' + '@' + 'investwiser.com');
+  </script>
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-22185687-2']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; 
+
+  ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+  </script>
+  <script src="{{ url_for('static', filename='js/leafletmap.js')}}"></script>
+
+  <img src="{{ url_for('static', filename='city.jpg') }}" width="0" height="0">
+  </body>
+</html>

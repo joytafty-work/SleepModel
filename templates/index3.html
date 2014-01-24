@@ -1,9 +1,14 @@
 
 <html>
 <head>
+<meta name="description" content="Page description">
+<meta name="author" content="Joy Rimchala">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
 <title>Invest&thinsp;Wiser – Smarter Investment</title>
 <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/dc.css') }}"/>
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
 <meta charset="utf-8"> 
 </head>
 <!--<body style="background-color: f8ffff; max-height: 1800px"> -->
@@ -91,7 +96,7 @@
 
   <div id="why">
     <div style="height: 50px"></div>
-      <div class="page" style="background-image:url('static/city.jpg'); background-size: cover;" data--100-top="opacity: 1.0;" data-top-bottom="opacity: -1.25;">
+      <div class="page" style="background-image:url('static/img/city.jpg'); background-size: cover;" data--100-top="opacity: 1.0;" data-top-bottom="opacity: -1.25;">
       <br>
       <div style="position: fixed">
         <div class="h1-background">
@@ -107,7 +112,7 @@
     </div>
   </div>
   
-  <div id="ticker" class="page" style="min-height: 800px">
+<!--   <div id="ticker" class="page" style="min-height: 800px">
     <div class="container" style="position: fixed; top: 0px" data-anchor-target="#ticker" data-300-top="opacity: 0;" data-100-top="opacity: 1" data--200-top="opacity[swing]: 1" data--700-top="opacity[swing]: 0;">
       <div class="row">
 
@@ -151,13 +156,7 @@
             <script src="http://d3js.org/topojson.v1.min.js"></script>
             <script src="http://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.1/crossfilter.js"></script>
             <script type="text/javascript" src="{{ url_for('static', filename='js/queue.min.js') }}"></script>
-            <script type="text/javascript" src="{{ url_for('static', filename='js/datamaps.all.min.js') }}"></script>
-            <script src="http://datamaps.github.io/scripts/datamaps.world.min.js?v=1"></script>            
 
-            <script type="text/javascript">
-
-            </script>
-            
             <script>
             var width = 960,
               height = 500;
@@ -199,14 +198,14 @@
 
 
           </center>
-<!--           <br><br>
+          <br><br>
           <img src="{{ url_for('static', filename='eco.png') }}" alt="Traffic" style="width: 800px; opacity: 1">
- -->        </div>
+        </div>
 
 
       </div>
     </div>
-  </div>
+  </div> -->
   
 <!--   <div id="taste" class="page" data-0-bottom="opacity: 0" data--400-bottom="opacity: 1">
     <div style="height: 80px"></div>
@@ -247,18 +246,189 @@
       </div>
   </div> -->
 
-  <div id="contact" class="page">
-      <div id="screenshot" class="container" style="margin-top: 140px;">
+  <!-- <div id="contact" class="page" style="position: relative; width: 800px; height: 800px;">
+  <div id="screenshot" class="container" style="margin-top: 140px;">
         <div class="facts col-8 col-offset-1" style="position: fixed; top: 10px; border-radius: 12px" data-400-top="opacity: 2" data-bottom="opacity: -4" data-anchor-target="#screenshot">
             <center>
-         <h3>Contact us for more information <a id="mailto" href="#">info@investwiser.com</a></h3>
-
-          <h3 style="font-size: 60px">with Invest<i>Wiser</i></h3>
-          <img src="{{ url_for('static', filename='eco.png') }}">
-          
+          <h3 style="font-size: 60px">Testing<i>Wiser</i></h3>          
           </center>
         </div>
-      </div>
+      </div>         
+  </div> -->
+
+  <div id="ticker" class="page" style="min-height: 1000px">
+  <div class="container" style="position: fixed; top: 0px" data-anchor-target="#ticker" data-300-top="opacity: 0;" data-100-top="opacity: 1" data--200-top="opacity[swing]: 1" data--700-top="opacity[swing]: 0;">
+    <div class="row">
+
+      <div class="facts col-offset-3 col-12 center" style="min-height: 240px; padding: 16 48 64 48">
+          <style>
+      #map {
+        width: 1100px;
+        height: 900px;
+      }
+   
+      .info {
+        padding: 6px 8px;
+        font: 14px/16px Arial, Helvetica, sans-serif;
+        background: white;
+        background: rgba(255,255,255,0.8);
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        border-radius: 5px;
+      }
+      .info h4 {
+        margin: 0 0 5px;
+        color: #777;
+      }
+   
+      .legend {
+        text-align: left;
+        line-height: 18px;
+        color: #555;
+      }
+      .legend i {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        opacity: 0.7;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+   
+    <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>   
+    <script type="text/javascript" src="http://leafletjs.com/examples/us-states.js"></script>
+    <script type="text/javascript">
+   
+      var map = L.map('map').setView([37.8, -96], 4);
+   
+      var cloudmade = L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
+        attribution: 'Map data &#169; 2011 OpenStreetMap contributors, Imagery &#169; 2011 CloudMade',
+        key: '6703ff226f4746adab2f7548e3826fce',
+        styleId: 22677
+      }).addTo(map);
+   
+      // control that shows state info on hover
+      var info = L.control();
+   
+      info.onAdd = function (map) {
+        this._div = L.DomUtil.create('div', 'info');
+        this.update();
+        return this._div;
+      };
+   
+      info.update = function (props) {
+        this._div.innerHTML = '<h4>Tweets Density</h4>' +  (props ?
+          '<b>' + props.name + '</b><br />' + props.density + ' people / mi<sup>2</sup>'
+          : 'Hover over a state');
+      };
+      info.addTo(map);
+
+      //add popup
+      var marker = L.marker([37.773, -122.399]).addTo(map);
+      marker.bindPopup("<b>Heroku</b><br>Seed A").openPopup();
+
+      function onMapClick(e) {
+      popup
+        .setLatLng(e.latlng)
+        .setContent("You clicked the map at " + e.latlng.toString())
+        .openOn(map);
+      }
+
+map.on('click', onMapClick);
+
+      // get color depending on population density value
+      function getColor(d) {
+        return d > 1000 ? '#800026' :
+             d > 500  ? '#BD0026' :
+             d > 200  ? '#E31A1C' :
+             d > 100  ? '#FC4E2A' :
+             d > 50   ? '#FD8D3C' :
+             d > 20   ? '#FEB24C' :
+             d > 10   ? '#FED976' :
+                  '#FFEDA0';
+      }
+   
+      function style(feature) {
+        return {
+          weight: 2,
+          opacity: 1,
+          color: 'white',
+          dashArray: '3',
+          fillOpacity: 0.7,
+          fillColor: getColor(feature.properties.density)
+        };
+      }
+   
+      function highlightFeature(e) {
+        var layer = e.target;
+   
+        layer.setStyle({
+          weight: 5,
+          color: '#666',
+          dashArray: '',
+          fillOpacity: 0.7
+        });
+   
+        if (!L.Browser.ie && !L.Browser.opera) {
+          layer.bringToFront();
+        }
+   
+        info.update(layer.feature.properties);
+      }
+   
+      var geojson;
+   
+      function resetHighlight(e) {
+        geojson.resetStyle(e.target);
+        info.update();
+      }
+   
+      function zoomToFeature(e) {
+        map.fitBounds(e.target.getBounds());
+      }
+   
+      function onEachFeature(feature, layer) {
+        layer.on({
+          mouseover: highlightFeature,
+          mouseout: resetHighlight,
+          click: zoomToFeature
+        });
+      }
+   
+      geojson = L.geoJson(statesData, {
+        style: style,
+        onEachFeature: onEachFeature
+      }).addTo(map);
+   
+      map.attributionControl.addAttribution('Startup data &#169; <a href="http://www.crunchbase.com">Startup Data</a>');
+   
+      var legend = L.control({position: 'bottomright'});
+   
+      legend.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'info legend'),
+          grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+          labels = [],
+          from, to;
+   
+        for (var i = 0; i < grades.length; i++) {
+          from = grades[i];
+          to = grades[i + 1];
+   
+          labels.push(
+            '<i style="background:' + getColor(from + 1) + '"></i> ' +
+            from + (to ? '&#8211;' + to : '+'));
+        }
+   
+        div.innerHTML = labels.join('<br />');
+        return div;
+      };
+   
+      legend.addTo(map);
+    </script>
+
+
   </div>
 
 <!--   <div class="footer" style="margin-bottom: 0px; position: relative"> © 2014 Invest<i>Wiser</i>™. &nbsp;All Rights Reserved.  &nbsp; Terms and Conditions apply.</div>
@@ -288,6 +458,7 @@
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
   </script>
-  <img src="{{ url_for('static', filename='city.jpg') }}" width="0" height="0">
+
+  <img src="{{ url_for('static', filename='img/city.jpg') }}" width="0" height="0">
   </body>
 </html>

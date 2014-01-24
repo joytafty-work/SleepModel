@@ -1,0 +1,49 @@
+<!DOCTYPE html >
+<html >
+  <head>
+    <title>Chloropleth</title>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/d3.js')}}"></script>
+    <script type="text/javascript" src="http://x3dom.org/x3dom/dist/x3dom-full.js"></script>
+    <script type="text/javascript" src="../static/js/scatter_plot_3d_demo.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://www.x3dom.org/download/dev/x3dom.css"/>
+  </head>
+
+  <meta charset="utf-8">
+<style>
+
+path {
+  fill: #ccc;
+  stroke: #fff;
+  stroke-width: .5px;
+}
+
+path:hover {
+  fill: red;
+}
+
+</style>
+
+  <body>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+  <script>
+
+  var width = 960,
+    height = 500;
+
+  var path = d3.geo.path();
+
+  var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  d3.json("{{ url_for('static',filename='data/us.json')}}", function(error, topology) {
+  svg.selectAll("path")
+      .data(topojson.feature(topology, topology.objects.counties).features)
+    .enter().append("path")
+      .attr("d", path);
+});
+
+  </script>
+  </body>
+</html>

@@ -1,7 +1,7 @@
-{% extends "base.html" %}
-
-{% block secondslide %}   
-    <style>
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
+<!--[if lte IE 8]><link rel="stylesheet" href="http://leafletjs.com/examples/dist/leaflet.ie.css" /></link><![endif]-->
+   
+<style>
       #map {
         width: 800px;
         height: 500px;
@@ -32,38 +32,32 @@
         margin-right: 8px;
         opacity: 0.7;
       }
-    </style>
-  </head>
-  <body>
-    <div id="map"></div>
-   
-    <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>   
-    <script type="text/javascript" src="http://leafletjs.com/examples/us-states.js"></script>
-    <script type="text/javascript">
-   
-      var map = L.map('map').setView([37.8, -96], 4);
-   
-      var cloudmade = L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
+</style>
+
+<script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>   
+<script type="text/javascript" src="http://leafletjs.com/examples/us-states.js"></script>
+<script type="text/javascript">
+  var map = L.map('map').setView([37.8, -96], 4);
+  var cloudmade = L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
         attribution: 'Map data &#169; 2011 OpenStreetMap contributors, Imagery &#169; 2011 CloudMade',
         key: '6703ff226f4746adab2f7548e3826fce',
         styleId: 22677
       }).addTo(map);
+  // control that shows state info on hover
+  var info = L.control();
    
-      // control that shows state info on hover
-      var info = L.control();
-   
-      info.onAdd = function (map) {
-        this._div = L.DomUtil.create('div', 'info');
-        this.update();
-        return this._div;
-      };
-   
-      info.update = function (props) {
-        this._div.innerHTML = '<h4>US Population Density</h4>' +  (props ?
-          '<b>' + props.name + '</b><br />' + props.density + ' people / mi<sup>2</sup>'
-          : 'Hover over a state');
-      };
-      info.addTo(map);
+  info.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'info');
+    this.update();
+    return this._div;
+  };
+  
+  info.update = function (props) {
+    this._div.innerHTML = '<h4>US Population Density</h4>' +  (props ?
+    '<b>' + props.name + '</b><br />' + props.density + ' people / mi<sup>2</sup>'
+    : 'Hover over a state');
+    };
+    info.addTo(map);
 
       //add popup
       var marker = L.marker([37.8, -96]).addTo(map);
@@ -156,7 +150,5 @@
         div.innerHTML = labels.join('<br />');
         return div;
       };
-   
-      legend.addTo(map);
-    </script>
-{% endblock %}
+  legend.addTo(map);
+</script>
