@@ -168,7 +168,7 @@ physpieChart
     .xUnits(d3.time.months)
     .dimension(moveDays)
     .group(moveDaysGroup)
-    .yAxisLabel("#tweets (miles)")
+    .yAxisLabel("tweets / mi<sup>2</sup>")
     .valueAccessor(function (p) {
       return p.value.total;
     })  
