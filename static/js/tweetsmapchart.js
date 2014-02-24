@@ -158,7 +158,7 @@ physpieChart
 // 4. Chart: physmovechart
  physmoveChart
     .renderArea(true)
-    .width(720)
+    .width(1000)
     .height(240)
     .transitionDuration(800)
     .margins({top: 50, right: 50, bottom: 30, left: 50})
@@ -168,7 +168,7 @@ physpieChart
     .xUnits(d3.time.months)
     .dimension(moveDays)
     .group(moveDaysGroup)
-    .yAxisLabel("tweets / mi<sup>2</sup>")
+    .yAxisLabel("tweets / mi2")
     .valueAccessor(function (p) {
       return p.value.total;
     })  

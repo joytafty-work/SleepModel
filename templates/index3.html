@@ -84,7 +84,8 @@
         <ul class="nav navbar-nav">
           <li><a href="#ticker">Visualize</a></li>
           <li><a href="#contact">Contact</a></li>
-          <li><input type="text" class="form-control" placeholder="startup name"></li>
+          <li><input type="text" class="form-control" placeholder="startup name" width=30px href="#ticker"></li>
+          <li><button type="submit" class="btn span4">Go</button></li>
         </ul>
 
         <div class="visible-lg">
@@ -108,6 +109,55 @@
             <h3>Watch Visibility Trends in Real Time</h3>
           </div>
         </div>
+
+  <div class="hero-unit">
+    <form id="inputForm" style="text-align:center;" method="post" action="" name="q">
+      <div class="control-group">
+<!--         <h2>See Startups </h2>
+        <p>company name like Heroku, Airbnb, RethinkDB etc.</p> -->
+        <div class="controls">
+          <div class="input-append">
+            
+          <input type="text" autocomplete="off" placeholder="Type Company ..." id="crunch-id" name="crunch-id"
+              data-provide="typeahead" data-items="4"
+              data-source=''>
+            <button type="submit" class="btn btn-inverse"><i class="icon-search icon-white"></i></button>
+<!--             <a href="/predict" type="" class="btn btn-success" onclick="formSubmit()" >
+                <i class="icon-search icon-white"></i>
+            </a>
+ -->
+            <select class="selectpicker" title="market sector" data-width="28px" id="choices"  type="submit">
+              <option>web, mobile, software, messaging</option>
+              <option>real estate</option>
+              <option>enterprise</option>
+              <option>fashion</option>
+              <option>travel</option>
+              <option>advertising, PR</option>
+              <option>nonprofile</option>
+              <option>ecommerce</option>
+              <option>search, analytics</option>
+              <option>social</option>
+              <option>photo, video, music</option>
+              <option>education</option>
+              <option>health</option>
+              <option>finance</option>
+              <option>hardware</option>
+              <option>game_video</option>
+              <option>hospitality</option>
+              <option>local</option>
+              <option>legal</option>
+            </select>
+
+            <a href="#ticker" type="submit" class="btn" method="post" action="" name="q">
+                Submit
+            </a>
+
+          </div>
+        </div>
+      </div>
+    </form>
+
+</div>
       </div>
     </div>
   </div>
@@ -246,15 +296,15 @@
       </div>
   </div> -->
 
-  <!-- <div id="contact" class="page" style="position: relative; width: 800px; height: 800px;">
+<!--   <div class="container" id="physical-container" style="position: fixed; top: 0px" data-anchor-target="#ticker" data-300-top="opacity: 0;" data-100-top="opacity: 1" data--200-top="opacity[swing]: 1" data--700-top="opacity[swing]: 0;">
   <div id="screenshot" class="container" style="margin-top: 140px;">
         <div class="facts col-8 col-offset-1" style="position: fixed; top: 10px; border-radius: 12px" data-400-top="opacity: 2" data-bottom="opacity: -4" data-anchor-target="#screenshot">
             <center>
           <h3 style="font-size: 60px">Testing<i>Wiser</i></h3>          
           </center>
         </div>
-      </div>         
-  </div> -->
+      </div>
+  </div>          -->
 
   <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>   
   <script type="text/javascript" src="http://leafletjs.com/examples/us-states.js"></script>
@@ -271,8 +321,9 @@
   <div id="ticker"  class="page" data-0-bottom="opacity: 0" data--400-bottom="opacity: 1">
   <div class="container" id="physical-container" style="position: fixed; top: 0px" data-anchor-target="#ticker" data-300-top="opacity: 0;" data-100-top="opacity: 1" data--200-top="opacity[swing]: 1" data--700-top="opacity[swing]: 0;">
     <div class="row">
+    
       <!-- Physical Activity by month (Pie) -->
-      <div id="phys-month-pie" class="col-md-4" align="center">
+    <!--   <div id="phys-month-pie" class="col-md-4" align="center">
         <span class="chart-title">
           &nbsp;&nbsp; Funding Rounds (mins)
           <br>
@@ -281,7 +332,7 @@
         <a class="reset" href="javascript:physpieChart.filterAll('physchart');
         dc.redrawAll('physchart');" style="display: none;">refresh</a>
         <div class="clearfix"></div>      
-      </div>
+      </div> -->
 
       <!-- Physical Activity by Week -->
       <div id="phys-move-chart" class="col-md-8" align="center">

@@ -101,7 +101,7 @@ def server():
         return render_template('404.html'), 404
 
     app.debug = True
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 4000))
     app.run(host='0.0.0.0', port=port)
     d = wsgiserver.WSGIPathInfoDispatcher({'/': app})
     server = wsgiserver.CherryPyWSGIServer(('0.0.0.0', 8001), d)
